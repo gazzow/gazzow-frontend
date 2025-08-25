@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Background & UI colors */
+  --color-primary: #0E1217;
+  --color-secondary: #1E293B;
+  --color-btn-primary: #9333EA;
+  --color-btn-premium: #39E58C;
+  --color-border-primary: #374151;
+  --color-btn-primary-hover: #7C3AED;
+  --color-btn-premium-hover: #22C55E;
+
+  /* Typography colors */
+  --color-text-primary: #F9FAFB;   /* near white */
+  --color-text-secondary: #CBD5E1; /* slate-like */
+  --color-text-muted: #94A3B8;     /* lighter slate */
+}
+
+
+/*
+| **Your Token**      | **Hex**   | **Closest Tailwind Utility**         |
+| ------------------- | --------- | ------------------------------------ |
+| `primary`           | `#0E1217` | `slate-950` (`bg-slate-950`)         |
+| `secondary`         | `#1E293B` | `slate-800` (`bg-slate-800`)         |
+| `btn-primary`       | `#9333EA` | `purple-600` (`bg-purple-600`)       |
+| `btn-premium`       | `#39E58C` | `emerald-400` (`bg-emerald-400`)     |
+| `btn-primary-hover` | `#7C3AED` | `purple-500` (`hover:bg-purple-500`) |
+| `btn-premium-hover` | `#22C55E` | `green-500` (`hover:bg-green-500`)   |
+| `border-primary`    | `#374151` | `slate-700` (`border-slate-700`)     |
+*/
+
+
+
+
