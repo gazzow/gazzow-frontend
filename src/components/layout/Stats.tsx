@@ -10,7 +10,7 @@ const stats = [
 
 export default function Stats() {
   return (
-    <section className="relative bg-black py-12">
+    <section className="relative bg-white dark:bg-primary py-12">
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center px-6">
         {stats.map((stat, idx) => (
           <div key={idx} className="flex flex-col items-center">
