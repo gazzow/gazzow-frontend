@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import "./globals.css";
+import ToastProvider from "@/providers/ToastProvider";
+import ReduxProvider from "@/providers/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "Gazzow",
@@ -13,9 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" >
+    <html lang="en">
       <body className="bg-white dark:bg-primary font-sans">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <ReduxProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </ReduxProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
