@@ -1,7 +1,7 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import axiosClient from "@/utils/axios-client";
+import axiosAuth from "@/lib/axios-auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/store";
@@ -42,7 +42,7 @@ export default function SignupPage() {
     try {
       console.log("data: ", data);
 
-      const res = await axiosClient.post("/auth/register", data);
+      const res = await axiosAuth.post("/register", data);
       if (res.data.success) {
         toast.success('storing email and re-routing to verify otp')
         // storing email in auth redux for verification
@@ -57,7 +57,8 @@ export default function SignupPage() {
 
   return (
     <AuthForm
-      title="Gazzow Signup"
+      title="Create Account"
+      subTitle="Join the community of passionate developers"
       submitButtonLabel="signup"
       fields={fields}
       onSubmit={handleSubmit}

@@ -1,5 +1,6 @@
 "use client";
 
+import { Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 
 type Fields = {
@@ -11,6 +12,7 @@ type Fields = {
 
 type AuthFormProps = {
   title: string;
+  subTitle: string;
   fields: Fields[];
   submitButtonLabel: string;
   onSubmit: (data: Record<string, string>) => void;
@@ -21,6 +23,7 @@ type AuthFormProps = {
 
 export default function AuthForm({
   title,
+  subTitle,
   fields,
   submitButtonLabel,
   onSubmit,
@@ -30,6 +33,11 @@ export default function AuthForm({
 }: AuthFormProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -57,7 +65,10 @@ export default function AuthForm({
   return (
     <section className="min-h-screen flex items-center justify-center bg-white dark:bg-primary  text-white px-4">
       <div className="w-full max-w-md bg-secondary/30 border-2 border-border-primary p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold text-center mb-6">{title}</h1>
+        <h1 className="text-3xl font-bold text-center">{title}</h1>
+        <h3 className="text-md text-center text-text-secondary mb-6">
+          {subTitle}
+        </h3>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {fields.map((field) => (
@@ -65,15 +76,33 @@ export default function AuthForm({
               <label htmlFor={field.name} className="block text-sm mb-1">
                 {field.label}
               </label>
-              <input
-                id={field.name}
-                name={field.name}
-                type={field.type || "text"}
-                placeholder={field.placeholder}
-                value={formData[field.name] || ""}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary"
-              />
+              {field.type === "password" ? (
+                <div className="flex items-center justify-center px-4 py-2 rounded-lg bg-primary border border-gray-600 focus-within:ring-2 focus-within:ring-btn-primary">
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    type={showPassword ? 'text': field.type}
+                    placeholder={field.placeholder}
+                    value={formData[field.name] || ""}
+                    onChange={handleChange}
+                    className="w-full outline-none"
+                  />
+                  <div onClick={handleShowPassword} className="cursor-pointer">
+                    {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                  </div>
+                </div>
+              ) : (
+                <input
+                  id={field.name}
+                  name={field.name}
+                  type={field.type || "text"}
+                  placeholder={field.placeholder}
+                  value={formData[field.name] || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary"
+                />
+              )}
+
               {errors[field.name] && (
                 <p className="text-red-400 text-sm mt-1">
                   {errors[field.name]}

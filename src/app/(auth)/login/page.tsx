@@ -1,7 +1,12 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
+import axiosAuth from "@/lib/axios-auth";
+import axios from "axios";
+import { Chromium, Github } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const fields = [
   {
@@ -19,13 +24,37 @@ const fields = [
 ];
 
 export default function LoginPage() {
-  const handleSubmit = (data: Record<string, string>) => {
+  const router = useRouter();
+
+  const handleSubmit = async (data: Record<string, string>) => {
     console.log("form data:, ", data);
+
+    try {
+      const res = await axiosAuth.post("/login", data);
+      console.log(`response: ${JSON.stringify(res.data)}`);
+      // store user data to user slice in redux
+      if (res.data?.success) {
+        toast.success(res.data.message);
+        toast.info("sign in! re-routing to home in 3 seconds");
+        setTimeout(() => {
+          // re-routing
+          router.replace("/home");
+        }, 3000);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("login error: ", error.response?.data?.message);
+        toast.error(error.response?.data?.message || "Something went wrong!");
+      } else {
+        console.log("unexpected error: ", error);
+      }
+    }
   };
 
   return (
     <AuthForm
-      title="Login Gazzow"
+      title="Welcome Back"
+      subTitle="Sign in to connect with coders around the world"
       fields={fields}
       onSubmit={handleSubmit}
       submitButtonLabel="Login"
@@ -38,11 +67,13 @@ export default function LoginPage() {
       }
       OAuthButtons={
         <div className="flex gap-4">
-          <button className="flex-1 py-2 bg-white text-black rounded-lg font-medium hover:opacity-90 transition">
-            Google
+          <button className="flex-1 flex items-center justify-center gap-4 py-2 bg-white text-black rounded-lg font-medium hover:opacity-90 transition">
+            <Chromium size={18} />
+            <span>Google</span>
           </button>
-          <button className="flex-1 py-2 bg-black text-white rounded-lg font-medium border border-gray-700 hover:opacity-90 transition">
-            GitHub
+          <button className="flex-1 flex items-center justify-center gap-4 py-2 bg-black text-white rounded-lg font-medium border border-gray-700 hover:opacity-90 transition">
+            <Github size={18} />
+            <span>GitHub</span>
           </button>
         </div>
       }

@@ -1,7 +1,7 @@
 "use client"; // if using Next.js 13 app directory
 
 import { useAppSelector } from "@/store/store";
-import axiosClient from "@/utils/axios-client";
+import axiosAuth from "@/lib/axios-auth";
 import { Shield } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ export default function VerifyOtp() {
   const [otp, setOtp] = useState("");
   const [expiryTimer, setExpiryTimer] = useState(300); // 5 min in seconds
   const [reSendTimer, setReSendTimer] = useState(180); // 3 min in seconds
+
   const email = useAppSelector((state) => state.auth.user?.email);
 
   // Countdown timer
@@ -34,7 +35,7 @@ export default function VerifyOtp() {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      const res = await axiosClient.post("/auth/verify-otp", { email, otp });
+      const res = await axiosAuth.post("/verify-otp", { email, otp });
       toast.success(res.data.message);
       console.log("res data: ", res.data);
       setTimeout(() => {
