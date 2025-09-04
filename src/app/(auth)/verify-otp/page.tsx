@@ -1,21 +1,23 @@
 "use client"; // if using Next.js 13 app directory
 
-import { useAppSelector } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/store/store";
 import axiosAuth from "@/lib/axios-auth";
 import { Shield } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { setUser } from "@/store/slices/userSlice";
 
 export default function VerifyOtp() {
 
-  const router = useRouter()
+  const router = useRouter();
 
   const [otp, setOtp] = useState("");
   const [expiryTimer, setExpiryTimer] = useState(300); // 5 min in seconds
   const [reSendTimer, setReSendTimer] = useState(180); // 3 min in seconds
 
+  const dispatch = useAppDispatch();
   const email = useAppSelector((state) => state.auth.user?.email);
 
   // Countdown timer
@@ -38,6 +40,10 @@ export default function VerifyOtp() {
       const res = await axiosAuth.post("/verify-otp", { email, otp });
       toast.success(res.data.message);
       console.log("res data: ", res.data);
+
+      dispatch(setUser(res.data.user));
+
+
       setTimeout(() => {
         // re-routing 
         toast.info('sign in! re-routing to home')

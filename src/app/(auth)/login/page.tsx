@@ -2,6 +2,8 @@
 
 import AuthForm from "@/components/AuthForm";
 import axiosAuth from "@/lib/axios-auth";
+import { setUser } from "@/store/slices/userSlice";
+import { useAppDispatch } from "@/store/store";
 import axios from "axios";
 import { Chromium, Github } from "lucide-react";
 import Link from "next/link";
@@ -26,6 +28,8 @@ const fields = [
 export default function LoginPage() {
   const router = useRouter();
 
+  const dispatch = useAppDispatch();
+
   const handleSubmit = async (data: Record<string, string>) => {
     console.log("form data:, ", data);
 
@@ -33,6 +37,8 @@ export default function LoginPage() {
       const res = await axiosAuth.post("/login", data);
       console.log(`response: ${JSON.stringify(res.data)}`);
       // store user data to user slice in redux
+
+       dispatch(setUser(res.data.user));
       if (res.data?.success) {
         toast.success(res.data.message);
         toast.info("sign in! re-routing to home in 3 seconds");

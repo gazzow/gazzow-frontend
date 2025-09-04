@@ -6,15 +6,17 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 
 import authReducer from "./slices/authSlice";
+import userReducer from "./slices/userSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  user: userReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"], // only auth will be persisted
+  whitelist: ["auth", "user"], // only given slices will be persisted
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
