@@ -5,7 +5,7 @@ import axiosAuth from "@/lib/axios-auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/store";
-import { register } from "@/store/slices/authSlice";
+import { setUserEmail } from "@/store/slices/authSlice";
 import { toast } from "react-toastify";
 
 const fields = [
@@ -46,7 +46,7 @@ export default function SignupPage() {
       if (res.data.success) {
         toast.success('storing email and re-routing to verify otp')
         // storing email in auth redux for verification
-        dispatch(register({ email: data.email }));
+        dispatch(setUserEmail({ email: data.email }));
         replaceRoute();
       }
       console.log("res data: ", res);

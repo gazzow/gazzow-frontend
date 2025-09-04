@@ -55,44 +55,44 @@ export default function VerifyOtp() {
     return `${m}:${s < 10 ? "0" : ""}${s}`;
   };
 
-  return (
-    <section className="min-h-screen flex items-center justify-center bg-white dark:bg-primary px-4">
-      <div className="w-full max-w-md bg-secondary/30 border-2 border-border-primary p-8 rounded-2xl shadow-lg text-white">
-        <div className="flex flex-col items-center mb-6">
-          <div className="bg-gray-800 p-4 rounded-full mb-4">
-            <Shield size={24}></Shield>
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-white dark:bg-primary px-4">
+        <div className="w-full max-w-md bg-secondary/30 border-2 border-border-primary p-8 rounded-2xl shadow-lg text-white">
+          <div className="flex flex-col items-center mb-6">
+            <div className="bg-gray-800 p-4 rounded-full mb-4">
+              <Shield size={24}></Shield>
+            </div>
+            <h1 className="text-3xl font-bold text-center">Verify Your Email</h1>
+            <p className="text-sm mt-2 text-gray-300">
+              Enter the 6-digit code sent to your email
+            </p>
           </div>
-          <h1 className="text-3xl font-bold text-center">Verify Your Email</h1>
-          <p className="text-sm mt-2 text-gray-300">
-            Enter the 6-digit code sent to your email
-          </p>
-        </div>
 
-        <div className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Enter OTP"
-            className="w-full px-4 py-2 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
+          <div className="flex flex-col gap-4">
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              className="w-full px-4 py-2 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+            />
 
-          <button
-            onClick={handleSubmit}
-            className="bg-btn-primary hover:bg-btn-primary-hover cursor-pointer py-2 rounded-md font-semibold"
-          >
-            Verify OTP
-          </button>
-        </div>
+            <button
+              onClick={handleSubmit}
+              className="bg-btn-primary hover:bg-btn-primary-hover cursor-pointer py-2 rounded-md font-semibold"
+            >
+              Verify OTP
+            </button>
+          </div>
 
-        <div className="mt-4 text-center text-gray-300 text-sm">
-          <p>Code expires in {formatTime(expiryTimer)}</p>
-          <p className="mb-6">Resend available in {formatTime(reSendTimer)}</p>
-          <Link className="text-blue-300" href={"/login"}>
-            &larr; Back to login
-          </Link>
+          <div className="mt-4 text-center text-gray-300 text-sm">
+            <p>Code expires in {formatTime(expiryTimer)}</p>
+            <p className="mb-6">Resend available in {formatTime(reSendTimer)}</p>
+            <Link className="text-blue-300" href={"/login"}>
+              &larr; Back to login
+            </Link>
+          </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
 }

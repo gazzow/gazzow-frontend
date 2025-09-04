@@ -59,10 +59,24 @@ export default function LoginPage() {
       onSubmit={handleSubmit}
       submitButtonLabel="Login"
       divider={
-        <div className="flex items-center my-6">
-          <div className="flex-grow h-px bg-gray-600" />
-          <span className="px-3 text-gray-400 text-sm">OR</span>
-          <div className="flex-grow h-px bg-gray-600" />
+        <div className="mb-4">
+          <div className="my-4 flex justify-between">
+            <div className="flex gap-2">
+              <input type="checkbox" />
+              <p className="text-text-secondary text-md">Remember me</p>
+            </div>
+            <Link
+              href={"/forgot-password"}
+              className="text-text-secondary text-md"
+            >
+              Forgot password
+            </Link>
+          </div>
+          <div className="flex items-center">
+            <div className="flex-grow h-px bg-gray-600" />
+            <span className="px-3 text-gray-400 text-sm">OR</span>
+            <div className="flex-grow h-px bg-gray-600" />
+          </div>
         </div>
       }
       OAuthButtons={

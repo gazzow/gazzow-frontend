@@ -12,11 +12,11 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    register: (state, action: PayloadAction<{ email: string }>) => {
+    setUserEmail: (state, action: PayloadAction<{ email: string }>) => {
       state.user = action.payload;
     },
   },
 });
 
-export const { register } = authSlice.actions;
+export const { setUserEmail } = authSlice.actions;
 export default authSlice.reducer;
