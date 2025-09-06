@@ -43,7 +43,6 @@ export default function VerifyOtp() {
 
       dispatch(setUser(res.data.user));
 
-
       setTimeout(() => {
         // re-routing 
         toast.info('sign in! re-routing to home')
