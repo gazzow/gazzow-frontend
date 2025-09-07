@@ -1,13 +1,16 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
+import axiosAuth from "@/lib/axios/axios-auth";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-
+import { useAppDispatch } from "@/store/store";
+import { setUserEmail } from "@/store/slices/authSlice";
+import { toast } from "react-toastify";
 
 const fields = [
   {
-    name: "username",
+    name: "name",
     label: "Full Name",
     type: "text",
     placeholder: "John Doe",
@@ -26,17 +29,36 @@ const fields = [
   },
 ];
 
-
 export default function SignupPage() {
-  
-  const handleSubmit = (data: Record<string, string>) => {
-    console.log("form data", data);
+  const router = useRouter();
+
+  const dispatch = useAppDispatch();
+
+  const replaceRoute = () => {
+    router.push("/verify-otp");
   };
 
+  const handleSubmit = async (data: Record<string, string>) => {
+    try {
+      console.log("data: ", data);
+
+      const res = await axiosAuth.post("/register", data);
+      if (res.data.success) {
+        toast.success('storing email and re-routing to verify otp')
+        // storing email in auth redux for verification
+        dispatch(setUserEmail({ email: data.email }));
+        replaceRoute();
+      }
+      console.log("res data: ", res);
+    } catch (error) {
+      console.log("error while api call", error);
+    }
+  };
 
   return (
     <AuthForm
-      title="Gazzow Signup"
+      title="Create Account"
+      subTitle="Join the community of passionate developers"
       submitButtonLabel="signup"
       fields={fields}
       onSubmit={handleSubmit}
