@@ -1,7 +1,7 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import axiosAuth from "@/lib/axios-auth";
+import axiosAuth from "@/lib/axios/axios-auth";
 import { setUser } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
 import axios from "axios";
@@ -38,14 +38,10 @@ export default function LoginPage() {
       console.log(`response: ${JSON.stringify(res.data)}`);
       // store user data to user slice in redux
 
-       dispatch(setUser(res.data.user));
+      dispatch(setUser(res.data.user));
       if (res.data?.success) {
         toast.success(res.data.message);
-        toast.info("sign in! re-routing to home in 3 seconds");
-        setTimeout(() => {
-          // re-routing
-          router.replace("/home");
-        }, 3000);
+        router.replace("/home");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

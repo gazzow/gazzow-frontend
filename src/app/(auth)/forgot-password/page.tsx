@@ -1,6 +1,6 @@
 "use client";
 
-import axiosAuth from "@/lib/axios-auth";
+import axiosAuth from "@/lib/axios/axios-auth";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { useAppDispatch } from "@/store/store";
 import axios from "axios";

@@ -4,7 +4,11 @@ import { useState } from "react";
 import { Camera, Loader, Plus, Save, User, X } from "lucide-react";
 import { uploadImageToCloudinary } from "@/lib/cloudinary/config";
 import { toast } from "react-toastify";
-import { useAppSelector } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import axiosUser from "@/lib/axios/axios-user";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+  import { setUserProfile } from "@/store/slices/userSlice";
 
 const roles = [
   "Frontend Developer",
@@ -16,9 +20,9 @@ const roles = [
 ];
 
 const experiences = [
-  "Beginner (0-2 yrs)",
-  "Intermediate (2-5 yrs)",
-  "Expert (5+ yrs)",
+  "Beginner",
+  "Intermediate",
+  "Expert",
 ];
 
 const techOptions = [
@@ -41,7 +45,11 @@ const learningGoals = [
 ];
 
 export default function ProfileSetup() {
-  // const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const router = useRouter();
+
+  const dispatch = useAppDispatch();
+
   const [profileImage, setProfileImage] = useState<string | null>(null); // preview
   const [profileUrl, setProfileUrl] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -53,7 +61,8 @@ export default function ProfileSetup() {
   const [customGoal, setCustomGoal] = useState<string>("");
   const [bio, setBio] = useState<string>("");
 
-  const {name} = useAppSelector(state => state.user)
+
+  const { name } = useAppSelector((state) => state.user);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -115,23 +124,36 @@ export default function ProfileSetup() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const payload = {
       bio,
       developerRole: selectedRole,
+      experience:selectedExperience,
       techStacks: selectedTech,
       learningGoals: selectedGoal,
       imageUrl: profileUrl,
     };
     console.log("Submitting profile: ", payload);
-    // TODO: send payload to backend and update the user slice 
 
+    try {
+      const res = await axiosUser.put("/profile/setup", payload);
+      console.log('response data in onboarding: ', res.data)
+      if(res.data.success){
+        toast.success(res.data.message)
+        dispatch(setUserProfile(res.data.user))
+        router.replace('/home');
+      }
 
+    } catch (error) {
+      if(axios.isAxiosError(error)){
+         console.log('onboarding error: ', error)
+      }
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-8 px-4 bg-gradient-to-br from-gray-900 to-gray-800">
-      <div className="w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-700 overflow-hidden bg-gray-850">
+    <div className="min-h-screen flex items-center justify-center py-8 px-4 bg-primary">
+      <div className="w-full max-w-2xl rounded-2xl shadow-2xl border bg-secondary/30 border-gray-700 overflow-hidden bg-gray-850">
         {/* Header with profile image upload */}
         <div className="relative  py-6">
           <div className="absolute"></div>
@@ -147,7 +169,7 @@ export default function ProfileSetup() {
                   />
                 ) : (
                   <div className="text-3xl text-white">
-                    <User size={44}/>
+                    <User size={44} />
                   </div>
                 )}
               </div>
@@ -223,7 +245,7 @@ export default function ProfileSetup() {
                   <select
                     value={selectedRole}
                     onChange={(e) => setSelectedRole(e.target.value)}
-                    className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700 appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700 appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer"
                   >
                     <option value="">Select your role</option>
                     {roles.map((role) => (
@@ -260,7 +282,7 @@ export default function ProfileSetup() {
                   <select
                     value={selectedExperience}
                     onChange={(e) => setSelectedExperience(e.target.value)}
-                    className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700 appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700 appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer"
                   >
                     <option value="">Select your experience</option>
                     {experiences.map((experience) => (
@@ -304,7 +326,7 @@ export default function ProfileSetup() {
                     key={tech}
                     type="button"
                     onClick={() => handleTechToggle(tech)}
-                    className={`px-3 py-1.5 rounded-full text-sm border transition-all transform hover:scale-105 ${
+                    className={`px-3 py-1.5 rounded-full text-sm border transition-all transform hover:scale-105 cursor-pointer ${
                       selectedTech.includes(tech)
                         ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white border-transparent shadow-md"
                         : "bg-gray-800 border-gray-700 text-gray-300 hover:border-blue-400"
@@ -325,7 +347,7 @@ export default function ProfileSetup() {
                     {selectedTech.map((tech) => (
                       <span
                         key={tech}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-sm text-white shadow-md transition-all hover:from-blue-700 hover:to-purple-700"
+                        className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-sm text-white shadow-md transition-all hover:from-blue-700 hover:to-purple-700 cursor-pointer"
                       >
                         {tech}
                         <X
@@ -385,7 +407,7 @@ export default function ProfileSetup() {
                     key={goal}
                     type="button"
                     onClick={() => handleGoalToggle(goal)}
-                    className={`px-3 py-1.5 rounded-full text-sm border transition-all transform hover:scale-105 ${
+                    className={`px-3 py-1.5 rounded-full text-sm border transition-all transform hover:scale-105 cursor-pointer ${
                       selectedGoal.includes(goal)
                         ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white border-transparent shadow-md"
                         : "bg-gray-800 border-gray-700 text-gray-300 hover:border-blue-400"
@@ -404,7 +426,7 @@ export default function ProfileSetup() {
                     {selectedGoal.map((goal) => (
                       <span
                         key={goal}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-sm text-white shadow-md transition-all hover:from-blue-700 hover:to-purple-700"
+                        className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-sm text-white shadow-md transition-all hover:from-blue-700 hover:to-purple-700 cursor-pointer"
                       >
                         {goal}
                         <X
@@ -452,7 +474,7 @@ export default function ProfileSetup() {
             {/* Submit Button */}
             <button
               onClick={handleSubmit}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-xl text-lg transition-all transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl flex items-center justify-center"
+              className="w-full bg-btn-primary cursor-pointer  text-white font-medium py-3 px-4 rounded-xl text-lg transition-all transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl flex items-center justify-center"
             >
               <Save className="mr-2" size={20} />
               Finish Setup

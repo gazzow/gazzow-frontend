@@ -1,7 +1,7 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import axiosAuth from "@/lib/axios-auth";
+import axiosAuth from "@/lib/axios/axios-auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/store";
