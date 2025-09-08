@@ -2,7 +2,7 @@
 
 import AuthForm from "@/components/AuthForm";
 import axiosAuth from "@/lib/axios/axios-auth";
-import { setUser } from "@/store/slices/userSlice";
+import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
 import axios from "axios";
 import { Chromium, Github } from "lucide-react";
@@ -38,7 +38,7 @@ export default function LoginPage() {
       console.log(`response: ${JSON.stringify(res.data)}`);
       // store user data to user slice in redux
 
-      dispatch(setUser(res.data.user));
+      dispatch(setUserProfile(res.data.user));
       if (res.data?.success) {
         toast.success(res.data.message);
         router.replace("/home");
