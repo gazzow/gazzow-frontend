@@ -1,4 +1,5 @@
 import Navbar from "@/components/layout/Navbar";
+import Sidebar from "@/components/layout/Sidebar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,9 +13,14 @@ export default function UserLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <Navbar />
-      {children}
-    </>
+    <div className="flex bg-primary">
+      <Navbar/>
+
+      <div className="flex flex-1 overflow-hidden">
+         <Sidebar />
+
+        <main className="flex-1 text-white">{children}</main>
+      </div>
+    </div>
   );
 }

@@ -8,7 +8,7 @@ export default function AuthNavbar() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-primary backdrop-blur-md border-b border-border-primary">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-primary backdrop-blur-md border-b border-border-primary/70">
       <div className="max-w-10xl mx-auto px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <Link

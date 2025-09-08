@@ -61,7 +61,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="min-w-60 h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary">
+    <aside className="min-w-60 h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
       {sections.map((section) => (
         <div key={section.title} className="mb-6">
           <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-2">
@@ -77,7 +77,7 @@ export default function Sidebar() {
                     className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
                       active
                         ? "bg-purple-600 text-white"
-                        : "hover:bg-secondary hover:text-white"
+                        : "hover:bg-secondary/30 hover:text-white"
                     }`}
                   >
                     <Icon className="w-4 h-4" />

@@ -19,7 +19,7 @@ export default function AdminLayout({
       <div className="flex flex-1 overflow-hidden">
         {!isLogin && <Sidebar />}
 
-        <main className="flex-1 p-6 text-white">{children}</main>
+        <main className="flex-1 text-white">{children}</main>
       </div>
     </div>
   );
