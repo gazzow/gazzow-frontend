@@ -1,6 +1,9 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
+import axiosAdmin from "@/lib/axios/axios-admin";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const fields = [
   {
@@ -18,8 +21,22 @@ const fields = [
 ];
 
 export default function AdminLoginPage() {
-  const handleSubmit = (data: Record<string, string>) => {
+
+  const router = useRouter();
+
+  const handleSubmit = async (data: Record<string, string>) => {
     console.log("form data:, ", data);
+    try {
+      const res = await axiosAdmin.post("/auth/login", data);
+      console.log("Login response data: ", res.data);
+      if (res.data.success) { 
+        router.replace('/admin/dashboard');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("error: ", error);
+      }
+    }
   };
 
   return (

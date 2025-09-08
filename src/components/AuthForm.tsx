@@ -12,7 +12,7 @@ type Fields = {
 
 type AuthFormProps = {
   title: string;
-  subTitle: string;
+  subTitle?: string;
   fields: Fields[];
   submitButtonLabel: string;
   onSubmit: (data: Record<string, string>) => void;
