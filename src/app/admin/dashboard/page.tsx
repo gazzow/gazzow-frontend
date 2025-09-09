@@ -1,6 +1,6 @@
 function Dashboard() {
   return (
-    <div className="text-white w-screen bg-yellow-300">
+    <div className="text-white">
       <h1 >Dashboard</h1>
     </div>
   );

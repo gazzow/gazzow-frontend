@@ -32,27 +32,27 @@ const sections = [
   {
     title: "Project & Tasks",
     items: [
-      { label: "Projects", icon: FolderKanban, href: "#/admin/projects" },
-      { label: "Tasks", icon: CheckSquare, href: "#/admin/tasks" },
-      { label: "Scheduled Meetings", icon: CalendarClock, href: "#/admin/meetings" },
-      { label: "Reviews", icon: Star, href: "#/admin/reviews" },
+      { label: "Projects", icon: FolderKanban, href: "" },
+      { label: "Tasks", icon: CheckSquare, href: "" },
+      { label: "Scheduled Meetings", icon: CalendarClock, href: "" },
+      { label: "Reviews", icon: Star, href: "" },
     ],
   },
   {
     title: "Business",
     items: [
-      { label: "Subscriptions", icon: CreditCard, href: "#/admin/subscriptions" },
-      { label: "Plans", icon: Package, href: "#/admin/plans" },
-      { label: "Payments", icon: Wallet, href: "#/admin/payments" },
+      { label: "Subscriptions", icon: CreditCard, href: "" },
+      { label: "Plans", icon: Package, href: "" },
+      { label: "Payments", icon: Wallet, href: "" },
     ],
   },
   {
     title: "Platform",
     items: [
-      { label: "Notifications", icon: Bell, href: "#/admin/notifications" },
-      { label: "Reports & Abuse", icon: ShieldAlert, href: "#/admin/reports" },
-      { label: "Profile", icon: User, href: "#/admin/profile" },
-      { label: "Logout", icon: LogOut, href: "#/admin/logout" },
+      { label: "Notifications", icon: Bell, href: "" },
+      { label: "Reports & Abuse", icon: ShieldAlert, href: "" },
+      { label: "Profile", icon: User, href: "" },
+      { label: "Logout", icon: LogOut, href: "" },
     ],
   },
 ];
@@ -63,7 +63,7 @@ export default function Sidebar() {
   return (
     <aside className="min-w-60 h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
       {sections.map((section) => (
-        <div key={section.title} className="mb-6">
+        <div key={section.title} className="mb-4">
           <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-2">
             {section.title}
           </h4>
