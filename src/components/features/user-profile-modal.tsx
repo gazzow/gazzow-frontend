@@ -1,41 +1,65 @@
 "use client";
 
+import axiosAdmin from "@/lib/axios/axios-admin";
+import axios from "axios";
 import { User, X } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface IUserProfileModalProp {
+  id: string;
   closeModal(val: boolean): void;
 }
 
-const UserProfileModal = ({ closeModal }: IUserProfileModalProp) => {
-  const initialUser = {
-    id: "68c3a7362bf040493e726969",
-    name: "vishnu vs",
-    email: "getvishnu@gmail.com",
-    role: "user",
-    status: "active",
-    bio: "I am a software engineer",
-    techStacks: ["React", "Node.js"],
-    learningGoals: ["Improve backend skills", "Master DevOps"],
-    experience: "Beginner",
-    developerRole: "full stack developer",
-    imageUrl: "https://cdn.app/avatar.png",
-    createdAt: "2025-09-12T04:53:10.078Z",
+const UserProfileModal = ({
+  id,
+  closeModal,
+}: IUserProfileModalProp) => {
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        console.log('debugging user id to fetch: ', id)
+        const res = await axiosAdmin.get(`/users/${id}`);
+        console.log("User profile modal response: ", res.data);
+        const user = res.data.user;
+        setUser(user);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log("User profile modal error: ", error);
+        }
+      }
+    };
+
+      fetchUser();
+  }, [id]);
+
+  type User = {
+    id: string;
+    name: string;
+    email: string;
+    role: "user" | "admin";
+    status: "active" | "blocked";
+    bio: string;
+    techStacks: string[];
+    learningGoals: string[];
+    experience: string;
+    developerRole: string;
+    imageUrl: string;
+    createdAt: string;
   };
 
-  const [user, setUser] = useState(initialUser);
-
-  useEffect(() => {}, []);
+  const [user, setUser] = useState<User | null>(null);
 
   return (
     <div className="text-white p-6 flex justify-center">
+      {user ? 
       <div className="relative max-w-4xl w-full bg-secondary rounded-2xl shadow-lg p-8 space-y-8">
         {/* Header */}
         <div className="flex items-center gap-6">
           <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-600">
             {user.imageUrl ? (
               <img
-                src={"https://picsum.photos/100/200"}
+                src={user.imageUrl}
                 alt={user.name}
                 className="object-cover"
               />
@@ -44,6 +68,7 @@ const UserProfileModal = ({ closeModal }: IUserProfileModalProp) => {
                 <User size={66}></User>
               </div>
             )}
+           
           </div>
           <div>
             <h1 className="text-2xl font-bold">{user.name}</h1>
@@ -103,6 +128,10 @@ const UserProfileModal = ({ closeModal }: IUserProfileModalProp) => {
           </div>
         )}
       </div>
+      :
+        <p className="text-gray-400">Loading user...</p>
+      }
+
     </div>
   );
 };
