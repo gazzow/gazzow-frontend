@@ -13,6 +13,8 @@ type User = {
   createdAt: string;
 };
 
+type UserStatus = "active" | "blocked";
+
 export default function UserManagement() {
   useEffect(() => {
     const fetchUsers = async () => {
@@ -21,7 +23,7 @@ export default function UserManagement() {
         console.log("Users list response: ", res);
         const users = res.data.users || [];
         if (users) {
-          setUsers(users);
+          setUsersList(users);
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -33,16 +35,24 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsersList] = useState<User[]>([]);
 
-  const toggleStatus = (id: string) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === id
-          ? { ...user, status: user.status === "active" ? "blocked" : "active" }
-          : user
-      )
-    );
+  const toggleStatus = async (id: string, status: UserStatus) => {
+    try {
+      const newStatus = status === "active" ? "blocked" : "active";
+      const res = await axiosAdmin.patch(`/users/${id}/status`, {
+        status: newStatus,
+      });
+
+      console.log("Updated user response: ", res.data);
+      setUsersList((prevUsers) =>
+        prevUsers.map((user) => (user.id === id ? res.data.user : user))
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("error in update status", error);
+      }
+    }
   };
 
   return (
@@ -82,7 +92,7 @@ export default function UserManagement() {
                 <td className="p-3">{user.role}</td>
                 <td className="p-3">
                   <span
-                    className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                    className={`flex justify-center px-2 py-1 text-xs font-semibold rounded-full w-[80px] ${
                       user.status === "active"
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
@@ -97,8 +107,8 @@ export default function UserManagement() {
                 </td>
                 <td className="p-3">
                   <button
-                    onClick={() => toggleStatus(user.id)}
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition cursor-pointer ${
+                    onClick={() => toggleStatus(user.id, user.status)}
+                    className={`px-3 py-1 rounded-md text-xs font-medium transition cursor-pointer min-w-[80px] ${
                       user.status === "active"
                         ? "bg-red-600 text-white hover:bg-red-700"
                         : "bg-green-600 text-white hover:bg-green-700"
@@ -118,7 +128,7 @@ export default function UserManagement() {
         </table>
       </div>
 
-      {/* Footer */}
+      {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
         <p>
           Showing {users ? users.length : 0} of {users ? users.length : 0}{" "}
