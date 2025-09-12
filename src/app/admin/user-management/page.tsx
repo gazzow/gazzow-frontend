@@ -1,5 +1,6 @@
 "use client";
 
+import UserProfileModal from "@/components/features/user-profile-modal";
 import axiosAdmin from "@/lib/axios/axios-admin";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -36,6 +37,7 @@ export default function UserManagement() {
   }, []);
 
   const [users, setUsersList] = useState<User[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleStatus = async (id: string, status: UserStatus) => {
     try {
@@ -57,6 +59,13 @@ export default function UserManagement() {
 
   return (
     <div className="p-8">
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="rounded-2xl shadow-lg w-full p-8 space-y-8 relative">
+            <UserProfileModal closeModal={setIsOpen} />
+          </div>
+        </div>
+      )}
       {/* Header */}
       <div className="flex p-4 items-center justify-between mb-6 border border-border-primary rounded-lg">
         <h1 className="text-2xl font-bold text-white">User Management</h1>
@@ -118,7 +127,10 @@ export default function UserManagement() {
                   </button>
                 </td>
                 <td className="p-3">
-                  <button className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 transition cursor-pointer">
+                  <button
+                    className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 transition cursor-pointer"
+                    onClick={() => setIsOpen(!isOpen)}
+                  >
                     View
                   </button>
                 </td>
