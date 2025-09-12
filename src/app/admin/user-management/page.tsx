@@ -1,71 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import axiosAdmin from "@/lib/axios/axios-admin";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 type User = {
-  id: number;
+  id: string;
   name: string;
   email: string;
-  role: "User" | "Admin";
-  status: "Active" | "Suspended";
-  joinDate: string;
+  role: "user" | "admin";
+  status: "active" | "blocked";
+  createdAt: string;
 };
 
-const initialUsers: User[] = [
-  {
-    id: 1,
-    name: "Sarah Chen",
-    email: "sarahchen@email.com",
-    role: "User",
-    status: "Active",
-    joinDate: "2024-01-15",
-  },
-  {
-    id: 2,
-    name: "Mike Rodriguez",
-    email: "mike.rodriguez@email.com",
-    role: "User",
-    status: "Active",
-    joinDate: "2024-01-15",
-  },
-  {
-    id: 3,
-    name: "Anna Thompson",
-    email: "anna.thompson@email.com",
-    role: "User",
-    status: "Suspended",
-    joinDate: "2024-01-15",
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    email: "david.kim@email.com",
-    role: "User",
-    status: "Active",
-    joinDate: "2024-01-15",
-  },
-  {
-    id: 5,
-    name: "Emma Wilson",
-    email: "emma.wilson@email.com",
-    role: "User",
-    status: "Active",
-    joinDate: "2024-01-15",
-  },
- 
-];
-
 export default function UserManagement() {
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axiosAdmin.get("/users");
+        console.log("Users list response: ", res);
+        const users = res.data.users || [];
+        if (users) {
+          setUsers(users);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log("User management error: ", error);
+        }
+      }
+    };
 
-  const toggleStatus = (id: number) => {
-    setUsers(
-      users.map((user) =>
+    fetchUsers();
+  }, []);
+
+  const [users, setUsers] = useState<User[]>([]);
+
+  const toggleStatus = (id: string) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
         user.id === id
-          ? {
-              ...user,
-              status: user.status === "Active" ? "Suspended" : "Active",
-            }
+          ? { ...user, status: user.status === "active" ? "blocked" : "active" }
           : user
       )
     );
@@ -95,7 +69,7 @@ export default function UserManagement() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {users?.map((user) => (
               <tr
                 key={user.id}
                 className="border border-border-primary hover:bg-secondary/30 transition"
@@ -108,25 +82,28 @@ export default function UserManagement() {
                 <td className="p-3">
                   <span
                     className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      user.status === "Active"
+                      user.status === "active"
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {user.status}
+                    {user.status[0].toUpperCase() + user.status.slice(1)}
                   </span>
                 </td>
-                <td className="p-3">{user.joinDate}</td>
-                <td className="p-3 flex">
+
+                <td className="p-3">
+                  {new Date(user.createdAt).toISOString().slice(0, 10)}
+                </td>
+                <td className="p-3">
                   <button
                     onClick={() => toggleStatus(user.id)}
                     className={`px-3 py-1 rounded-md text-xs font-medium transition cursor-pointer ${
-                      user.status === "Active"
+                      user.status === "active"
                         ? "bg-red-600 text-white hover:bg-red-700"
                         : "bg-green-600 text-white hover:bg-green-700"
                     }`}
                   >
-                    {user.status === "Active" ? "Block" : "Unblock"}
+                    {user.status === "active" ? "Block" : "Unblock"}
                   </button>
                 </td>
                 <td>
@@ -143,7 +120,8 @@ export default function UserManagement() {
       {/* Footer */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
         <p>
-          Showing {users.length} of {users.length} results
+          Showing {users ? users.length : 0} of {users ? users.length : 0}{" "}
+          results
         </p>
         <div className="flex gap-2">
           <button className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100">
