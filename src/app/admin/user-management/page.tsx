@@ -66,6 +66,7 @@ export default function UserManagement() {
               <th className="p-3">Status</th>
               <th className="p-3">Join Date</th>
               <th className="p-3">Actions</th>
+              <th className="p-3">Details</th>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +107,7 @@ export default function UserManagement() {
                     {user.status === "active" ? "Block" : "Unblock"}
                   </button>
                 </td>
-                <td>
+                <td className="p-3">
                   <button className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 transition cursor-pointer">
                     View
                   </button>
