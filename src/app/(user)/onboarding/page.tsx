@@ -178,7 +178,7 @@ export default function ProfileSetup() {
                 className="absolute bottom-0 right-0 bg-black text-white p-2 rounded-full cursor-pointer transition-all shadow-lg"
               >
                 {isUploading ? (
-                  <Loader size={16} className="animate-ping" />
+                  <Loader size={16} className="animate-spin" />
                 ) : (
                   <Camera size={16} />
                 )}
