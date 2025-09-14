@@ -16,7 +16,7 @@ export default function AdminLayout({
   const [checking, setChecking] = useState(true);
 
   const { role } = useAppSelector((state) => state.admin);
-  console.log("admin redux: ", role);
+  // console.log("admin redux: ", role);
   const router = useRouter();
   useEffect(() => {
     if (!role && !isLogin) {

@@ -8,6 +8,9 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, LoginInput } from "@/validators/auth";
 
 const fields = [
   {
@@ -28,9 +31,17 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [resErrors, setResErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = async (data: Record<string, string>) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema), // 👈 Zod validation
+  });
+
+  const handleLoginSubmit = async (data: Record<string, string>) => {
     console.log("form data:, ", data);
     try {
       const res = await axiosAdmin.post("/admin/auth/login", data);
@@ -42,7 +53,7 @@ export default function AdminLoginPage() {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("error response: ", error.response);
-        toast.error(error.response?.data.message)
+        toast.error(error.response?.data.message);
         const issues = error.response?.data?.errors;
         if (Array.isArray(issues)) {
           const formErrors: Record<string, string> = {};
@@ -54,7 +65,7 @@ export default function AdminLoginPage() {
 
           console.log("formErrors: ", formErrors);
           // Pass down to AuthForm
-          setErrors(formErrors);
+          setResErrors(formErrors);
         }
       }
     }
@@ -64,9 +75,12 @@ export default function AdminLoginPage() {
     <AuthForm
       title="Admin Login"
       fields={fields}
-      onSubmit={handleSubmit}
+      onSubmit={handleLoginSubmit}
       submitButtonLabel="Login"
+      resErrors={resErrors}
       errors={errors}
+      register={register} 
+      handleSubmit={handleSubmit}
     />
   );
 }
