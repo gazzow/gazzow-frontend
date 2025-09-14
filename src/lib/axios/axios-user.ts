@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse }  from "axios";
 import { toast } from "react-toastify";
-import Router from "next/router";
 
 
 const axiosUser = axios.create({

@@ -13,7 +13,6 @@ import {
   Wallet,
   User,
   Settings,
-  LogOut,
 } from "lucide-react";
 import { LogoutButton } from "../ui/LogoutButton";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -15,8 +15,11 @@ import {
   Bell,
   ShieldAlert,
   User,
+  LogOut,
 } from "lucide-react";
-import { LogoutButton } from "@/components/ui/LogoutButton";
+import { authService } from "@/services/auth/auth-service";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const sections = [
   {
@@ -58,6 +61,22 @@ const sections = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+
+      toast.success("Logged out successfully");
+
+      router.push("/admin/login"); // redirect
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("error", error.response?.data);
+        toast.error(error.response?.data?.message || "Logout failed");
+      }
+    }
+  };
 
   return (
     <aside className="min-w-60 h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
@@ -88,7 +107,13 @@ export default function Sidebar() {
           </ul>
         </div>
       ))}
-      <LogoutButton />
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary/30 hover:text-white transition cursor-pointer"
+      >
+        <LogOut className="w-4 h-4" />
+        <span>Logout</span>
+      </button>
     </aside>
   );
 }

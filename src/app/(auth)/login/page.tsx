@@ -1,7 +1,6 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import axiosAuth from "@/lib/axios/axios-auth";
 import { authService } from "@/services/auth/auth-service";
 import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";

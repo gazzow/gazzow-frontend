@@ -20,7 +20,7 @@
     useEffect(() => {
       const fetchUsers = async () => {
         try {
-          const res = await axiosAdmin.get("/users");
+          const res = await axiosAdmin.get("/admin/users");
           console.log("Users list response: ", res);
           const users = res.data.users || [];
           if (users) {

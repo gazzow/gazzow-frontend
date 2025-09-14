@@ -1,7 +1,6 @@
 "use client"; // if using Next.js 13 app directory
 
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import axiosAuth from "@/lib/axios/axios-auth";
 import { Shield } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +8,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { setUser } from "@/store/slices/userSlice";
 import { clearAuthEmail } from "@/store/slices/authSlice";
+import axiosUser from "@/lib/axios/axios-user";
 
 export default function VerifyOtp() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function VerifyOtp() {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      const res = await axiosAuth.post("/verify-otp", { email, otp });
+      const res = await axiosUser.post("/verify-otp", { email, otp });
       toast.success(res.data.message);
       console.log("res data: ", res.data);
 

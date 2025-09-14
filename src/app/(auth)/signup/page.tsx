@@ -1,12 +1,12 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import axiosAuth from "@/lib/axios/axios-auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/store";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { toast } from "react-toastify";
+import axiosUser from "@/lib/axios/axios-user";
 
 const fields = [
   {
@@ -42,7 +42,7 @@ export default function SignupPage() {
     try {
       console.log("data: ", data);
 
-      const res = await axiosAuth.post("/register", data);
+      const res = await axiosUser.post("/register", data);
       if (res.data.success) {
         toast.success('storing email and re-routing to verify otp')
         // storing email in auth redux for verification

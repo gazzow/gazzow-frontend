@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
   const handleSubmit = async (data: Record<string, string>) => {
     console.log("form data:, ", data);
     try {
-      const res = await axiosAdmin.post("/auth/login", data);
+      const res = await axiosAdmin.post("/admin/auth/login", data);
       console.log("Login response data: ", res.data);
       if (res.data.success) { 
         router.replace('/admin/dashboard');

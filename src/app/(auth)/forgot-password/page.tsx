@@ -1,6 +1,6 @@
 "use client";
 
-import axiosAuth from "@/lib/axios/axios-auth";
+import axiosUser from "@/lib/axios/axios-user";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { useAppDispatch } from "@/store/store";
 import axios from "axios";
@@ -22,7 +22,7 @@ export default function ResetPassword() {
 
 
     try {
-      const res = await axiosAuth.post("/forgot-password", { email });
+      const res = await axiosUser.post("/auth/forgot-password", { email });
       
       console.log("response: ", res);
 
