@@ -1,7 +1,7 @@
 "use client";
 
 import { Eye, EyeOff } from "lucide-react";
-import React, { useState } from "react";
+import React, {  useState } from "react";
 
 type Fields = {
   name: string;
@@ -19,6 +19,7 @@ type AuthFormProps = {
   divider?: React.ReactNode;
   OAuthButtons?: React.ReactNode;
   footer?: React.ReactNode;
+  errors?: Record<string, string>;
 };
 
 export default function AuthForm({
@@ -30,9 +31,9 @@ export default function AuthForm({
   divider,
   OAuthButtons,
   footer,
+  errors,
 }: AuthFormProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleShowPassword = () => {
@@ -40,7 +41,12 @@ export default function AuthForm({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => {
+      if (errors?.[e.target.name]) {
+      delete errors?.[e.target.name]; 
+    }
+      return { ...prev, [e.target.name]: e.target.value };
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,11 +61,7 @@ export default function AuthForm({
       }
     });
 
-    setErrors(newErrors);
-
-    if (Object.keys(errors).length == 0) {
-      onSubmit(formData);
-    }
+    onSubmit(formData);
   };
 
   return (
@@ -81,7 +83,7 @@ export default function AuthForm({
                   <input
                     id={field.name}
                     name={field.name}
-                    type={showPassword ? 'text': field.type}
+                    type={showPassword ? "text" : field.type}
                     placeholder={field.placeholder}
                     value={formData[field.name] || ""}
                     onChange={handleChange}
@@ -103,7 +105,7 @@ export default function AuthForm({
                 />
               )}
 
-              {errors[field.name] && (
+              {errors?.[field.name] && (
                 <p className="text-red-400 text-sm mt-1">
                   {errors[field.name]}
                 </p>
