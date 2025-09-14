@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { setUser } from "@/store/slices/userSlice";
+import { clearAuthEmail } from "@/store/slices/authSlice";
 
 export default function VerifyOtp() {
   const router = useRouter();
@@ -41,6 +42,7 @@ export default function VerifyOtp() {
       console.log("res data: ", res.data);
 
       dispatch(setUser(res.data.user));
+      dispatch(clearAuthEmail());
 
       // re-routing
       toast.info("User registered! re-routing to home");

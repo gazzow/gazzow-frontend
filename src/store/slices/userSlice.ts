@@ -54,6 +54,13 @@ const userSlice = createSlice({
       state.id = "";
       state.name = "";
       state.email = "";
+      state.role = "";
+      state.bio = "";
+      state.techStacks = [];
+      state.learningGoals = [];
+      state.experience = "";
+      state.developerRole = "";
+      state.imageUrl = "";
       state.createdAt = new Date();
     },
   },

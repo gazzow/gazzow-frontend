@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { LogoutButton } from "../ui/LogoutButton";
 
 const sections = [
   { label: "Dashboard", icon: Home, href: "/home" },
@@ -27,7 +28,6 @@ const sections = [
   { label: "Wallet", icon: Wallet, href: "#" },
   { label: "Profile", icon: User, href: "/profile/me" },
   { label: "Settings", icon: Settings, href: "#" },
-  { label: "logout", icon: LogOut, href: "#" },
 ];
 
 export default function Sidebar() {
@@ -52,6 +52,7 @@ export default function Sidebar() {
           </li>
         </ul>
       ))}
+      <LogoutButton />
     </aside>
   );
 }

@@ -15,19 +15,19 @@ import {
   Bell,
   ShieldAlert,
   User,
-  LogOut,
 } from "lucide-react";
+import { LogoutButton } from "@/components/ui/LogoutButton";
 
 const sections = [
   {
     title: "Overview",
-    items: [{ label: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" }],
+    items: [
+      { label: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
+    ],
   },
   {
     title: "User Management",
-    items: [
-      { label: "Users", icon: Users, href: "/admin/user-management" },
-    ],
+    items: [{ label: "Users", icon: Users, href: "/admin/user-management" }],
   },
   {
     title: "Project & Tasks",
@@ -52,7 +52,6 @@ const sections = [
       { label: "Notifications", icon: Bell, href: "" },
       { label: "Reports & Abuse", icon: ShieldAlert, href: "" },
       { label: "Profile", icon: User, href: "" },
-      { label: "Logout", icon: LogOut, href: "" },
     ],
   },
 ];
@@ -89,6 +88,7 @@ export default function Sidebar() {
           </ul>
         </div>
       ))}
+      <LogoutButton />
     </aside>
   );
 }

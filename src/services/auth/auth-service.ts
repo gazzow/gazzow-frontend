@@ -6,4 +6,7 @@ export const authService = {
     console.log(`response: ${JSON.stringify(res.data)}`);
     return res.data;
   },
+  async logout() {
+    return axiosAuth.post("/logout");
+  },
 };
