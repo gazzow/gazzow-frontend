@@ -2,6 +2,7 @@
 
 import AuthForm from "@/components/AuthForm";
 import axiosAuth from "@/lib/axios/axios-auth";
+import { authService } from "@/services/auth/auth-service";
 import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
 import axios from "axios";
@@ -30,17 +31,15 @@ export default function LoginPage() {
 
   const dispatch = useAppDispatch();
 
-  const handleSubmit = async (data: Record<string, string>) => {
-    console.log("form data:, ", data);
+  const handleSubmit = async (formData: Record<string, string>) => {
+    console.log("form data:, ", formData);
 
     try {
-      const res = await axiosAuth.post("/login", data);
-      console.log(`response: ${JSON.stringify(res.data)}`);
       // store user data to user slice in redux
-
-      dispatch(setUserProfile(res.data.user));
-      if (res.data?.success) {
-        toast.success(res.data.message);
+      const data = await authService.login({ ...formData });
+      dispatch(setUserProfile(data.user));
+      if (data.success) {
+        toast.success(data.message);
         router.replace("/home");
       }
     } catch (error) {

@@ -39,6 +39,10 @@ const userSlice = createSlice({
       state.createdAt = action.payload.createdAt;
     },
     setUserProfile: (state, action: PayloadAction<IUserState>) => {
+      state.id = action.payload.id;
+      state.name = action.payload.name;
+      state.email = action.payload.email;
+      state.createdAt = action.payload.createdAt;
       state.bio = action.payload.bio;
       state.developerRole = action.payload.developerRole;
       state.imageUrl = action.payload.imageUrl;
@@ -55,5 +59,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser,setUserProfile, clearUser } = userSlice.actions;
+export const { setUser, setUserProfile, clearUser } = userSlice.actions;
 export default userSlice.reducer;

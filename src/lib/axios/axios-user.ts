@@ -1,4 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse }  from "axios";
+import { toast } from "react-toastify";
+import Router from "next/router";
+
 
 const axiosUser = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -59,6 +62,9 @@ axiosUser.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
+    }else if (error.response?.status === 403) {
+      toast.error("Unauthorized access");
+      window.location.href = '/login'
     }
 
     return Promise.reject(error);
