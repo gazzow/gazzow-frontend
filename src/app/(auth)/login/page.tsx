@@ -34,7 +34,7 @@ export default function LoginPage() {
     console.log("form data:, ", formData);
 
     try {
-      // store user data to user slice in redux
+
       const data = await authService.login({ ...formData });
       dispatch(setUserProfile(data.user));
       if (data.success) {

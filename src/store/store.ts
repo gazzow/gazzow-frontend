@@ -5,18 +5,18 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 
-import authReducer from "./slices/authSlice";
 import userReducer from "./slices/userSlice";
+import adminReducer from "./slices/adminSlice"
 
 const rootReducer = combineReducers({
-  auth: authReducer,
   user: userReducer,
+  admin: adminReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "user"], // only given slices will be persisted
+  whitelist: [ "user", "admin"], // only given slices will be persisted
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

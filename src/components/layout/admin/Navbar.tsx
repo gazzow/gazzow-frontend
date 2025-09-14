@@ -21,13 +21,13 @@ export default function Navbar() {
         {/* Right Side */}
         <div className="flex justify-center items-center text-center gap-4">
           {/* Toggle Theme */}
-          <button onClick={toggleTheme} className="px-4 py3">
+          <button onClick={toggleTheme} className="px-4 py3 cursor-pointer">
             {theme === "light" ? (
-              <Moon size={18} className="cursor-pointer text-secondary"></Moon>
+              <Moon size={18} className="text-secondary"></Moon>
             ) : (
               <Sun
                 size={18}
-                className="cursor-pointer dark:text-yellow-400"
+                className="dark:text-yellow-400"
               ></Sun>
             )}
           </button>

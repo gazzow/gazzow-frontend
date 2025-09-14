@@ -20,6 +20,8 @@ import {
 import { authService } from "@/services/auth/auth-service";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useAppDispatch } from "@/store/store";
+import { clearAdmin } from "@/store/slices/adminSlice";
 
 const sections = [
   {
@@ -62,13 +64,14 @@ const sections = [
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const dispatch = useAppDispatch()
 
   const handleLogout = async () => {
     try {
       await authService.logout();
 
       toast.success("Logged out successfully");
-
+      dispatch(clearAdmin())
       router.push("/admin/login"); // redirect
     } catch (error) {
       if (axios.isAxiosError(error)) {
