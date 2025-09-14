@@ -1,6 +1,7 @@
 "use client";
 
 import axiosUser from "@/lib/axios/axios-user";
+import { userService } from "@/services/user/user-service";
 import axios from "axios";
 import { User } from "lucide-react";
 import Image from "next/image";
@@ -13,21 +14,16 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axiosUser.get("/profile/me");
-        console.log("user profile response: ", res);
-        setUser(res.data.user);
+        const data = await userService.getUser();
+        setUser(data.user);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.log("profile page error: ", error);
-          if (error.status === 403) {
-            toast.error(error.response?.data.message);
-            router.push("/login");
-          }
         }
       }
     };
     fetchUser();
-  }, []);
+  }, [router]);
 
   type User = {
     id: string;
