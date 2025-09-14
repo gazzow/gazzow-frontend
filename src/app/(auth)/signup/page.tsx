@@ -42,7 +42,7 @@ export default function SignupPage() {
     try {
       console.log("data: ", data);
 
-      const res = await axiosUser.post("/register", data);
+      const res = await axiosUser.post("/auth/register", data);
       if (res.data.success) {
         toast.success('storing email and re-routing to verify otp')
         // storing email in auth redux for verification

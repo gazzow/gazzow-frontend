@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { setUser } from "@/store/slices/userSlice";
 import { clearAuthEmail } from "@/store/slices/authSlice";
 import axiosUser from "@/lib/axios/axios-user";
+import axios from "axios";
 
 export default function VerifyOtp() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function VerifyOtp() {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      const res = await axiosUser.post("/verify-otp", { email, otp });
+      const res = await axiosUser.post("/auth/verify-otp", { email, otp });
       toast.success(res.data.message);
       console.log("res data: ", res.data);
 
@@ -48,8 +49,10 @@ export default function VerifyOtp() {
       toast.info("User registered! re-routing to home");
       router.replace("/onboarding");
     } catch (error) {
-      console.log("verification error: ", error);
-      toast.error(`verification error: ${error}`);
+      if(axios.isAxiosError(error)){
+        console.log("verification error: ", error);
+        toast.error(error.response?.data.message || 'something went wrong');
+      }
     }
   };
 
