@@ -10,7 +10,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginInput } from "@/validators/auth";
+import { loginSchema, LoginInput } from "@/validators/auth-login";
 
 const fields = [
   {
@@ -59,7 +59,7 @@ export default function AdminLoginPage() {
           const formErrors: Record<string, string> = {};
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           issues.forEach((issue: any) => {
-            const field = issue.path[0]; // e.g. "email"
+            const field = issue.path[0];
             formErrors[field] = issue?.message;
           });
 
@@ -79,8 +79,9 @@ export default function AdminLoginPage() {
       submitButtonLabel="Login"
       resErrors={resErrors}
       errors={errors}
-      register={register} 
+      register={register}   
       handleSubmit={handleSubmit}
+
     />
   );
 }

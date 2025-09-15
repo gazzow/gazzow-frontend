@@ -4,10 +4,14 @@ import AuthForm from "@/components/AuthForm";
 import { authService } from "@/services/auth/auth-service";
 import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
+import { LoginInput, loginSchema } from "@/validators/auth-login";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Chromium, Github } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const fields = [
@@ -27,14 +31,21 @@ const fields = [
 
 export default function LoginPage() {
   const router = useRouter();
-
   const dispatch = useAppDispatch();
+  const [resErrors, setResErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = async (formData: Record<string, string>) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema), 
+  });
+
+  const handleLoginSubmit = async (formData: Record<string, string>) => {
     console.log("form data:, ", formData);
 
     try {
-
       const data = await authService.login({ ...formData });
       dispatch(setUserProfile(data.user));
       if (data.success) {
@@ -56,7 +67,7 @@ export default function LoginPage() {
       title="Welcome Back"
       subTitle="Sign in to connect with coders around the world"
       fields={fields}
-      onSubmit={handleSubmit}
+      onSubmit={handleLoginSubmit}
       submitButtonLabel="Login"
       divider={
         <div className="mb-4">
@@ -102,6 +113,11 @@ export default function LoginPage() {
           </Link>
         </p>
       }
+      errors={errors}
+      resErrors={resErrors}
+      handleSubmit={handleSubmit}
+      register={register}
+
     />
   );
 }

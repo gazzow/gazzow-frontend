@@ -32,7 +32,7 @@ export default function VerifyOtp() {
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [expiryTimer, reSendTimer]);
 
   const handleSubmit = async () => {
     console.log("Email:", email, "OTP:", otp);
@@ -46,7 +46,7 @@ export default function VerifyOtp() {
       dispatch(clearAuthEmail());
 
       // re-routing
-      toast.info("User registered! re-routing to home");
+      toast.info("User registered! Re-routing to onboarding to finish profile setup");
       router.replace("/onboarding");
     } catch (error) {
       if(axios.isAxiosError(error)){

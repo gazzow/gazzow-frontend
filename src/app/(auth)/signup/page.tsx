@@ -7,6 +7,10 @@ import { useAppDispatch } from "@/store/store";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { toast } from "react-toastify";
 import axiosUser from "@/lib/axios/axios-user";
+import { SignupInput, signupSchema } from "@/validators/auth-signup";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 const fields = [
   {
@@ -31,20 +35,30 @@ const fields = [
 
 export default function SignupPage() {
   const router = useRouter();
-
   const dispatch = useAppDispatch();
+
+  const [resErrors, setResErrors] = useState<Record<string, string>>({});
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupInput>({
+    resolver: zodResolver(signupSchema),
+
+  });
 
   const replaceRoute = () => {
     router.push("/verify-otp");
   };
 
-  const handleSubmit = async (data: Record<string, string>) => {
+  const handleRegisterSubmit = async (data: Record<string, string>) => {
     try {
       console.log("data: ", data);
 
       const res = await axiosUser.post("/auth/register", data);
       if (res.data.success) {
-        toast.success('storing email and re-routing to verify otp')
+        toast.success("storing email and re-routing to verify otp");
         // storing email in auth redux for verification
         dispatch(setUserEmail({ email: data.email }));
         replaceRoute();
@@ -61,7 +75,7 @@ export default function SignupPage() {
       subTitle="Join the community of passionate developers"
       submitButtonLabel="signup"
       fields={fields}
-      onSubmit={handleSubmit}
+      onSubmit={handleRegisterSubmit}
       divider={
         <div className="flex items-center my-6">
           <div className="flex-grow h-px bg-gray-600" />
@@ -90,6 +104,10 @@ export default function SignupPage() {
           </Link>
         </p>
       }
+      errors={errors}
+      resErrors={resErrors}
+      handleSubmit={handleSubmit}
+      register={register}
     ></AuthForm>
   );
 }
