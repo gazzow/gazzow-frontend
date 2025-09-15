@@ -3,44 +3,46 @@
 import axiosUser from "@/lib/axios/axios-user";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { useAppDispatch } from "@/store/store";
+import {
+  forgotInput,
+  forgotPasswordSchema,
+} from "@/validators/auth-forgot-password";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
-export default function ResetPassword() {
+export default function ForgotPassword() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const [email, setEmail] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<forgotInput>({ resolver: zodResolver(forgotPasswordSchema) });
 
-  const handleClick = async () => {
-    if (!email) return;
-
-    console.log("email: ", email);
-    dispatch(setUserEmail({email}))
-
+  const handleForgotSubmit = async (data: forgotInput) => {
+    console.log("email: ", data.email);
+    dispatch(setUserEmail({ email: data.email }));
 
     try {
-      const res = await axiosUser.post("/auth/forgot-password", { email });
-      
+      const res = await axiosUser.post("/auth/forgot-password", {
+        email: data.email,
+      });
+
       console.log("response: ", res);
 
       if (res.data.success) {
-        setTimeout(() => {
-          router.replace("/forgot-password/verify-otp");
-        }, 1000);
+        router.replace("/forgot-password/verify-otp");
       }
-
     } catch (error) {
-      if(axios.isAxiosError(error)){
-        console.log('forgot error: ', error)
+      if (axios.isAxiosError(error)) {
+        console.log("forgot error: ", error);
       }
     }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
   };
 
   return (
@@ -53,22 +55,35 @@ export default function ResetPassword() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="you@gmail.com"
-            className="w-full px-4 py-2 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary"
-            value={email}
-            onChange={handleChange}
-          />
+        <form
+          onSubmit={handleSubmit(handleForgotSubmit)}
+          className="flex flex-col gap-4"
+        >
+          <div>
+            <input
+              type="text"
+              placeholder="you@example.com"
+              className="w-full px-4 py-2 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary"
+              {...register("email")}
+            />
+            {errors.email && (
+              <p
+                id={`email-error`}
+                className="text-red-400 text-sm mt-1"
+                role="alert"
+              >
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
           <button
-            onClick={handleClick}
+            type="submit"
             className="bg-btn-primary-hover hover:opacity-90 cursor-pointer py-2 rounded-md font-semibold"
           >
             Send Otp
           </button>
-        </div>
+        </form>
 
         <div className="mt-4 text-center text-gray-300 text-sm">
           <Link className="text-blue-300" href={"/login"}>

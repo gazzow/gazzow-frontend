@@ -148,7 +148,7 @@ export default function AuthForm({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-6 py-2 bg-btn-primary text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-opacity"
+            className="w-full mt-6 py-2 bg-btn-primary text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-opacity cursor-pointer"
           >
             {isSubmitting ? "Loading..." : submitButtonLabel}
           </button>

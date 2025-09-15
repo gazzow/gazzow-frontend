@@ -37,6 +37,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    clearErrors,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema), 
@@ -117,7 +118,7 @@ export default function LoginPage() {
       resErrors={resErrors}
       handleSubmit={handleSubmit}
       register={register}
-
+      clearErrors={clearErrors}
     />
   );
 }

@@ -2,15 +2,24 @@
 
 import axiosAuth from "@/lib/axios/axios-auth";
 import { formatTime } from "@/utils/auth/formatTime";
+import axios from "axios";
 import { Shield } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+interface IGetEndPoint {
+  register: string;
+  forgotPassword: string;
+}
+
+type Mode = keyof IGetEndPoint; // "register" | "forgotPassword"
+
+
 interface OtpVerificationProps {
   email: string;
-  mode: string;
+  mode: Mode;
 }
 
 export default function OtpVerification({ email, mode }: OtpVerificationProps) {
@@ -31,12 +40,14 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [expiryTimer,reSendTimer]);
+  }, [expiryTimer, reSendTimer]);
 
-  const endpoint =
-    mode === "register"
-      ? "/verify-otp"
-      : "/forgot-password/verify-otp";
+  const getEndPoint: IGetEndPoint = {
+    register: "/auth/verify-otp",
+    forgotPassword: "/auth/forgot-password/verify-otp",
+  };
+
+  const endpoint: string = getEndPoint[mode];
 
   const handleSubmit = async () => {
     console.log("Email:", email, "OTP:", otp);
@@ -45,18 +56,18 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
       const res = await axiosAuth.post(endpoint, { email, otp });
       toast.success(res.data.message);
       console.log("res data: ", res.data);
-      setTimeout(() => {
-        // re-routing
-        toast.info("sign in! re-routing to home");
-        if (mode === "register") {
-          router.replace("/home");
-        } else {
-          router.replace("/reset-password");
-        }
-      }, 3000);
+      // re-routing
+      toast.info("sign in! re-routing to home");
+      if (mode === "register") {
+        router.replace("/home");
+      } else {
+        router.replace("/reset-password");
+      }
     } catch (error) {
-      console.log("verification error: ", error);
-      toast.error(`verification error: ${error}`);
+      if (axios.isAxiosError(error)) {
+        console.log("verification error: ", error);
+        toast.error(error.response?.data.message || "Internal server error");
+      }
     }
   };
 
