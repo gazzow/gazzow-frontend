@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Camera, Loader, Plus, Save, User, X } from "lucide-react";
+import { Camera, Loader, Plus, Save, X } from "lucide-react";
 import { uploadImageToCloudinary } from "@/lib/cloudinary/config";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import axiosUser from "@/lib/axios/axios-user";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-  import { setUserProfile } from "@/store/slices/userSlice";
+import { setUserProfile } from "@/store/slices/userSlice";
+import Image from "next/image";
 
 const roles = [
   "Frontend Developer",
@@ -19,11 +20,7 @@ const roles = [
   "Other",
 ];
 
-const experiences = [
-  "Beginner",
-  "Intermediate",
-  "Expert",
-];
+const experiences = ["Beginner", "Intermediate", "Expert"];
 
 const techOptions = [
   "JavaScript",
@@ -45,7 +42,6 @@ const learningGoals = [
 ];
 
 export default function ProfileSetup() {
-
   const router = useRouter();
 
   const dispatch = useAppDispatch();
@@ -60,7 +56,6 @@ export default function ProfileSetup() {
   const [selectedGoal, setSelectedGoal] = useState<string[]>([]);
   const [customGoal, setCustomGoal] = useState<string>("");
   const [bio, setBio] = useState<string>("");
-
 
   const { name } = useAppSelector((state) => state.user);
 
@@ -128,7 +123,7 @@ export default function ProfileSetup() {
     const payload = {
       bio,
       developerRole: selectedRole,
-      experience:selectedExperience,
+      experience: selectedExperience,
       techStacks: selectedTech,
       learningGoals: selectedGoal,
       imageUrl: profileUrl,
@@ -137,16 +132,15 @@ export default function ProfileSetup() {
 
     try {
       const res = await axiosUser.put("/profile/setup", payload);
-      console.log('response data in onboarding: ', res.data)
-      if(res.data.success){
-        toast.success(res.data.message)
-        dispatch(setUserProfile(res.data.user))
-        router.replace('/home');
+      console.log("response data in onboarding: ", res.data);
+      if (res.data.success) {
+        toast.success(res.data.message);
+        dispatch(setUserProfile(res.data.user));
+        router.replace("/home");
       }
-
     } catch (error) {
-      if(axios.isAxiosError(error)){
-         console.log('onboarding error: ', error)
+      if (axios.isAxiosError(error)) {
+        console.log("onboarding error: ", error);
       }
     }
   };
@@ -159,7 +153,7 @@ export default function ProfileSetup() {
           <div className="absolute"></div>
           <div className="relative z-10 flex flex-col items-center justify-center">
             <div className="relative mb-4">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 border-4 border-border-primary bg-gray-800 overflow-hidden flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full  bg-gray-800 overflow-hidden flex items-center justify-center">
                 {profileImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -168,9 +162,12 @@ export default function ProfileSetup() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="text-3xl text-white">
-                    <User size={44} />
-                  </div>
+                  <Image
+                    src="/images/default-profile.jpg"
+                    alt="profile default image"
+                    fill
+                    className="rounded-full object-fit"
+                  />
                 )}
               </div>
               <label

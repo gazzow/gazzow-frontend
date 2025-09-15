@@ -2,29 +2,23 @@
 
 import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
-import { useAppSelector } from "@/store/store";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useAuthRedirect } from "@/hook/useAuthRedirect";
+import { usePathname } from "next/navigation";
 
 export default function UserLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isLogin = usePathname() === "/login";
+  const isOnboarding = usePathname() === "/onboarding";
+  const userId = useAuthRedirect(isLogin);
+  console.log("user id: ", userId);
 
-  const isLogin = usePathname() === '/login';
-  const userId = useAppSelector(state => state.user?.id);
-  const router = useRouter();
 
-
-
-  useEffect(() => {
-    if(!userId && !isLogin){
-      router.replace('/login')
-    }else if(userId && isLogin) {
-      router.replace('/home');
-    }
-  }, [userId, isLogin, router])
+  if (isOnboarding) {
+    return <main className="flex-1">{children}</main>;
+  }
 
   return (
     <div className="flex bg-primary">
