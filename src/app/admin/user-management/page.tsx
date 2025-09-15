@@ -43,7 +43,7 @@
     const toggleStatus = async (id: string, status: UserStatus) => {
       try {
         const newStatus = status === "active" ? "blocked" : "active";
-        const res = await axiosAdmin.patch(`/users/${id}/status`, {
+        const res = await axiosAdmin.patch(`/admin/users/${id}/status`, {
           status: newStatus,
         });
 

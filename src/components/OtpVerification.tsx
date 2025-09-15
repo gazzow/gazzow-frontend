@@ -1,6 +1,6 @@
 "use client";
 
-import axiosAuth from "@/lib/axios/axios-auth";
+import axiosUser from "@/lib/axios/axios-user";
 import { formatTime } from "@/utils/auth/formatTime";
 import axios from "axios";
 import { Shield } from "lucide-react";
@@ -53,7 +53,7 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      const res = await axiosAuth.post(endpoint, { email, otp });
+      const res = await axiosUser.post(endpoint, { email, otp });
       toast.success(res.data.message);
       console.log("res data: ", res.data);
       // re-routing

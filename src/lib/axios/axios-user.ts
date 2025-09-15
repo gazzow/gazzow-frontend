@@ -1,6 +1,7 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse }  from "axios";
+import { clearUser } from "@/store/slices/userSlice";
+import { store } from "@/store/store";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-
 
 const axiosUser = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -8,13 +9,15 @@ const axiosUser = axios.create({
   withCredentials: true,
 });
 
-
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
 }
 
 let isRefreshing = false;
-let failedQueue: Array<{ resolve: (value?: unknown) => void; reject: (error: unknown) => void }> = [];
+let failedQueue: Array<{
+  resolve: (value?: unknown) => void;
+  reject: (error: unknown) => void;
+}> = [];
 
 const processQueue = (error: unknown) => {
   failedQueue.forEach((prom) => {
@@ -48,7 +51,7 @@ axiosUser.interceptors.response.use(
       try {
         // Call refresh endpoint
         const res = await axiosUser.post("/auth/refresh");
-        console.log('Auth refresh token response: ', res.data)
+        console.log("Auth refresh token response: ", res.data);
         processQueue(null);
 
         // Retry the original request
@@ -61,14 +64,16 @@ axiosUser.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
-    }else if (error.response?.status === 403) {
+    } else if (error.response?.status === 401) {
+      store.dispatch(clearUser());
       toast.error("Unauthorized access");
-      window.location.href = '/login'
+      console.log("Error while refresh token 401");
+
+      window.location.href = "/login";
     }
 
     return Promise.reject(error);
   }
 );
-
 
 export default axiosUser;
