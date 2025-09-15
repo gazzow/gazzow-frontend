@@ -1,4 +1,4 @@
-    export const uploadImageToCloudinary = async (file) => {
+    export const uploadImageToCloudinary = async (file: string | Blob) => {
 
         const formData = new FormData();
         formData.append("file", file);
