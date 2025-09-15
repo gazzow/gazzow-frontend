@@ -1,4 +1,5 @@
 import axios from "axios";
+import { z } from "zod";
 
 export const handleApiError = (error: unknown) => {
   if (axios.isAxiosError(error)) {
@@ -6,7 +7,7 @@ export const handleApiError = (error: unknown) => {
 
     return {
       message: errorData?.message || "An error occurred",
-      fieldErrors: extractFieldErrors(errorData?.errors || []),
+      fieldErrors: extractFieldErrors(errorData?.errors),
     };
   }
 
@@ -16,13 +17,12 @@ export const handleApiError = (error: unknown) => {
   };
 };
 
-const extractFieldErrors = (errors: unknown[]): Record<string, string> => {
+const extractFieldErrors = (errors: unknown): Record<string, string> => {
   const formErrors: Record<string, string> = {};
 
   if (Array.isArray(errors)) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    errors.forEach((issue: any) => {
-      const field = issue?.path?.[0];
+    (errors as z.core.$ZodIssue[]).forEach((issue) => {
+      const field = issue.path[0]?.toString();
       if (field) {
         formErrors[field] = issue.message;
       }

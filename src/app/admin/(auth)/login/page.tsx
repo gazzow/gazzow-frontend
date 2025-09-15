@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginInput } from "@/validators/auth-login";
+import z from "zod";
+
 
 const fields = [
   {
@@ -55,10 +57,20 @@ export default function AdminLoginPage() {
         console.log("error response: ", error.response);
         toast.error(error.response?.data.message);
         const issues = error.response?.data?.errors;
+
+        if (issues && Array.isArray(issues)) {
+          const formErrors: Record<string, string> = {};
+          issues.forEach((issue: z.core.$ZodIssue) => {
+            const field = issue.path[0]?.toString(); 
+            formErrors[field] = issue.message;
+          });
+
+          setResErrors(formErrors);
+        }
+
         if (Array.isArray(issues)) {
           const formErrors: Record<string, string> = {};
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          issues.forEach((issue: any) => {
+          issues.forEach((issue) => {
             const field = issue.path[0];
             formErrors[field] = issue?.message;
           });
@@ -79,9 +91,8 @@ export default function AdminLoginPage() {
       submitButtonLabel="Login"
       resErrors={resErrors}
       errors={errors}
-      register={register}   
+      register={register}
       handleSubmit={handleSubmit}
-
     />
   );
 }
