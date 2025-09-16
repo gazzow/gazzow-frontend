@@ -85,7 +85,7 @@ export default function Sidebar() {
     <aside className="md:min-w-60 h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
       {sections.map((section) => (
         <div key={section.title} className="mb-4">
-          <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-2">
+          <h4 className="hidden md:flex text-xs uppercase tracking-wide text-gray-500 mb-2">
             {section.title}
           </h4>
           <ul className="space-y-1">
@@ -102,7 +102,7 @@ export default function Sidebar() {
                     }`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span>{label}</span>
+                    <span className="hidden md:flex">{label}</span>
                   </Link>
                 </li>
               );
@@ -115,7 +115,7 @@ export default function Sidebar() {
         className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary/30 hover:text-white transition cursor-pointer"
       >
         <LogOut className="w-4 h-4" />
-        <span>Logout</span>
+        <span className="hidden md:flex">Logout</span>
       </button>
     </aside>
   );

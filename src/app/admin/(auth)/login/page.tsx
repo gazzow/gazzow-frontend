@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginInput } from "@/validators/auth-login";
 import z from "zod";
+import { adminAuthService } from "@/services/admin/auth-login";
 
 
 const fields = [
@@ -43,13 +44,13 @@ export default function AdminLoginPage() {
     resolver: zodResolver(loginSchema), // 👈 Zod validation
   });
 
-  const handleLoginSubmit = async (data: Record<string, string>) => {
-    console.log("form data:, ", data);
+  const handleLoginSubmit = async (formData: Record<string, string>) => {
+    console.log("form data:, ", formData);
     try {
-      const res = await axiosAdmin.post("/admin/auth/login", data);
-      console.log("Login response data: ", res.data);
-      if (res.data.success) {
-        dispatch(setAdmin(res.data.admin));
+      const data = await adminAuthService.login(formData)
+      console.log("Login response data: ", data);
+      if (data.success) {
+        dispatch(setAdmin(data.admin));
         router.replace("/admin/dashboard");
       }
     } catch (error) {

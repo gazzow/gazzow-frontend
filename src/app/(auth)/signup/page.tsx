@@ -6,11 +6,11 @@ import Link from "next/link";
 import { useAppDispatch } from "@/store/store";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { toast } from "react-toastify";
-import axiosUser from "@/lib/axios/axios-user";
 import { SignupInput, signupSchema } from "@/validators/auth-signup";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { authService } from "@/services/auth/auth-service";
 
 const fields = [
   {
@@ -45,25 +45,23 @@ export default function SignupPage() {
     formState: { errors },
   } = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
-
   });
 
   const replaceRoute = () => {
-    router.push("/verify-otp");
+    router.replace("/verify-otp");
   };
 
-  const handleRegisterSubmit = async (data: Record<string, string>) => {
+  const handleRegisterSubmit = async (formData: Record<string, string>) => {
     try {
-      console.log("data: ", data);
+      console.log("form data: ", formData);
 
-      const res = await axiosUser.post("/auth/register", data);
-      if (res.data.success) {
+      const data = await authService.signup(formData);
+      console.log("res data: ", data);
+      if (data.success) {
         toast.success("storing email and re-routing to verify otp");
-        // storing email in auth redux for verification
-        dispatch(setUserEmail({ email: data.email }));
+        dispatch(setUserEmail({ email: formData.email }));
         replaceRoute();
       }
-      console.log("res data: ", res);
     } catch (error) {
       console.log("error while api call", error);
     }

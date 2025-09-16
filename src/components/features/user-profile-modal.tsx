@@ -19,7 +19,7 @@ const UserProfileModal = ({
     const fetchUser = async () => {
       try {
         console.log('debugging user id to fetch: ', id)
-        const res = await axiosAdmin.get(`/users/${id}`);
+        const res = await axiosAdmin.get(`/admin/users/${id}`);
         console.log("User profile modal response: ", res.data);
         const user = res.data.user;
         setUser(user);

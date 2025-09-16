@@ -1,91 +1,87 @@
-  "use client";
+"use client";
 
-  import UserProfileModal from "@/components/features/user-profile-modal";
-  import axiosAdmin from "@/lib/axios/axios-admin";
-  import axios from "axios";
-  import { useEffect, useState } from "react";
+import UserProfileModal from "@/components/features/user-profile-modal";
+import axiosAdmin from "@/lib/axios/axios-admin";
+import { userManagementService } from "@/services/admin/user-management";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-  type User = {
-    id: string;
-    name: string;
-    email: string;
-    role: "user" | "admin";
-    status: "active" | "blocked";
-    createdAt: string;
-  };
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: "user" | "admin";
+  status: "active" | "blocked";
+  createdAt: string;
+};
 
-  type UserStatus = "active" | "blocked";
+type UserStatus = "active" | "blocked";
 
-  export default function UserManagement() {
-    useEffect(() => {
-      const fetchUsers = async () => {
-        try {
-          const res = await axiosAdmin.get("/admin/users");
-          console.log("Users list response: ", res);
-          const users = res.data.users || [];
-          if (users) {
-            setUsersList(users);
-          }
-        } catch (error) {
-          if (axios.isAxiosError(error)) {
-            console.log("User management error: ", error);
-          }
-        }
-      };
-
-      fetchUsers();
-    }, []);
-
-    const [users, setUsersList] = useState<User[]>([]);
-    const [isOpen, setIsOpen] = useState(false);
-    const [fetchUserId, setFetchUserId] = useState('');
-
-    const toggleStatus = async (id: string, status: UserStatus) => {
+export default function UserManagement() {
+  useEffect(() => {
+    const fetchUsers = async () => {
       try {
-        const newStatus = status === "active" ? "blocked" : "active";
-        const res = await axiosAdmin.patch(`/admin/users/${id}/status`, {
-          status: newStatus,
-        });
-
-        console.log("Updated user response: ", res.data);
-        setUsersList((prevUsers) =>
-          prevUsers.map((user) => (user.id === id ? res.data.user : user))
-        );
+        const data = await userManagementService.getUsers();
+        console.log("Users list response data: ", data);
+        const users = data.users || [];
+        if (users) {
+          setUsersList(users);
+        }
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          console.log("error in update status", error);
+          console.log("User management error: ", error);
         }
       }
     };
 
-    const handleViewMore = (id: string) => {
-      console.log('handle view more trigger')
-      setIsOpen(true);
-      setFetchUserId(id);
-    }
+    fetchUsers();
+  }, []);
 
-    return (
-      <div className="p-8">
-        {isOpen && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-            <div className="rounded-2xl shadow-lg w-full p-8 space-y-8 relative">
-              <UserProfileModal
-                closeModal={setIsOpen}
-                id={fetchUserId}
-              />
-            </div>
+  const [users, setUsersList] = useState<User[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [fetchUserId, setFetchUserId] = useState("");
+
+  const toggleStatus = async (id: string, status: UserStatus) => {
+    try {
+      const newStatus = status === "active" ? "blocked" : "active";
+      const data = await userManagementService.updateStatus(id, newStatus);
+      console.log("Updated user response data: ", data);
+
+      setUsersList((prevUsers) =>
+        prevUsers.map((user) => (user.id === id ? data.user : user))
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("error in update status", error);
+      }
+    }
+  };
+
+  const handleViewMore = (id: string) => {
+    console.log("handle view more trigger");
+    setIsOpen(true);
+    setFetchUserId(id);
+  };
+
+  return (
+    <div className="p-8">
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="rounded-2xl shadow-lg w-full p-8 space-y-8 relative">
+            <UserProfileModal closeModal={setIsOpen} id={fetchUserId} />
           </div>
-        )}
-        {/* Header */}
-        <div className="flex p-4 items-center justify-between mb-6 border border-border-primary rounded-lg">
-          <h1 className="text-2xl font-bold text-white">User Management</h1>
-          {/* <button className="px-4 py-2 bg-gray-200 text-black text-md font-semibold rounded-md transition">
+        </div>
+      )}
+      {/* Header */}
+      <div className="flex p-4 items-center justify-between mb-6 border border-border-primary rounded-lg">
+        <h1 className="text-2xl font-bold text-white">User Management</h1>
+        {/* <button className="px-4 py-2 bg-gray-200 text-black text-md font-semibold rounded-md transition">
               Export Data
             </button> */}
-        </div>
+      </div>
 
-        {/* Table Wrapper */}
-        <div className="overflow-x-auto shadow rounded-lg border border-border-primary">
+      {/* Table Wrapper */}
+      <div className="overflow-x-auto shadow rounded-lg border border-border-primary">
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="text-left text-text-primary">
@@ -148,23 +144,23 @@
               ))}
             </tbody>
           </table>
-        </div>
+      </div>
 
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-          <p>
-            Showing {users ? users.length : 0} of {users ? users.length : 0}{" "}
-            results
-          </p>
-          <div className="flex gap-2">
-            <button className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100">
-              Previous
-            </button>
-            <button className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100">
-              Next
-            </button>
-          </div>
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
+        <p>
+          Showing {users ? users.length : 0} of {users ? users.length : 0}{" "}
+          results
+        </p>
+        <div className="flex gap-2">
+          <button className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100">
+            Previous
+          </button>
+          <button className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100">
+            Next
+          </button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
