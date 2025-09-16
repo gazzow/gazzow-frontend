@@ -10,11 +10,18 @@ export default function UserLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isLogin = usePathname() === "/login";
+  const authEndpoints: string[] = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/forgot-password/verify-otp",
+    "/verify-otp",
+    "/reset-password",
+  ];
+  const isAuth = authEndpoints.includes(usePathname());
   const isOnboarding = usePathname() === "/onboarding";
-  const userId = useAuthRedirect(isLogin);
+  const userId = useAuthRedirect(isAuth);
   console.log("user id: ", userId);
-
 
   if (isOnboarding) {
     return <main className="flex-1">{children}</main>;

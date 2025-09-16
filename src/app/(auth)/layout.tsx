@@ -8,9 +8,9 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const isLogin = pathname === "/login";
-  const userId = useAuthRedirect(isLogin);
+  const authEndpoints: string[] = ["/login", "/signup", "/forgot-password", "/forgot-password/verify-otp", "/verify-otp", "/reset-password"];
+  const isAuth: boolean = authEndpoints.includes(usePathname());
+  const userId = useAuthRedirect(isAuth);
 
   if (userId) {
     return (

@@ -82,7 +82,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="min-w-60 h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
+    <aside className="md:min-w-60 h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
       {sections.map((section) => (
         <div key={section.title} className="mb-4">
           <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-2">

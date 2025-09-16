@@ -33,7 +33,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="min-w-60 h-full mt-16 p-4 flex flex-col gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70">
+    <aside className="md:min-w-60 h-full mt-16 p-4 flex flex-col gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out">
       {sections.map(({ label, icon: Icon, href }) => (
         <ul key={label}>
           <li key={label}>
@@ -46,7 +46,7 @@ export default function Sidebar() {
               }`}
             >
               <Icon className="w-4 h-4" />
-              <span>{label}</span>
+              <span className="hidden md:flex">{label}</span>
             </Link>
           </li>
         </ul>
