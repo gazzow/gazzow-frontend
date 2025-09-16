@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { setUser } from "@/store/slices/userSlice";
+import { setOnboardingStatus, setUser } from "@/store/slices/userSlice";
 import { clearAuthEmail } from "@/store/slices/authSlice";
 import axiosUser from "@/lib/axios/axios-user";
 import axios from "axios";
@@ -38,20 +38,27 @@ export default function VerifyOtp() {
     console.log("Email:", email, "OTP:", otp);
 
     try {
+      if (email === "" && otp === "") {
+        console.log("Email or Otp required!");
+        return;
+      }
       const res = await axiosUser.post("/auth/verify-otp", { email, otp });
       toast.success(res.data.message);
       console.log("res data: ", res.data);
 
+      dispatch(setOnboardingStatus(true))
       dispatch(setUser(res.data.user));
       dispatch(clearAuthEmail());
 
       // re-routing
-      toast.info("User registered! Re-routing to onboarding to finish profile setup");
+      toast.info(
+        "User registered! Re-routing to onboarding to finish profile setup"
+      );
       router.replace("/onboarding");
     } catch (error) {
-      if(axios.isAxiosError(error)){
+      if (axios.isAxiosError(error)) {
         console.log("verification error: ", error);
-        toast.error(error.response?.data.message || 'something went wrong');
+        toast.error(error.response?.data.message || "something went wrong");
       }
     }
   };

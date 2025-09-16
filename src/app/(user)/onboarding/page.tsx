@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import axiosUser from "@/lib/axios/axios-user";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { setUserProfile } from "@/store/slices/userSlice";
+import { setOnboardingStatus, setUserProfile } from "@/store/slices/userSlice";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -111,6 +111,7 @@ export default function ProfileSetup() {
       const res = await axiosUser.put("/profile/setup", data);
       if (res.data.success) {
         toast.success(res.data.message);
+        dispatch(setOnboardingStatus(false))
         dispatch(setUserProfile(res.data.user));
         router.replace("/home");
       }

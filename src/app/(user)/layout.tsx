@@ -19,20 +19,15 @@ export default function UserLayout({
     "/reset-password",
   ];
   const isAuth = authEndpoints.includes(usePathname());
-  const isOnboarding = usePathname() === "/onboarding";
-  const userId = useAuthRedirect(isAuth);
-  console.log("user id: ", userId);
-
-  if (isOnboarding) {
-    return <main className="flex-1">{children}</main>;
-  }
+  const user = useAuthRedirect(isAuth);
+  console.log("user id: ", user.id);
 
   return (
     <div className="flex bg-primary">
-      <Navbar />
+      {!user.isOnboarding && <Navbar />}
 
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
+        {!user.isOnboarding && <Sidebar />}
 
         <main className="flex-1 text-white">{children}</main>
       </div>

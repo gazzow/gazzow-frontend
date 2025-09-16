@@ -10,11 +10,11 @@ export default function AuthLayout({
 }) {
   const authEndpoints: string[] = ["/login", "/signup", "/forgot-password", "/forgot-password/verify-otp", "/verify-otp", "/reset-password"];
   const isAuth: boolean = authEndpoints.includes(usePathname());
-  const userId = useAuthRedirect(isAuth);
+  const user = useAuthRedirect(isAuth);
 
-  if (userId) {
+  if (user.id) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen text-white">
         Loading...
       </div>
     );

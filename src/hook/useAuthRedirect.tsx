@@ -3,16 +3,20 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export const useAuthRedirect = (isAuth: boolean) => {
-  const userId = useAppSelector((state) => state.user?.id);
+  const user = useAppSelector((state) => state.user);
   const router = useRouter();
 
   useEffect(() => {
-    if (!userId && !isAuth) {
+    if (!user.id && !isAuth) {
       router.replace("/login");
-    } else if (userId && isAuth) {
-      router.replace("/home");
+    } else if (user.id && isAuth) {
+      if (user.isOnboarding) {
+        router.replace("/onboarding");
+      } else {
+        router.replace("/home");
+      }
     }
-  }, [userId, isAuth, router]);
+  }, [user, isAuth, router]);
 
-  return userId;
+  return user;
 };

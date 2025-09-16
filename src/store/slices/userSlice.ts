@@ -12,6 +12,7 @@ interface IUserState {
   learningGoals: string[];
   imageUrl: string;
   createdAt: Date;
+  isOnboarding: boolean;
 }
 
 const initialState: IUserState = {
@@ -26,6 +27,7 @@ const initialState: IUserState = {
   developerRole: "",
   imageUrl: "",
   createdAt: new Date(),
+  isOnboarding: false,
 };
 
 const userSlice = createSlice({
@@ -63,8 +65,12 @@ const userSlice = createSlice({
       state.imageUrl = "";
       state.createdAt = new Date();
     },
+    setOnboardingStatus: (state, action: PayloadAction<boolean>) => {
+      state.isOnboarding = action.payload;
+    },
   },
 });
 
-export const { setUser, setUserProfile, clearUser } = userSlice.actions;
+export const { setUser, setUserProfile, clearUser, setOnboardingStatus } =
+  userSlice.actions;
 export default userSlice.reducer;
