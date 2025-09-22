@@ -1,33 +1,33 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IUserState {
-  id: string;
-  name: string;
-  email: string;
-  bio: string;
-  role: string;
-  experience: string;
-  developerRole: string;
-  techStacks: string[];
-  learningGoals: string[];
-  imageUrl: string;
-  createdAt: Date;
-  isOnboarding: boolean;
+  id: string | null;
+  name: string | null;
+  email: string | null;
+  bio: string | null;
+  role: string | null;
+  experience: string | null;
+  developerRole: string | null;
+  techStacks: string[] | null;
+  learningGoals: string[] | null;
+  imageUrl: string | null;
+  createdAt: Date | null;
+  isOnboarding: boolean | null;
 }
 
 const initialState: IUserState = {
-  id: "",
-  name: "",
-  email: "",
-  role: "",
-  bio: "",
-  techStacks: [],
-  learningGoals: [],
-  experience: "",
-  developerRole: "",
-  imageUrl: "",
-  createdAt: new Date(),
-  isOnboarding: false,
+  id: null,
+  name: null,
+  email: null,
+  role: null,
+  bio: null,
+  techStacks: null,
+  learningGoals: null,
+  experience: null,
+  developerRole: null,
+  imageUrl: null,
+  createdAt: null,
+  isOnboarding: null,
 };
 
 const userSlice = createSlice({
@@ -35,10 +35,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<IUserState>) => {
-      state.id = action.payload.id;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.createdAt = action.payload.createdAt;
+      state = action.payload;
     },
     setUserProfile: (state, action: PayloadAction<IUserState>) => {
       state.id = action.payload.id;
@@ -53,17 +50,17 @@ const userSlice = createSlice({
       state.learningGoals = action.payload.learningGoals;
     },
     clearUser: (state) => {
-      state.id = "";
-      state.name = "";
-      state.email = "";
-      state.role = "";
-      state.bio = "";
-      state.techStacks = [];
-      state.learningGoals = [];
-      state.experience = "";
-      state.developerRole = "";
-      state.imageUrl = "";
-      state.createdAt = new Date();
+      state.id = null;
+      state.name = null;
+      state.email = null;
+      state.role = null;
+      state.bio = null;
+      state.techStacks = null;
+      state.learningGoals = null;
+      state.experience = null;
+      state.developerRole = null;
+      state.imageUrl = null;
+      state.createdAt = null;
     },
     setOnboardingStatus: (state, action: PayloadAction<boolean>) => {
       state.isOnboarding = action.payload;

@@ -1,13 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+enum UserRole {
+  ADMIN = "admin",
+  USER = "user",
+}
+
 interface IAdminState {
-  email: string;
-  role: string;
+  id: string | null;
+  email: string | null;
+  role: UserRole | null;
 }
 
 const initialState: IAdminState = {
-  email: "",
-  role: "",
+  id: null,
+  email: null,
+  role: null,
 };
 
 const adminSlice = createSlice({
@@ -15,22 +22,17 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     setAdmin: (state, action: PayloadAction<IAdminState>) => {
+      state.id = action.payload.id;
       state.email = action.payload.email;
-      state.role = action.payload.role;
-    },
-    setAdminEmail: (state, action: PayloadAction<IAdminState>) => {
-      state.email = action.payload.email;
-    },
-    setAdminRole: (state, action: PayloadAction<IAdminState>) => {
       state.role = action.payload.role;
     },
     clearAdmin: (state) => {
-      state.email = "";
-      state.role = "";
+      state.id = null;
+      state.email = null;
+      state.role = null;
     },
   },
 });
 
-export const { setAdmin, setAdminEmail, setAdminRole, clearAdmin } =
-  adminSlice.actions;
+export const { setAdmin, clearAdmin } = adminSlice.actions;
 export default adminSlice.reducer;
