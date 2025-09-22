@@ -21,7 +21,7 @@ export default function Navbar() {
         {/* Right Side */}
         <div className="flex justify-center items-center text-center gap-4">
           {/* Toggle Theme */}
-          <button onClick={toggleTheme} className="px-4 py3">
+          <button onClick={toggleTheme} className="py3">
             {theme === "light" ? (
               <Moon size={18} className="cursor-pointer text-secondary"></Moon>
             ) : (
