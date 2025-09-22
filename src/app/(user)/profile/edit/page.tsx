@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Camera, Loader, Save } from "lucide-react";
 import { uploadImageToCloudinary } from "@/lib/cloudinary/config";
 import { toast } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "@/store/store";
+import { useAppDispatch } from "@/store/store";
 import axiosUser from "@/lib/axios/axios-user";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,27 @@ import { setOnboardingStatus, setUserProfile } from "@/store/slices/userSlice";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { OnboardingInput, onboardingSchema } from "@/validators/onboarding";
+import { userService } from "@/services/user/user-service";
+import {
+  ProfileUpdateInput,
+  profileUpdateSchema,
+} from "@/validators/profile-update";
+
+// Move type definition outside component
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: "user" | "admin";
+  status: "active" | "blocked";
+  bio: string;
+  techStacks: string[];
+  learningGoals: string[];
+  experience: string;
+  developerRole: string;
+  imageUrl: string;
+  createdAt: string;
+};
 
 const roles = [
   "Frontend Developer",
@@ -22,7 +42,9 @@ const roles = [
   "Mobile Developer",
   "Other",
 ];
+
 const experiences = ["Beginner", "Intermediate", "Expert"];
+
 const techOptions = [
   "JavaScript",
   "TypeScript",
@@ -34,6 +56,7 @@ const techOptions = [
   "PostgreSQL",
   "TailwindCSS",
 ];
+
 const learningGoals = [
   "Improve system design skills",
   "Learn cloud technologies",
@@ -41,22 +64,27 @@ const learningGoals = [
   "Get better at Devops",
 ];
 
-export default function ProfileSetup() {
+export default function EditProfile() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { name } = useAppSelector((state) => state.user);
+  const [user, setUser] = useState<User | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // RHF setup
+  // RHF setup with proper default values
   const {
     register,
     handleSubmit,
     setValue,
     getValues,
+    reset,
     watch,
-    formState: { errors },
-  } = useForm<OnboardingInput>({
-    resolver: zodResolver(onboardingSchema),
+    formState: { errors, isSubmitting },
+  } = useForm<ProfileUpdateInput>({
+    resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
+      name: "",
       bio: "",
       developerRole: "",
       experience: "",
@@ -66,18 +94,47 @@ export default function ProfileSetup() {
     },
   });
 
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
+  // Watchers with fallback values
+  const techStacks = watch("techStacks") || [];
+  const goals = watch("learningGoals") || [];
 
-  // Watchers
-  const techStacks = watch("techStacks");
-  const goals = watch("learningGoals");
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setIsLoading(true);
+        const data = await userService.getUser();
+        setUser(data.user);
 
-  // Image upload
+        // Reset form with fetched data
+        const formData = {
+          name: data.user.name || "",
+          bio: data.user.bio || "",
+          developerRole: data.user.developerRole || "",
+          experience: data.user.experience || "",
+          techStacks: data.user.techStacks || [],
+          learningGoals: data.user.learningGoals || [],
+          imageUrl: data.user.imageUrl || "",
+        };
+
+        reset(formData);
+        setProfileImage(data.user.imageUrl || null);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        toast.error("Failed to load profile data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [reset]);
+
+  // Image upload with better error handling
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file
     if (!file.type.startsWith("image/")) {
       toast.error("Please select a valid image file");
       return;
@@ -87,92 +144,97 @@ export default function ProfileSetup() {
       return;
     }
 
-    setProfileImage(URL.createObjectURL(file));
-    setIsUploading(true);
-
     try {
+      setProfileImage(URL.createObjectURL(file));
+      setIsUploading(true);
+
       const url = await uploadImageToCloudinary(file);
       setValue("imageUrl", url, { shouldValidate: true });
-      toast.success("Image uploaded!");
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      console.error("Image upload error:", error);
+      toast.error("Failed to upload image");
+      setProfileImage(user?.imageUrl || null); // Revert on error
     } finally {
       setIsUploading(false);
     }
   };
 
-  // Tech toggle
+  // Tech toggle with null safety
   const handleTechToggle = (tech: string) => {
-    const current = getValues("techStacks");
-    if (current.includes(tech)) {
-      setValue(
-        "techStacks",
-        current.filter((t) => t !== tech),
-        { shouldValidate: true }
-      );
-    } else {
-      setValue("techStacks", [...current, tech], { shouldValidate: true });
-    }
+    const current = getValues("techStacks") || [];
+    const updated = current.includes(tech)
+      ? current.filter((t) => t !== tech)
+      : [...current, tech];
+
+    setValue("techStacks", updated, { shouldValidate: true });
   };
 
-  // Goal toggle
+  // Goal toggle with null safety
   const handleGoalToggle = (goal: string) => {
-    const current = getValues("learningGoals");
-    if (current.includes(goal)) {
-      setValue(
-        "learningGoals",
-        current.filter((g) => g !== goal),
-        { shouldValidate: true }
-      );
-    } else {
-      setValue("learningGoals", [...current, goal], { shouldValidate: true });
-    }
+    const current = getValues("learningGoals") || [];
+    const updated = current.includes(goal)
+      ? current.filter((g) => g !== goal)
+      : [...current, goal];
+
+    setValue("learningGoals", updated, { shouldValidate: true });
   };
 
-  // Submit
-  const onSubmit = async (data: OnboardingInput) => {
+  // Submit with better error handling
+  const onSubmit = async (data: ProfileUpdateInput) => {
     try {
       const res = await axiosUser.put("/profile/update", data);
       if (res.data.success) {
-        toast.success(res.data.message);
+        toast.success(res.data.message || "Profile updated successfully!");
         dispatch(setOnboardingStatus(false));
         dispatch(setUserProfile(res.data.user));
-        router.replace("/home");
+        router.replace("/profile/me ");
       }
     } catch (error) {
+      console.error("Profile update error:", error);
       if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Failed to update profile";
+        toast.error(errorMessage);
+      } else {
         toast.error("Something went wrong");
-        console.log("onboarding error: ", error);
       }
     }
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-primary">
+        <div className="flex flex-col items-center space-y-4">
+          <Loader size={32} className="animate-spin text-white" />
+          <p className="text-gray-300">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="min-h-screen flex items-center justify-center py-8 px-4 bg-primary"
     >
-      <div className="w-full max-w-2xl rounded-2xl shadow-2xl border bg-secondary/30 border-gray-700 overflow-hidden bg-gray-850">
+      <div className="w-full max-w-2xl mt-10 rounded-2xl shadow-2xl border bg-secondary/30 border-gray-700 overflow-hidden">
         {/* Header */}
         <div className="relative py-6 flex flex-col items-center">
           <div className="relative mb-4">
-            <div className="w-24 h-24 rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">
-              {profileImage ? (
-                <Image
-                  src={profileImage}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <Image
-                  src="/images/default-profile.jpg"
-                  alt="profile default"
-                  fill
-                  className="rounded-full object-fit"
-                />
-              )}
+            <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center bg-gray-700">
+              <Image
+                src={profileImage || "/image/default-profile.jpg"}
+                alt="Profile"
+                width={96}
+                height={96}
+                className="w-full h-full object-cover"
+              />
             </div>
             <label
               htmlFor="profile-upload"
-              className="absolute bottom-0 right-0 bg-black text-white p-2 rounded-full cursor-pointer transition-all shadow-lg"
+              className="absolute bottom-0 right-0 bg-black text-white p-2 rounded-full cursor-pointer transition-all shadow-lg hover:bg-gray-800"
             >
               {isUploading ? (
                 <Loader size={16} className="animate-spin" />
@@ -185,28 +247,26 @@ export default function ProfileSetup() {
                 accept="image/*"
                 onChange={handleImageUpload}
                 className="hidden"
+                disabled={isUploading}
               />
             </label>
           </div>
-          <h2 className="text-2xl font-bold text-white">
-            Welcome! Lets Setup Your Profile
-          </h2>
-          <p className="text-sm text-gray-300 mt-1">
-            Complete your profile to get started
-          </p>
         </div>
 
         <div className="p-8 space-y-6">
           {/* Full Name */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-300">
-              Full Name
+              Full Name *
             </label>
             <input
-              value={name || ""}
-              disabled
-              className="text-white w-full p-3 bg-gray-800 border border-gray-700 rounded-lg disabled:opacity-60"
+              {...register("name")}
+              className="text-white w-full p-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter your full name"
             />
+            {errors.name && (
+              <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>
+            )}
           </div>
 
           {/* Bio */}
@@ -216,13 +276,13 @@ export default function ProfileSetup() {
                 Short Bio
               </label>
               <span className="text-xs text-gray-500">
-                {watch("bio")?.length}/200
+                {watch("bio")?.length || 0}/200
               </span>
             </div>
             <textarea
               {...register("bio")}
               placeholder="Tell us about your coding journey..."
-              className="w-full text-white p-3 bg-gray-800 border border-gray-700 rounded-lg"
+              className="w-full text-white p-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               rows={3}
               maxLength={200}
             />
@@ -234,16 +294,16 @@ export default function ProfileSetup() {
           {/* Role */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-300">
-              Role
+              Role *
             </label>
             <select
               {...register("developerRole")}
-              className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700"
+              className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select your role</option>
-              {roles.map((r) => (
-                <option key={r} value={r}>
-                  {r}
+              {roles.map((role) => (
+                <option key={role} value={role}>
+                  {role}
                 </option>
               ))}
             </select>
@@ -257,16 +317,16 @@ export default function ProfileSetup() {
           {/* Experience */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-300">
-              Experience Level
+              Experience Level *
             </label>
             <select
               {...register("experience")}
-              className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700"
+              className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select your experience</option>
-              {experiences.map((e) => (
-                <option key={e} value={e}>
-                  {e}
+              {experiences.map((exp) => (
+                <option key={exp} value={exp}>
+                  {exp}
                 </option>
               ))}
             </select>
@@ -288,10 +348,10 @@ export default function ProfileSetup() {
                   type="button"
                   key={tech}
                   onClick={() => handleTechToggle(tech)}
-                  className={`px-3 py-1.5 rounded-full text-sm ${
+                  className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
                     techStacks.includes(tech)
                       ? "bg-blue-600 text-white"
-                      : "bg-gray-800 text-gray-300"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                   }`}
                 >
                   {tech}
@@ -316,10 +376,10 @@ export default function ProfileSetup() {
                   type="button"
                   key={goal}
                   onClick={() => handleGoalToggle(goal)}
-                  className={`px-3 py-1.5 rounded-full text-sm ${
+                  className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
                     goals.includes(goal)
                       ? "bg-purple-600 text-white"
-                      : "bg-gray-800 text-gray-300"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                   }`}
                 >
                   {goal}
@@ -334,14 +394,21 @@ export default function ProfileSetup() {
           </div>
 
           {/* Submit */}
-          <button
-            type="submit"
-            disabled={isUploading}
-            className="w-full bg-btn-primary text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center"
-          >
-            <Save className="mr-2" size={20} />
-            Finish Setup
-          </button>
+          <div className="flex justify-between">
+            <button className="py-2 px-4 border border-border-primary rounded-lg cursor-pointer">Cancel</button>
+            <button
+              type="submit"
+              disabled={isUploading || isSubmitting}
+              className="bg-btn-primary text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center cursor-pointer hover:bg-opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <Loader className="mr-2 animate-spin" size={18} />
+              ) : (
+                <Save className="mr-2" size={18} />
+              )}
+              {isSubmitting ? "Updating..." : "Save"}
+            </button>
+          </div>
         </div>
       </div>
     </form>

@@ -1,13 +1,12 @@
 "use client";
 
-import axiosUser from "@/lib/axios/axios-user";
 import { userService } from "@/services/user/user-service";
 import axios from "axios";
-import { User } from "lucide-react";
+import { Pen, User } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -70,6 +69,13 @@ const ProfilePage = () => {
                 {user.developerRole}
               </p>
             )}
+          </div>
+          <div className="ml-auto">
+            <Link href="/profile/edit">
+              <button className="flex items-center gap-2 py-2 px-4 bg-btn-primary hover:bg-btn-primary-hover rounded-lg cursor-pointer">
+                <Pen size={14} /> <span>Edit</span>
+              </button>
+            </Link>
           </div>
         </div>
 
