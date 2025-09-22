@@ -47,10 +47,10 @@ export default function AdminLoginPage() {
   const handleLoginSubmit = async (formData: Record<string, string>) => {
     console.log("form data:, ", formData);
     try {
-      const data = await adminAuthService.login(formData)
-      console.log("Login response data: ", data);
-      if (data.success) {
-        dispatch(setAdmin(data.admin));
+      const response = await adminAuthService.login(formData)
+      console.log("Login response data: ", response.data);
+      if (response.success) {
+        dispatch(setAdmin(response.data))
         router.replace("/admin/dashboard");
       }
     } catch (error) {
