@@ -39,7 +39,7 @@ const sections = [
     items: [
       { label: "Projects", icon: FolderKanban, href: "" },
       { label: "Tasks", icon: CheckSquare, href: "" },
-      { label: "Scheduled Meetings", icon: CalendarClock, href: "" },
+      { label: "Meetings", icon: CalendarClock, href: "" },
       { label: "Reviews", icon: Star, href: "" },
     ],
   },
@@ -55,7 +55,7 @@ const sections = [
     title: "Platform",
     items: [
       { label: "Notifications", icon: Bell, href: "" },
-      { label: "Reports & Abuse", icon: ShieldAlert, href: "" },
+      { label: "Reports", icon: ShieldAlert, href: "" },
       { label: "Profile", icon: User, href: "" },
     ],
   },
@@ -82,7 +82,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="md:min-w-60 h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
+    <aside className="h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
       {sections.map((section) => (
         <div key={section.title} className="mb-4">
           <h4 className="hidden md:flex text-xs uppercase tracking-wide text-gray-500 mb-2">
