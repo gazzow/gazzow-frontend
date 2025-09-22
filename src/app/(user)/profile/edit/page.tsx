@@ -17,6 +17,7 @@ import {
   ProfileUpdateInput,
   profileUpdateSchema,
 } from "@/validators/profile-update";
+import Link from "next/link";
 
 // Move type definition outside component
 type User = {
@@ -395,7 +396,14 @@ export default function EditProfile() {
 
           {/* Submit */}
           <div className="flex justify-between">
-            <button className="py-2 px-4 border border-border-primary rounded-lg cursor-pointer">Cancel</button>
+            <Link href={'/profile/me'}>
+              <button
+                type="button"
+                className="py-2 px-4 border border-border-primary rounded-lg cursor-pointer"
+              >
+                Cancel
+              </button>
+            </Link>
             <button
               type="submit"
               disabled={isUploading || isSubmitting}
