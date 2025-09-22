@@ -15,17 +15,18 @@ export default function AdminLayout({
   const isLogin = pathname === "/admin/login";
   const [checking, setChecking] = useState(true);
 
-  const { role } = useAppSelector((state) => state.admin);
-  // console.log("admin redux: ", role);
   const router = useRouter();
+  const admin = useAppSelector((state) => state.admin);
+  // console.log("admin app data: ", admin);
+
   useEffect(() => {
-    if (!role && !isLogin) {
+    if (!admin.id && !isLogin) {
       router.replace("/admin/login");
-    } else if (role && isLogin) {
+    } else if (admin.id && isLogin) {
       router.replace("/admin/dashboard");
     }
     setChecking(false);
-  }, [router, isLogin, role]);
+  }, [router, isLogin, admin]);
 
   return (
     <div className="flex bg-primary">
@@ -38,7 +39,9 @@ export default function AdminLayout({
             Loading...
           </div>
         ) : (
-          <main className="mt-16 flex-1 text-white">{children}</main>
+          <main className={`${isLogin ? "" : " mt-16"} flex-1 text-whiteD`}>
+            {children}
+          </main>
         )}
       </div>
     </div>
