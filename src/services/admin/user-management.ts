@@ -1,8 +1,8 @@
 import axiosAdmin from "@/lib/axios/axios-admin";
 
 export const userManagementService = {
-  async getUsers() {
-    const res = await axiosAdmin.get("/admin/users");
+  async getUsers(skip: number, limit: number) {
+    const res = await axiosAdmin.get(`/admin/users?limit=${limit}&skip=${skip}`);
     return res.data;
   },
   async updateStatus(userId: string, status: string) {
