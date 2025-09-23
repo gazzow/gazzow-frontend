@@ -31,6 +31,12 @@ const fields = [
     type: "password",
     placeholder: "••••••••",
   },
+  {
+    name: "confirmPassword",
+    label: "Confirm Password",
+    type: "password",
+    placeholder: "••••••••",
+  },
 ];
 
 export default function SignupPage() {
@@ -42,6 +48,7 @@ export default function SignupPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
@@ -55,10 +62,17 @@ export default function SignupPage() {
     try {
       console.log("form data: ", formData);
 
+      if (formData.password !== formData.confirmPassword) {
+        setError("confirmPassword", {
+          type: "manual",
+          message: "Passwords do not match!",
+        });
+      }
+
       const data = await authService.signup(formData);
       console.log("res data: ", data);
       if (data.success) {
-        toast.success("storing email and re-routing to verify otp");
+        toast.success("Re-routing to verify otp");
         dispatch(setUserEmail({ email: formData.email }));
         replaceRoute();
       }

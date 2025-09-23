@@ -7,6 +7,7 @@ export const signupSchema = z.object({
     .max(25, { error: "Name is too long" }),
   email: z.email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(6, "Confirm Password must be at least 6 characters"),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;
