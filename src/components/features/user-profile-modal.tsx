@@ -1,6 +1,6 @@
 "use client";
 
-import axiosAdmin from "@/lib/axios/axios-admin";
+import api from "@/lib/axios/api";
 import axios from "axios";
 import { User, X } from "lucide-react";
 import Image from "next/image";
@@ -19,7 +19,7 @@ const UserProfileModal = ({
     const fetchUser = async () => {
       try {
         console.log('debugging user id to fetch: ', id)
-        const res = await axiosAdmin.get(`/admin/users/${id}`);
+        const res = await api.get(`/admin/users/${id}`);
         console.log("User profile modal response: ", res.data);
         const user = res.data.user;
         setUser(user);
@@ -58,10 +58,11 @@ const UserProfileModal = ({
         <div className="flex items-center gap-6">
           <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-600">
             {user.imageUrl ? (
-              <img
+              <Image
+              fill
                 src={user.imageUrl}
                 alt={user.name}
-                className="object-cover"
+                className="object-cover rounded-full"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-700">
