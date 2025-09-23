@@ -1,6 +1,6 @@
 "use client";
 
-import axiosUser from "@/lib/axios/axios-user";
+import axiosUser from "@/lib/axios/api";
 import { formatTime } from "@/utils/auth/formatTime";
 import axios from "axios";
 import { Shield } from "lucide-react";

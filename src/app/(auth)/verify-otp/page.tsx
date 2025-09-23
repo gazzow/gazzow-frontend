@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { setOnboardingStatus, setUser } from "@/store/slices/userSlice";
 import { clearAuthEmail } from "@/store/slices/authSlice";
-import axiosUser from "@/lib/axios/axios-user";
+import api from "@/lib/axios/api";
 import axios from "axios";
 
 export default function VerifyOtp() {
@@ -42,7 +42,7 @@ export default function VerifyOtp() {
         console.log("Email or Otp required!");
         return;
       }
-      const res = await axiosUser.post("/auth/verify-otp", { email, otp });
+      const res = await api.post("/auth/verify-otp", { email, otp });
       toast.success(res.data.message);
       console.log("res data: ", res.data);
 

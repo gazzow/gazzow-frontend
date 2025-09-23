@@ -1,6 +1,6 @@
 "use client";
 
-import axiosUser from "@/lib/axios/axios-user";
+import api from "@/lib/axios/api";
 import { useAppSelector } from "@/store/store";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
@@ -32,7 +32,7 @@ export default function ResetPassword() {
     console.log("confirm password: ", password);
 
     try {
-      const res = await axiosUser.put("/auth/reset-password", { email, password });
+      const res = await api.put("/auth/reset-password", { email, password });
       console.log("response in reset-password: ", res);
     } catch (error) {
       if (axios.isAxiosError(error)) {

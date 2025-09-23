@@ -3,7 +3,7 @@ import { store } from "@/store/store";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 
-const axiosUser = axios.create({
+const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
@@ -30,7 +30,7 @@ const processQueue = (error: unknown) => {
   failedQueue = [];
 };
 
-axiosUser.interceptors.response.use(
+api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
@@ -41,7 +41,7 @@ axiosUser.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then(() => axiosUser(originalRequest))
+          .then(() => api(originalRequest))
           .catch((err) => Promise.reject(err));
       }
 
@@ -50,15 +50,15 @@ axiosUser.interceptors.response.use(
 
       try {
         // Call refresh endpoint
-        const res = await axiosUser.post("/auth/refresh");
+        const res = await api.post("/auth/refresh");
         console.log("Auth refresh token response: ", res.data);
         processQueue(null);
 
         // Retry the original request
-        return axiosUser(originalRequest);
+        return api(originalRequest);
       } catch (err) {
         processQueue(err);
-        // 🔑 Handle logout here
+        // 🔑 logout here
         window.location.href = "/login";
         return Promise.reject(err);
       } finally {
@@ -76,4 +76,4 @@ axiosUser.interceptors.response.use(
   }
 );
 
-export default axiosUser;
+export default api;

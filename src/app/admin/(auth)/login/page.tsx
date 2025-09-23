@@ -1,7 +1,6 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import axiosAdmin from "@/lib/axios/axios-admin";
 import { setAdmin } from "@/store/slices/adminSlice";
 import { useAppDispatch } from "@/store/store";
 import axios from "axios";

@@ -5,7 +5,7 @@ import { Camera, Loader, Save } from "lucide-react";
 import { uploadImageToCloudinary } from "@/lib/cloudinary/config";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import axiosUser from "@/lib/axios/axios-user";
+import api from "@/lib/axios/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { setOnboardingStatus, setUserProfile } from "@/store/slices/userSlice";
@@ -130,7 +130,7 @@ export default function ProfileSetup() {
   // Submit
   const onSubmit = async (data: OnboardingInput) => {
     try {
-      const res = await axiosUser.put("/profile/update", data);
+      const res = await api.put("/profile/update", data);
       if (res.data.success) {
         toast.success(res.data.message);
         dispatch(setOnboardingStatus(false));

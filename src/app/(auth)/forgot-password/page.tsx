@@ -1,6 +1,6 @@
 "use client";
 
-import axiosUser from "@/lib/axios/axios-user";
+import api from "@/lib/axios/api";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { useAppDispatch } from "@/store/store";
 import {
@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 
 export default function ForgotPassword() {
@@ -29,7 +29,7 @@ export default function ForgotPassword() {
     dispatch(setUserEmail({ email: data.email }));
 
     try {
-      const res = await axiosUser.post("/auth/forgot-password", {
+      const res = await api.post("/auth/forgot-password", {
         email: data.email,
       });
 
