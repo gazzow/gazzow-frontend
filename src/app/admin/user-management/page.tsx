@@ -56,7 +56,7 @@ export default function UserManagement() {
     };
 
     fetchUsers();
-  }, []);
+  }, [pagination]);
 
   const toggleStatus = async (id: string, status: UserStatus) => {
     try {
@@ -171,7 +171,7 @@ export default function UserManagement() {
                   {user.name}
                 </td>
                 <td className="p-3 text-text-primary">{user.email}</td>
-                <td className="p-3">{user.role}</td>
+                <td className="p-3 text-white">{user.role}</td>
                 <td className="p-3">
                   <span
                     className={`flex justify-center px-2 py-1 text-xs font-semibold rounded-full w-[80px] ${
@@ -184,7 +184,7 @@ export default function UserManagement() {
                   </span>
                 </td>
 
-                <td className="p-3">
+                <td className="p-3 text-white">
                   {new Date(user.createdAt).toISOString().slice(0, 10)}
                 </td>
                 <td className="p-3">

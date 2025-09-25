@@ -35,7 +35,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<IUserState>) => {
-      state = action.payload;
+      return action.payload;
     },
     setUserProfile: (state, action: PayloadAction<IUserState>) => {
       state.id = action.payload.id;
@@ -49,19 +49,7 @@ const userSlice = createSlice({
       state.techStacks = action.payload.techStacks;
       state.learningGoals = action.payload.learningGoals;
     },
-    clearUser: (state) => {
-      state.id = null;
-      state.name = null;
-      state.email = null;
-      state.role = null;
-      state.bio = null;
-      state.techStacks = null;
-      state.learningGoals = null;
-      state.experience = null;
-      state.developerRole = null;
-      state.imageUrl = null;
-      state.createdAt = null;
-    },
+    clearUser: () => initialState,
     setOnboardingStatus: (state, action: PayloadAction<boolean>) => {
       state.isOnboarding = action.payload;
     },

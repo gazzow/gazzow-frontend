@@ -1,16 +1,18 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
+import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
+import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
 import { authService } from "@/services/auth/auth-service";
+import { clearAdmin } from "@/store/slices/adminSlice";
 import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
 import { LoginInput, loginSchema } from "@/validators/auth-login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Chromium, Github } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -40,7 +42,7 @@ export default function LoginPage() {
     clearErrors,
     formState: { errors },
   } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema), 
+    resolver: zodResolver(loginSchema),
   });
 
   const handleLoginSubmit = async (formData: Record<string, string>) => {
@@ -49,6 +51,7 @@ export default function LoginPage() {
     try {
       const data = await authService.login({ ...formData });
       dispatch(setUserProfile(data.user));
+
       if (data.success) {
         toast.success(data.message);
         router.replace("/home");
@@ -93,14 +96,8 @@ export default function LoginPage() {
       }
       OAuthButtons={
         <div className="flex gap-4">
-          <button className="flex-1 flex items-center justify-center gap-4 py-2 bg-white text-black rounded-lg font-medium hover:opacity-90 transition">
-            <Chromium size={18} />
-            <span>Google</span>
-          </button>
-          <button className="flex-1 flex items-center justify-center gap-4 py-2 bg-black text-white rounded-lg font-medium border border-gray-700 hover:opacity-90 transition">
-            <Github size={18} />
-            <span>GitHub</span>
-          </button>
+          <GoogleAuthButton />
+          <GithubAuthButton />
         </div>
       }
       footer={

@@ -18,6 +18,7 @@ import {
   profileUpdateSchema,
 } from "@/validators/profile-update";
 import Link from "next/link";
+import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 
 // Move type definition outside component
 type User = {
@@ -205,14 +206,7 @@ export default function EditProfile() {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-primary">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader size={32} className="animate-spin text-white" />
-          <p className="text-gray-300">Loading profile...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner></LoadingSpinner>;
   }
 
   return (
@@ -396,7 +390,7 @@ export default function EditProfile() {
 
           {/* Submit */}
           <div className="flex justify-between">
-            <Link href={'/profile/me'}>
+            <Link href={"/profile/me"}>
               <button
                 type="button"
                 className="py-2 px-4 border border-border-primary rounded-lg cursor-pointer"

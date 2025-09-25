@@ -44,7 +44,7 @@ const learningGoals = [
 export default function ProfileSetup() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { name } = useAppSelector((state) => state.user);
+  const { name, imageUrl } = useAppSelector((state) => state.user);
 
   // RHF setup
   const {
@@ -62,7 +62,7 @@ export default function ProfileSetup() {
       experience: "",
       techStacks: [],
       learningGoals: [],
-      imageUrl: "",
+      imageUrl: "https://res.cloudinary.com/de5vavykz/image/upload/v1758806772/knt9skjt6jsxg3qdbhna.jpg",
     },
   });
 
@@ -129,6 +129,7 @@ export default function ProfileSetup() {
 
   // Submit
   const onSubmit = async (data: OnboardingInput) => {
+    console.log("profile data submitting ");
     try {
       const res = await api.put("/profile/update", data);
       if (res.data.success) {
@@ -160,10 +161,11 @@ export default function ProfileSetup() {
                   src={profileImage}
                   alt="Profile"
                   className="w-full h-full object-cover"
+                  fill
                 />
               ) : (
                 <Image
-                  src="/images/default-profile.jpg"
+                  src={imageUrl || "/images/default-profile.jpg"}
                   alt="profile default"
                   fill
                   className="rounded-full object-fit"
@@ -336,8 +338,8 @@ export default function ProfileSetup() {
           {/* Submit */}
           <button
             type="submit"
-            disabled={isUploading}
-            className="w-full bg-btn-primary text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center"
+            disabled={ isUploading}
+            className="w-full bg-btn-primary text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center cursor-pointer"
           >
             <Save className="mr-2" size={20} />
             Finish Setup

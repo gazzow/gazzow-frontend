@@ -11,6 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { authService } from "@/services/auth/auth-service";
+import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
+import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
 
 const fields = [
   {
@@ -67,6 +69,7 @@ export default function SignupPage() {
           type: "manual",
           message: "Passwords do not match!",
         });
+        return;
       }
 
       const data = await authService.signup(formData);
@@ -97,12 +100,8 @@ export default function SignupPage() {
       }
       OAuthButtons={
         <div className="flex gap-4">
-          <button className="flex-1 py-2 bg-white text-black rounded-lg font-medium hover:opacity-90 transition">
-            Google
-          </button>
-          <button className="flex-1 py-2 bg-black text-white rounded-lg font-medium border border-gray-700 hover:opacity-90 transition">
-            GitHub
-          </button>
+          <GoogleAuthButton />
+          <GithubAuthButton />
         </div>
       }
       footer={

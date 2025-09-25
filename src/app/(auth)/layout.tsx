@@ -1,5 +1,6 @@
 "use client";
 
+import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { useAuthRedirect } from "@/hook/useAuthRedirect";
 import { usePathname } from "next/navigation";
 
@@ -13,11 +14,7 @@ export default function AuthLayout({
   const user = useAuthRedirect(isAuth);
 
   if (user.id) {
-    return (
-      <div className="flex items-center justify-center h-screen text-white">
-        Loading...
-      </div>
-    );
+    return <LoadingSpinner></LoadingSpinner>
   }
   return <main className="flex-1">{children}</main>;
 }

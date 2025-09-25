@@ -46,8 +46,8 @@ export default function VerifyOtp() {
       toast.success(res.data.message);
       console.log("res data: ", res.data);
 
-      dispatch(setOnboardingStatus(true))
       dispatch(setUser(res.data.user));
+      dispatch(setOnboardingStatus(true))
       dispatch(clearAuthEmail());
 
       // re-routing
