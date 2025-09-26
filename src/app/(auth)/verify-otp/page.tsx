@@ -15,8 +15,8 @@ export default function VerifyOtp() {
   const router = useRouter();
 
   const [otp, setOtp] = useState("");
-  const [expiryTimer, setExpiryTimer] = useState(300); // 5 min in seconds
-  const [reSendTimer, setReSendTimer] = useState(180); // 3 min in seconds
+  const [expiryTimer, setExpiryTimer] = useState(299); // 5 min in seconds
+  const [reSendTimer, setReSendTimer] = useState(59); // 3 min in seconds
 
   const dispatch = useAppDispatch();
   const email = useAppSelector((state) => state.auth.user?.email);
@@ -24,21 +24,24 @@ export default function VerifyOtp() {
   // Countdown timer
   useEffect(() => {
     const interval = setInterval(() => {
-      if (expiryTimer >= 0) {
-        setExpiryTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      }
-      if (reSendTimer >= 0) {
-        setReSendTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      }
+      setExpiryTimer((prev) => (prev > 0 ? prev - 1 : 0));
+      setReSendTimer((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
+
     return () => clearInterval(interval);
-  }, [expiryTimer, reSendTimer]);
+  }, []);
+
+  useEffect(() => {
+    if (expiryTimer === 0) {
+      router.replace("/signup");
+    }
+  }, [expiryTimer, router]);
 
   const handleSubmit = async () => {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      if (email === "" && otp === "") {
+      if (!email && !otp) {
         console.log("Email or Otp required!");
         return;
       }
@@ -47,7 +50,7 @@ export default function VerifyOtp() {
       console.log("res data: ", res.data);
 
       dispatch(setUser(res.data.user));
-      dispatch(setOnboardingStatus(true))
+      dispatch(setOnboardingStatus(true));
       dispatch(clearAuthEmail());
 
       // re-routing
@@ -99,9 +102,15 @@ export default function VerifyOtp() {
           </button>
         </div>
 
-        <div className="mt-4 text-center text-gray-300 text-sm">
+        <div className="flex  flex-col mt-4 text-center text-gray-300 text-sm">
           <p>Code expires in {formatTime(expiryTimer)}</p>
-          <p className="mb-6">Resend available in {formatTime(reSendTimer)}</p>
+          {reSendTimer === 0 ? (
+            <button className="mb-6 text-red-400 cursor-pointer underline">Resend Otp</button>
+          ) : (
+            <p className="mb-6">
+              Resend available in {formatTime(reSendTimer)}
+            </p>
+          )}
           <Link className="text-blue-300" href={"/login"}>
             &larr; Back to login
           </Link>
