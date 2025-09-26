@@ -2,6 +2,7 @@
 
 import UserProfileModal from "@/components/features/user-profile-modal";
 import { userManagementService } from "@/services/admin/user-management";
+import { UserStatus } from "@/types/user";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -14,39 +15,30 @@ type User = {
   createdAt: string;
 };
 
-type UserStatus = "active" | "blocked";
-
-type Pagination = {
-  total: number;
-  skip: number;
-  limit: number;
-};
-
 export default function UserManagement() {
   const [users, setUsersList] = useState<User[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [pagination, setPagination] = useState<Pagination>({
-    total: 0,
-    skip: 0,
-    limit: 5,
-  });
+  const [skip, setSkip] = useState(0);
+  const [limit, setLimit] = useState(6);
+  const [total, setTotal] = useState(0);
+
   const [fetchUserId, setFetchUserId] = useState("");
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [sortOption, setSortOption] = useState("newest");
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await userManagementService.getUsers(
-          pagination.skip,
-          pagination.limit
-        );
+        const res = await userManagementService.getUsers(skip, limit);
         console.log("Users list response data: ", res);
         const users = res.data || [];
         if (users) {
           setUsersList(users);
-          setPagination(res.pagination);
+          setSkip(res.pagination.skip);
+          setLimit(res.pagination.limit);
+          setTotal(res.pagination.total);
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -56,7 +48,7 @@ export default function UserManagement() {
     };
 
     fetchUsers();
-  }, [pagination]);
+  }, [limit, skip]);
 
   const toggleStatus = async (id: string, status: UserStatus) => {
     try {
@@ -80,6 +72,16 @@ export default function UserManagement() {
     setFetchUserId(id);
   };
 
+  const handleNext = () => {
+    const maxSkip = Math.floor((total - 1) / limit) * limit;
+    if (skip < maxSkip) {
+      setSkip(skip + limit);
+    }
+  };
+  const handlePrevious = () => {
+    setSkip((prev) => Math.max(prev - limit, 0));
+  };
+
   return (
     <div className="p-8">
       {isOpen && (
@@ -94,7 +96,10 @@ export default function UserManagement() {
         <div className="flex flex-col">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold text-white">User Management</h1>
-            <button className="px-4 py-2 bg-gray-200 text-black text-md font-semibold rounded-md transition"> Export Data </button>
+            <button className="px-4 py-2 bg-gray-200 text-black text-md font-semibold rounded-md transition">
+              {" "}
+              Export Data{" "}
+            </button>
           </div>
           <p className="text-text-muted text-sm">
             Manage and monitor all registered users on the platform.
@@ -111,7 +116,7 @@ export default function UserManagement() {
             className=" md:min-w-80 px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
 
-          {/* Filter */}
+          {/* Role Filter */}
           <select
             value={filterRole}
             onChange={(e) => setFilterRole(e.target.value)}
@@ -122,15 +127,15 @@ export default function UserManagement() {
             <option value="admin">Admin</option>
           </select>
 
-          {/* Status */}
+          {/* Status Filter */}
           <select
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
             className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="all">All Status</option>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
           </select>
 
           {/* Sort */}
@@ -162,6 +167,13 @@ export default function UserManagement() {
             </tr>
           </thead>
           <tbody>
+            {users.length === 0 && (
+              <tr>
+                <td colSpan={7} className="text-center py-6 text-gray-400">
+                  No users found
+                </td>
+              </tr>
+            )}
             {users?.map((user) => (
               <tr
                 key={user.id}
@@ -176,8 +188,8 @@ export default function UserManagement() {
                   <span
                     className={`flex justify-center px-2 py-1 text-xs font-semibold rounded-full w-[80px] ${
                       user.status === "active"
-                        ? "bg-green-100 text-green-900"
-                        : "bg-red-100 text-red-900"
+                        ? "bg-green-50 text-green-800"
+                        : "bg-red-100 text-red-600"
                     }`}
                   >
                     {user.status[0].toUpperCase() + user.status.slice(1)}
@@ -216,13 +228,20 @@ export default function UserManagement() {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
         <p>
-          Showing {pagination.limit ?? 5} of {pagination.total} results
+          Showing {skip} of {total} results (Page {skip / limit + 1} of{" "}
+          {Math.ceil(total / limit)})
         </p>
         <div className="flex gap-2">
-          <button className="px-3 py-1 border rounded-md text-white hover:bg-gray-600">
+          <button
+            onClick={handlePrevious}
+            className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
+          >
             Previous
           </button>
-          <button className="px-3 py-1 border rounded-md text-white hover:bg-gray-600">
+          <button
+            onClick={handleNext}
+            className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
+          >
             Next
           </button>
         </div>

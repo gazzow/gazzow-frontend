@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import api from "@/lib/axios/api";
 import { useAppDispatch } from "@/store/store";
 import { setUserProfile } from "@/store/slices/userSlice";
 import { useRouter } from "next/navigation";
@@ -15,10 +14,10 @@ export default function SuccessPage() {
   useEffect(() => {
     userService
       .getUser()
-      .then((res) => {
-        console.log("User data on success:", res.data.user);
+      .then((data) => {
+        console.log("User data on success:", data.user);
 
-        dispatch(setUserProfile(res.data.user));
+        dispatch(setUserProfile(data.user));
         router.replace("/home");
       })
       .catch((err) => console.error(err));

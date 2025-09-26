@@ -1,9 +1,16 @@
+import { clearAdmin } from "@/store/slices/adminSlice";
 import { clearUser } from "@/store/slices/userSlice";
 import { store } from "@/store/store";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
+});
+
+const refreshApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
@@ -50,27 +57,35 @@ api.interceptors.response.use(
 
       try {
         // Call refresh endpoint
-        const res = await api.post("/auth/refresh");
+        const res = await refreshApi.post("/auth/refresh");
         console.log("Auth refresh token response: ", res.data);
         processQueue(null);
 
         // Retry the original request
         return api(originalRequest);
       } catch (err) {
+        console.log("error while refreshing token");
         processQueue(err);
-        // 🔑 logout here
+
+        // 🔑 Add logout logic here
+        store.dispatch(clearUser());
+        store.dispatch(clearAdmin());
+        toast.error("Session expired. Please login again.");
+
         window.location.href = "/login";
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
       }
-    } else if (error.response?.status === 401) {
-      store.dispatch(clearUser());
-      toast.error("Unauthorized access");
-      console.log("Error while refresh token 401");
-
-      window.location.href = "/login";
     }
+    // else if (error.response?.status === 401 ) {
+    //   store.dispatch(clearUser());
+    //   store.dispatch(clearAdmin())
+    //   toast.error("Unauthorized access");
+    //   console.log("Error while refresh token 401");
+
+    //   window.location.href = "/login";
+    // }
 
     return Promise.reject(error);
   }
