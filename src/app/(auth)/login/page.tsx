@@ -4,7 +4,6 @@ import AuthForm from "@/components/AuthForm";
 import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
 import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
 import { authService } from "@/services/auth/auth-service";
-import { clearAdmin } from "@/store/slices/adminSlice";
 import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
 import { LoginInput, loginSchema } from "@/validators/auth-login";
@@ -12,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -49,11 +48,11 @@ export default function LoginPage() {
     console.log("form data:, ", formData);
 
     try {
-      const data = await authService.login({ ...formData });
-      dispatch(setUserProfile(data.user));
+      const res = await authService.login({ ...formData });
+      dispatch(setUserProfile(res.data));
 
-      if (data.success) {
-        toast.success(data.message);
+      if (res.success) {
+        toast.success(res.message);
         router.replace("/home");
       }
     } catch (error) {

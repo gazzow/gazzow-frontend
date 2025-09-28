@@ -1,6 +1,7 @@
 "use client";
 
 import api from "@/lib/axios/api";
+import { authService } from "@/services/auth/auth-service";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { useAppDispatch } from "@/store/store";
 import {
@@ -29,13 +30,11 @@ export default function ForgotPassword() {
     dispatch(setUserEmail({ email: data.email }));
 
     try {
-      const res = await api.post("/auth/forgot-password", {
-        email: data.email,
-      });
+      const res = await authService.forgotPassword(data.email);
 
       console.log("response: ", res);
 
-      if (res.data.success) {
+      if (res.success) {
         router.replace("/forgot-password/verify-otp");
       }
     } catch (error) {

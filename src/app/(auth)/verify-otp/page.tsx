@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { setOnboardingStatus, setUser } from "@/store/slices/userSlice";
 import { clearAuthEmail } from "@/store/slices/authSlice";
-import api from "@/lib/axios/api";
 import axios from "axios";
+import { authService } from "@/services/auth/auth-service";
 
 export default function VerifyOtp() {
   const router = useRouter();
@@ -41,15 +41,15 @@ export default function VerifyOtp() {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      if (!email && !otp) {
+      if (!email || !otp) {
         console.log("Email or Otp required!");
         return;
       }
-      const res = await api.post("/auth/verify-otp", { email, otp });
+      const res = await authService.verifyUser(email, otp);
       toast.success(res.data.message);
       console.log("res data: ", res.data);
 
-      dispatch(setUser(res.data.user));
+      dispatch(setUser(res.data));
       dispatch(setOnboardingStatus(true));
       dispatch(clearAuthEmail());
 
@@ -105,7 +105,9 @@ export default function VerifyOtp() {
         <div className="flex  flex-col mt-4 text-center text-gray-300 text-sm">
           <p>Code expires in {formatTime(expiryTimer)}</p>
           {reSendTimer === 0 ? (
-            <button className="mb-6 text-red-400 cursor-pointer underline">Resend Otp</button>
+            <button className="mb-6 text-red-400 cursor-pointer underline">
+              Resend Otp
+            </button>
           ) : (
             <p className="mb-6">
               Resend available in {formatTime(reSendTimer)}

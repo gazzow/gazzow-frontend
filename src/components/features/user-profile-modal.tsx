@@ -1,6 +1,6 @@
 "use client";
 
-import api from "@/lib/axios/api";
+import { userManagementService } from "@/services/admin/user-management";
 import axios from "axios";
 import { User, X } from "lucide-react";
 import Image from "next/image";
@@ -19,10 +19,9 @@ const UserProfileModal = ({
     const fetchUser = async () => {
       try {
         console.log('debugging user id to fetch: ', id)
-        const res = await api.get(`/admin/users/${id}`);
+        const res = await userManagementService.getSingleUser(id);
         console.log("User profile modal response: ", res.data);
-        const user = res.data.user;
-        setUser(user);
+        setUser(res.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.log("User profile modal error: ", error);

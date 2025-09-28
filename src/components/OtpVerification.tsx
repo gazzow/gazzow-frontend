@@ -1,6 +1,6 @@
 "use client";
 
-import axiosUser from "@/lib/axios/api";
+import { authService } from "@/services/auth/auth-service";
 import { formatTime } from "@/utils/auth/formatTime";
 import axios from "axios";
 import { Shield } from "lucide-react";
@@ -15,7 +15,6 @@ interface IGetEndPoint {
 }
 
 type Mode = keyof IGetEndPoint; // "register" | "forgotPassword"
-
 
 interface OtpVerificationProps {
   email: string;
@@ -53,12 +52,11 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      const res = await axiosUser.post(endpoint, { email, otp });
-      toast.success(res.data.message);
-      console.log("res data: ", res.data);
-      // re-routing
-      toast.info("sign in! re-routing to home");
+      const res = await authService.verifyOtp(endpoint, email, otp);
+      toast.success(res.message);
       if (mode === "register") {
+        // re-routing
+        toast.info("sign in! re-routing to home");
         router.replace("/home");
       } else {
         router.replace("/reset-password");

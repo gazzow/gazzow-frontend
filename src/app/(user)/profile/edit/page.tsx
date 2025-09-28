@@ -104,22 +104,22 @@ export default function EditProfile() {
     const fetchUser = async () => {
       try {
         setIsLoading(true);
-        const data = await userService.getUser();
-        setUser(data.user);
+        const res = await userService.getUser();
+        setUser(res.data);
 
         // Reset form with fetched data
         const formData = {
-          name: data.user.name || "",
-          bio: data.user.bio || "",
-          developerRole: data.user.developerRole || "",
-          experience: data.user.experience || "",
-          techStacks: data.user.techStacks || [],
-          learningGoals: data.user.learningGoals || [],
-          imageUrl: data.user.imageUrl || "",
+          name: res.data.name || "",
+          bio: res.data.bio || "",
+          developerRole: res.data.developerRole || "",
+          experience: res.data.experience || "",
+          techStacks: res.data.techStacks || [],
+          learningGoals: res.data.learningGoals || [],
+          imageUrl: res.data.imageUrl || "",
         };
 
         reset(formData);
-        setProfileImage(data.user.imageUrl || null);
+        setProfileImage(res.data.imageUrl || null);
       } catch (error) {
         console.error("Error fetching user profile:", error);
         toast.error("Failed to load profile data");
@@ -185,11 +185,11 @@ export default function EditProfile() {
   // Submit with better error handling
   const onSubmit = async (data: ProfileUpdateInput) => {
     try {
-      const res = await api.put("/profile/update", data);
-      if (res.data.success) {
-        toast.success(res.data.message || "Profile updated successfully!");
+      const res = await userService.updateProfile(data);
+      if (res.success) {
+        toast.success(res.message || "Profile updated successfully!");
         dispatch(setOnboardingStatus(false));
-        dispatch(setUserProfile(res.data.user));
+        dispatch(setUserProfile(res.data));
         router.replace("/profile/me ");
       }
     } catch (error) {

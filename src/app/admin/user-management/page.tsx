@@ -32,13 +32,13 @@ export default function UserManagement() {
     const fetchUsers = async () => {
       try {
         const res = await userManagementService.getUsers(skip, limit);
-        console.log("Users list response data: ", res);
+        console.log("Users list response data: ", res.data);
         const users = res.data || [];
         if (users) {
           setUsersList(users);
-          setSkip(res.pagination.skip);
-          setLimit(res.pagination.limit);
-          setTotal(res.pagination.total);
+          setSkip(res.meta.skip);
+          setLimit(res.meta.limit);
+          setTotal(res.meta.total);
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -53,11 +53,11 @@ export default function UserManagement() {
   const toggleStatus = async (id: string, status: UserStatus) => {
     try {
       const newStatus = status === "active" ? "blocked" : "active";
-      const data = await userManagementService.updateStatus(id, newStatus);
-      console.log("Updated user response data: ", data);
+      const res = await userManagementService.updateStatus(id, newStatus);
+      console.log("Updated user response data: ", res.data);
 
       setUsersList((prevUsers) =>
-        prevUsers.map((user) => (user.id === id ? data.user : user))
+        prevUsers.map((user) => (user.id === id ? res.data : user))
       );
     } catch (error) {
       if (axios.isAxiosError(error)) {

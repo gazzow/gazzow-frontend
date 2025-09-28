@@ -14,10 +14,10 @@ export default function SuccessPage() {
   useEffect(() => {
     userService
       .getUser()
-      .then((data) => {
-        console.log("User data on success:", data.user);
+      .then((res) => {
+        console.log("User data on success:", res.data);
 
-        dispatch(setUserProfile(data.user));
+        dispatch(setUserProfile(res.data));
         router.replace("/home");
       })
       .catch((err) => console.error(err));

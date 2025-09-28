@@ -13,8 +13,8 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await userService.getUser();
-        setUser(data.user);
+        const res = await userService.getUser();
+        setUser(res.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.log("profile page error: ", error);
@@ -52,7 +52,6 @@ const ProfilePage = () => {
                 src={user.imageUrl}
                 alt={user.name}
                 fill
-                sizes=""
                 className="object-cover"
               />
             ) : (

@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OnboardingInput, onboardingSchema } from "@/validators/onboarding";
+import { userService } from "@/services/user/user-service";
 
 const roles = [
   "Frontend Developer",
@@ -62,7 +63,8 @@ export default function ProfileSetup() {
       experience: "",
       techStacks: [],
       learningGoals: [],
-      imageUrl: "https://res.cloudinary.com/de5vavykz/image/upload/v1758806772/knt9skjt6jsxg3qdbhna.jpg",
+      imageUrl:
+        "https://res.cloudinary.com/de5vavykz/image/upload/v1758806772/knt9skjt6jsxg3qdbhna.jpg",
     },
   });
 
@@ -99,7 +101,7 @@ export default function ProfileSetup() {
     }
   };
 
-  // Tech toggle
+  // toggle Tech
   const handleTechToggle = (tech: string) => {
     const current = getValues("techStacks");
     if (current.includes(tech)) {
@@ -113,7 +115,7 @@ export default function ProfileSetup() {
     }
   };
 
-  // Goal toggle
+  // toggle Goal
   const handleGoalToggle = (goal: string) => {
     const current = getValues("learningGoals");
     if (current.includes(goal)) {
@@ -131,11 +133,11 @@ export default function ProfileSetup() {
   const onSubmit = async (data: OnboardingInput) => {
     console.log("profile data submitting ");
     try {
-      const res = await api.put("/profile/update", data);
-      if (res.data.success) {
-        toast.success(res.data.message);
+      const res = await userService.updateProfile(data);
+      if (res.success) {
+        toast.success(res.message);
         dispatch(setOnboardingStatus(false));
-        dispatch(setUserProfile(res.data.user));
+        dispatch(setUserProfile(res.data));
         router.replace("/home");
       }
     } catch (error) {
@@ -338,7 +340,7 @@ export default function ProfileSetup() {
           {/* Submit */}
           <button
             type="submit"
-            disabled={ isUploading}
+            disabled={isUploading}
             className="w-full bg-btn-primary text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center cursor-pointer"
           >
             <Save className="mr-2" size={20} />

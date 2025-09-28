@@ -78,14 +78,6 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
-    // else if (error.response?.status === 401 ) {
-    //   store.dispatch(clearUser());
-    //   store.dispatch(clearAdmin())
-    //   toast.error("Unauthorized access");
-    //   console.log("Error while refresh token 401");
-
-    //   window.location.href = "/login";
-    // }
 
     return Promise.reject(error);
   }
