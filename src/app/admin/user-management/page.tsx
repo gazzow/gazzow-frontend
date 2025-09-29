@@ -1,6 +1,7 @@
 "use client";
 
 import UserProfileModal from "@/components/features/user-profile-modal";
+import Modal from "@/components/Modal";
 import { userManagementService } from "@/services/admin/user-management";
 import { UserStatus } from "@/types/user";
 import axios from "axios";
@@ -17,21 +18,53 @@ type User = {
 
 export default function UserManagement() {
   const [users, setUsersList] = useState<User[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [skip, setSkip] = useState(0);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [skip, setSkip] = useState<number>(0);
   const [limit, setLimit] = useState(6);
   const [total, setTotal] = useState(0);
 
   const [fetchUserId, setFetchUserId] = useState("");
-  const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortOption, setSortOption] = useState("newest");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<{
+    id: string;
+    status: UserStatus;
+  } | null>(null);
+
+  const getSortParams = (sortOption: string) => {
+    switch (sortOption) {
+      case "newest":
+        return { sortField: "createdAt", sortOrder: "desc" };
+      case "oldest":
+        return { sortField: "createdAt", sortOrder: "asc" };
+      case "name-asc":
+        return { sortField: "name", sortOrder: "asc" };
+      case "name-desc":
+        return { sortField: "name", sortOrder: "desc" };
+      default:
+        return { sortField: "createdAt", sortOrder: "desc" };
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await userManagementService.getUsers(skip, limit);
+        const { sortField, sortOrder } = getSortParams(sortOption);
+
+        const res = await userManagementService.getUsers({
+          skip,
+          limit,
+          search: debouncedSearch || undefined,
+          role: filterRole !== "all" ? filterRole : undefined,
+          status: filterStatus !== "all" ? filterStatus : undefined,
+          sortField,
+          sortOrder,
+        });
         console.log("Users list response data: ", res.data);
         const users = res.data || [];
         if (users) {
@@ -46,23 +79,45 @@ export default function UserManagement() {
         }
       }
     };
-
     fetchUsers();
-  }, [limit, skip]);
+  }, [skip, limit, debouncedSearch, filterRole, filterStatus, sortOption]);
 
-  const toggleStatus = async (id: string, status: UserStatus) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [search]);
+
+  const handleToggleClick = (id: string, status: UserStatus) => {
+    setSelectedUser({ id, status });
+    setConfirmModalOpen(true);
+  };
+
+  const confirmToggleStatus = async () => {
+    if (!selectedUser) return;
+
     try {
-      const newStatus = status === "active" ? "blocked" : "active";
-      const res = await userManagementService.updateStatus(id, newStatus);
+      const newStatus = selectedUser.status === "active" ? "blocked" : "active";
+      const res = await userManagementService.updateStatus(
+        selectedUser.id,
+        newStatus
+      );
       console.log("Updated user response data: ", res.data);
 
       setUsersList((prevUsers) =>
-        prevUsers.map((user) => (user.id === id ? res.data : user))
+        prevUsers.map((user) => (user.id === selectedUser.id ? res.data : user))
       );
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("error in update status", error);
       }
+    } finally {
+      setConfirmModalOpen(false);
+      setSelectedUser(null);
     }
   };
 
@@ -73,11 +128,12 @@ export default function UserManagement() {
   };
 
   const handleNext = () => {
-    const maxSkip = Math.floor((total - 1) / limit) * limit;
+    const maxSkip = Math.floor((total - 1) / Number(limit)) * Number(limit);
     if (skip < maxSkip) {
-      setSkip(skip + limit);
+      setSkip(Number(skip) + Number(limit));
     }
   };
+
   const handlePrevious = () => {
     setSkip((prev) => Math.max(prev - limit, 0));
   };
@@ -91,6 +147,33 @@ export default function UserManagement() {
           </div>
         </div>
       )}
+
+      {confirmModalOpen && (
+        <div className="fixed inset-0 bg-primary/6  flex justify-center items-center">
+          <div className="bg-white dark:bg-secondary p-4 rounded shadow flex flex-col">
+            <p className="font-bold text-black dark:text-white">
+              {selectedUser?.status === "active"
+                ? "Are you sure you want to block this user?"
+                : "Are you sure you want to activate this user?"}
+            </p>
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                className="bg-green-400 py-1 px-4 rounded text-white"
+                onClick={confirmToggleStatus}
+              >
+                Yes
+              </button>
+              <button
+                className="bg-red-400 py-1 px-4 rounded "
+                onClick={() => setConfirmModalOpen(false)}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col gap-4  p-4 border border-border-primary rounded-lg mb-6">
         <div className="flex flex-col">
@@ -201,7 +284,7 @@ export default function UserManagement() {
                 </td>
                 <td className="p-3">
                   <button
-                    onClick={() => toggleStatus(user.id, user.status)}
+                    onClick={() => handleToggleClick(user.id, user.status)}
                     className={`px-3 py-1 rounded-md text-xs font-medium transition cursor-pointer min-w-[80px] ${
                       user.status === "active"
                         ? "bg-red-600 text-white hover:bg-red-700"
@@ -228,11 +311,12 @@ export default function UserManagement() {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
         <p>
-          Showing {skip} of {total} results (Page {skip / limit + 1} of{" "}
+          Showing {users.length} of {total} results (Page {skip / limit + 1} of{" "}
           {Math.ceil(total / limit)})
         </p>
         <div className="flex gap-2">
           <button
+            disabled={skip === 0}
             onClick={handlePrevious}
             className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
           >

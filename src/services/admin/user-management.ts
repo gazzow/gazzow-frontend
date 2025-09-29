@@ -1,8 +1,18 @@
 import api from "@/lib/axios/api";
 
 export const userManagementService = {
-  async getUsers(skip: number, limit: number) {
-    const res = await api.get(`/admin/users`, { params: { skip, limit } });
+  getUsers: async (params: {
+    skip?: number;
+    limit?: number;
+    search?: string;
+    role?: string;
+    status?: string;
+    sortField?: string;
+    sortOrder?: string;
+  }) => {
+    const res = await api.get(`/admin/users`, {
+      params,
+    });
     console.log("get user response : ", res);
     return res.data;
   },
