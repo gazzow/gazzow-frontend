@@ -84,6 +84,7 @@ export default function UserManagement() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
+      setSkip(0);
     }, 300);
 
     return () => {
@@ -201,7 +202,10 @@ export default function UserManagement() {
           {/* Role Filter */}
           <select
             value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
+            onChange={(e) => {
+              setSkip(0);
+              setFilterRole(e.target.value);
+            }}
             className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="all">All Roles</option>
@@ -212,7 +216,10 @@ export default function UserManagement() {
           {/* Status Filter */}
           <select
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+            onChange={(e) => {
+              setFilterStatus(e.target.value);
+              setSkip(0);
+            }}
             className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="all">All Status</option>
