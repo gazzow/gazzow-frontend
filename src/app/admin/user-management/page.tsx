@@ -1,7 +1,6 @@
 "use client";
 
 import UserProfileModal from "@/components/features/user-profile-modal";
-import Modal from "@/components/Modal";
 import { userManagementService } from "@/services/admin/user-management";
 import { UserStatus } from "@/types/user";
 import axios from "axios";

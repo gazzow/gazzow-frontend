@@ -5,7 +5,6 @@ import { Camera, Loader, Save } from "lucide-react";
 import { uploadImageToCloudinary } from "@/lib/cloudinary/config";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "@/store/store";
-import api from "@/lib/axios/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { setOnboardingStatus, setUserProfile } from "@/store/slices/userSlice";
@@ -19,6 +18,7 @@ import {
 } from "@/validators/profile-update";
 import Link from "next/link";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 // Move type definition outside component
 type User = {
@@ -190,7 +190,7 @@ export default function EditProfile() {
         toast.success(res.message || "Profile updated successfully!");
         dispatch(setOnboardingStatus(false));
         dispatch(setUserProfile(res.data));
-        router.replace("/profile/me ");
+        router.replace(USER_ROUTES.PROFILE);
       }
     } catch (error) {
       console.error("Profile update error:", error);
@@ -390,7 +390,7 @@ export default function EditProfile() {
 
           {/* Submit */}
           <div className="flex justify-between">
-            <Link href={"/profile/me"}>
+            <Link href={USER_ROUTES.PROFILE}>
               <button
                 type="button"
                 className="py-2 px-4 border border-border-primary rounded-lg cursor-pointer"

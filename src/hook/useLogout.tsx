@@ -1,5 +1,6 @@
 "use client";
 
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { authService } from "@/services/auth/auth-service";
 import { clearUser } from "@/store/slices/userSlice";
 import { persistor, useAppDispatch } from "@/store/store";
@@ -21,7 +22,7 @@ export function useLogout() {
       // clear persisted state
       persistor.purge();
 
-      router.push("/login"); // redirect
+      router.push(AUTH_ROUTES.LOGIN); 
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || "Logout failed");

@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { useAuthRedirect } from "@/hook/useAuthRedirect";
 import { usePathname } from "next/navigation";
 
@@ -10,14 +11,7 @@ export default function UserLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const authEndpoints: string[] = [
-    "/login",
-    "/signup",
-    "/forgot-password",
-    "/forgot-password/verify-otp",
-    "/verify-otp",
-    "/reset-password",
-  ];
+  const authEndpoints: string[] = Object.values(AUTH_ROUTES) || [];
   const isAuth = authEndpoints.includes(usePathname());
   const user = useAuthRedirect(isAuth);
   console.log("user id: ", user.id);

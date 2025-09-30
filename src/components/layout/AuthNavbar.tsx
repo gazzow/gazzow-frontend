@@ -1,5 +1,6 @@
 "use client";
 
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { useTheme } from "@/hook/useTheme";
 import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
@@ -55,11 +56,11 @@ export default function AuthNavbar() {
             )}
           </button>
 
-          <Link href="/login" className="text-black dark:text-text-primary dark:hover:text-text-secondary ">
+          <Link href={AUTH_ROUTES.LOGIN} className="text-black dark:text-text-primary dark:hover:text-text-secondary ">
             Sign In
           </Link>
           <Link
-            href="/signup"
+            href={AUTH_ROUTES.SIGNUP}
             className="px-4 py-2 bg-btn-primary hover:bg-btn-primary-hover text-text-primary rounded-lg"
           >
             Get Started

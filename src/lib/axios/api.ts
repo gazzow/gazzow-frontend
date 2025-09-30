@@ -1,3 +1,4 @@
+import { AUTH_API } from "@/constants/apis/auth-api";
 import { clearAdmin } from "@/store/slices/adminSlice";
 import { clearUser } from "@/store/slices/userSlice";
 import { store } from "@/store/store";
@@ -42,41 +43,59 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        // Queue requests while refreshing
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then(() => api(originalRequest))
-          .catch((err) => Promise.reject(err));
+    if (error.response) {
+      const { status } = error.response;
+
+      if (status === 401 && !originalRequest._retry) {
+        if (isRefreshing) {
+          // Queue requests while refreshing
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          })
+            .then(() => api(originalRequest))
+            .catch((err) => Promise.reject(err));
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        try {
+          const res = await refreshApi.post(AUTH_API.REFRESH_TOKEN);
+          console.log("Auth refresh token response: ", res);
+          processQueue(null);
+
+          // Retry the original request
+          return api(originalRequest);
+        } catch (err) {
+          console.log("error while refreshing token");
+          processQueue(err);
+
+          // 🔑 Add logout logic here
+          store.dispatch(clearUser());
+          store.dispatch(clearAdmin());
+          toast.error("Session expired. Please login again.");
+
+          window.location.href = "/login";
+          return Promise.reject(err);
+        } finally {
+          isRefreshing = false;
+        }
       }
 
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        // Call refresh endpoint
-        const res = await refreshApi.post("/auth/refresh");
-        console.log("Auth refresh token response: ", res.data);
-        processQueue(null);
-
-        // Retry the original request
-        return api(originalRequest);
-      } catch (err) {
-        console.log("error while refreshing token");
-        processQueue(err);
-
-        // 🔑 Add logout logic here
-        store.dispatch(clearUser());
-        store.dispatch(clearAdmin());
-        toast.error("Session expired. Please login again.");
-
-        window.location.href = "/login";
-        return Promise.reject(err);
-      } finally {
-        isRefreshing = false;
+      if (status === 403) {
+        toast.error("You don’t have permission for this action.");
       }
+
+      if (status === 404) {
+        toast.error("The requested resource was not found.");
+      }
+
+      if (status >= 500) {
+        toast.error("Server error. Please try again later.");
+      }
+    } else {
+      // No response (network error, CORS issue, etc.)
+      toast.error("Network error. Please check your connection.");
     }
 
     return Promise.reject(error);

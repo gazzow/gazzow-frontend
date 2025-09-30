@@ -1,29 +1,30 @@
+import { AUTH_API } from "@/constants/apis/auth-api";
 import api from "@/lib/axios/api";
 
 export const authService = {
   async signup(formData: Record<string, string>) {
-    const res = await api.post("/auth/register", formData);
+    const res = await api.post(AUTH_API.REGISTER, formData);
     return res.data;
   },
   async verifyUser(email: string, otp: string) {
-    const res = await api.post("/auth/verify-otp", { email, otp });
+    const res = await api.post(AUTH_API.VERIFY_USER, { email, otp });
     console.log("verify user response: ", res);
     return res.data;
   },
   async login(formData: Record<string, string>) {
-    const res = await api.post("/auth/login", formData);
+    const res = await api.post(AUTH_API.LOGIN, formData);
     console.log(`response: ${JSON.stringify(res.data)}`);
     return res.data;
   },
   async forgotPassword(email: string) {
-    const res = await api.post("/auth/forgot-password", {
+    const res = await api.post(AUTH_API.FORGOT_PASSWORD, {
       email,
     });
     console.log(`forgot pass response: ${JSON.stringify(res.data)}`);
     return res.data;
   },
   async resetPassword(email: string, password: string) {
-    const res = await api.put("/auth/reset-password", { email, password });
+    const res = await api.put(AUTH_API.RESET_PASSWORD, { email, password });
     console.log("response in reset-password: ", res);
     return res.data;
   },
@@ -33,6 +34,6 @@ export const authService = {
     return res.data;
   },
   async logout() {
-    return api.post("/auth/logout");
+    return api.post(AUTH_API.LOGOUT);
   },
 };

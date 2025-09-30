@@ -1,3 +1,4 @@
+import { ADMIN_API } from "@/constants/apis/admin/admin-api";
 import api from "@/lib/axios/api";
 
 export const userManagementService = {
@@ -10,7 +11,7 @@ export const userManagementService = {
     sortField?: string;
     sortOrder?: string;
   }) => {
-    const res = await api.get(`/admin/users`, {
+    const res = await api.get(ADMIN_API.USERS, {
       params,
     });
     console.log("get user response : ", res);
@@ -18,7 +19,7 @@ export const userManagementService = {
   },
 
   async updateStatus(userId: string, status: string) {
-    const res = await api.patch(`/admin/users/${userId}/status`, {
+    const res = await api.patch(ADMIN_API.UPDATE_STATUS(userId), {
       status,
     });
     console.log("update status response", res);
@@ -26,7 +27,7 @@ export const userManagementService = {
   },
 
   async getSingleUser(userId: string) {
-    const res = await api.get(`/admin/users/${userId}`);
+    const res = await api.get(ADMIN_API.SINGLE_USER(userId));
     console.log("User profile modal response: ", res);
     return res.data;
   },

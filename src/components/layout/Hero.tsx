@@ -32,12 +32,12 @@ export default function Hero() {
         </p>
 
         <div className="mt-8 flex justify-center gap-4">
-          <Link href="/start">
+          <Link href="#">
             <button className="px-6 py-3 text-lg bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition">
               Start Building
             </button>
           </Link>
-          <Link href="/projects">
+          <Link href="#">
             <button className="px-6 py-3 text-lg bg-gray-900 text-white rounded-lg shadow-md hover:bg-gray-950 transition">
               View Projects
             </button>

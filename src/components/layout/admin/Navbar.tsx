@@ -1,5 +1,6 @@
 "use client";
 
+import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
 import { useTheme } from "@/hook/useTheme";
 import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
@@ -12,7 +13,7 @@ export default function Navbar() {
       <div className="max-w-10xl mx-auto px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <Link
-          href="/admin/dashboard"
+          href={ADMIN_ROUTES.DASHBOARD}
           className="text-2xl font-bold text-btn-primary hover:text-btn-primary-hover"
         >
           Gazzow
@@ -25,16 +26,12 @@ export default function Navbar() {
             {theme === "light" ? (
               <Moon size={18} className="text-secondary"></Moon>
             ) : (
-              <Sun
-                size={18}
-                className="dark:text-yellow-400"
-              ></Sun>
+              <Sun size={18} className="dark:text-yellow-400"></Sun>
             )}
           </button>
 
-          
           <Link
-            href="/admin/profile"
+            href={ADMIN_ROUTES.PROFILE}
             className="text-black dark:text-text-primary dark:hover:text-text-secondary "
           >
             Profile

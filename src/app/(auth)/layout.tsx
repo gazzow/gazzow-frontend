@@ -1,6 +1,7 @@
 "use client";
 
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { useAuthRedirect } from "@/hook/useAuthRedirect";
 import { usePathname } from "next/navigation";
 
@@ -9,12 +10,12 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const authEndpoints: string[] = ["/login", "/signup", "/forgot-password", "/forgot-password/verify-otp", "/verify-otp", "/reset-password"];
+  const authEndpoints: string[] = Object.values(AUTH_ROUTES) || [];
   const isAuth: boolean = authEndpoints.includes(usePathname());
   const user = useAuthRedirect(isAuth);
 
   if (user.id) {
-    return <LoadingSpinner></LoadingSpinner>
+    return <LoadingSpinner></LoadingSpinner>;
   }
   return <main className="flex-1">{children}</main>;
 }

@@ -1,3 +1,5 @@
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { useAppSelector } from "@/store/store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -8,12 +10,12 @@ export const useAuthRedirect = (isAuth: boolean) => {
 
   useEffect(() => {
     if (!user.id && !isAuth) {
-      router.replace("/login");
+      router.replace(AUTH_ROUTES.LOGIN);
     } else if (user.id && isAuth) {
       if (user.isOnboarding) {
-        router.replace("/onboarding");
+        router.replace(USER_ROUTES.ONBOARDING);
       } else {
-        router.replace("/home");
+        router.replace(USER_ROUTES.HOME);
       }
     }
   }, [user, isAuth, router]);

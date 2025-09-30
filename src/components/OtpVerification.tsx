@@ -1,5 +1,7 @@
 "use client";
 
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { authService } from "@/services/auth/auth-service";
 import { formatTime } from "@/utils/auth/formatTime";
 import axios from "axios";
@@ -14,7 +16,7 @@ interface IGetEndPoint {
   forgotPassword: string;
 }
 
-type Mode = keyof IGetEndPoint; // "register" | "forgotPassword"
+type Mode = keyof IGetEndPoint;
 
 interface OtpVerificationProps {
   email: string;
@@ -28,7 +30,6 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
 
   const router = useRouter();
 
-  // Countdown timer
   useEffect(() => {
     const interval = setInterval(() => {
       if (expiryTimer >= 0) {
@@ -42,8 +43,8 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
   }, [expiryTimer, reSendTimer]);
 
   const getEndPoint: IGetEndPoint = {
-    register: "/auth/verify-otp",
-    forgotPassword: "/auth/forgot-password/verify-otp",
+    register: AUTH_ROUTES.SIGNUP,
+    forgotPassword: AUTH_ROUTES.FORGOT_PASSWORD,
   };
 
   const endpoint: string = getEndPoint[mode];
@@ -57,9 +58,9 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
       if (mode === "register") {
         // re-routing
         toast.info("sign in! re-routing to home");
-        router.replace("/home");
+        router.replace(USER_ROUTES.HOME);
       } else {
-        router.replace("/reset-password");
+        router.replace(AUTH_ROUTES.RESET_PASSWORD);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -101,8 +102,16 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
 
         <div className="mt-4 text-center text-gray-300 text-sm">
           <p>Code expires in {formatTime(expiryTimer)}</p>
-          <p className="mb-6">Resend available in {formatTime(reSendTimer)}</p>
-          <Link className="text-blue-300" href={"/login"}>
+          {reSendTimer === 0 ? (
+            <button className="mb-6 text-red-400 cursor-pointer underline">
+              Resend Otp
+            </button>
+          ) : (
+            <p className="mb-6">
+              Resend available in {formatTime(reSendTimer)}
+            </p>
+          )}
+          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
             &larr; Back to login
           </Link>
         </div>

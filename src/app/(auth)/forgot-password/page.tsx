@@ -1,6 +1,6 @@
 "use client";
 
-import api from "@/lib/axios/api";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { authService } from "@/services/auth/auth-service";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { useAppDispatch } from "@/store/store";
@@ -35,7 +35,7 @@ export default function ForgotPassword() {
       console.log("response: ", res);
 
       if (res.success) {
-        router.replace("/forgot-password/verify-otp");
+        router.replace(AUTH_ROUTES.VERIFY_OTP);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -85,7 +85,7 @@ export default function ForgotPassword() {
         </form>
 
         <div className="mt-4 text-center text-gray-300 text-sm">
-          <Link className="text-blue-300" href={"/login"}>
+          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
             &larr; Back to login
           </Link>
         </div>

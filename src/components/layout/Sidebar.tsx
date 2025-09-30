@@ -15,9 +15,10 @@ import {
   Settings,
 } from "lucide-react";
 import { LogoutButton } from "../ui/LogoutButton";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 const sections = [
-  { label: "Dashboard", icon: Home, href: "/home" },
+  { label: "Dashboard", icon: Home, href: USER_ROUTES.HOME },
   { label: "Projects", icon: Folder, href: "#" },
   { label: "My Contributions", icon: GitPullRequest, href: "#" },
   { label: "Messages", icon: MessageSquare, href: "#" },
@@ -25,7 +26,7 @@ const sections = [
   { label: "Notifications", icon: Bell, href: "#" },
   { label: "Quick saves", icon: Star, href: "#" },
   { label: "Wallet", icon: Wallet, href: "#" },
-  { label: "Profile", icon: User, href: "/profile/me", matchPaths: ["/profile/edit"] },
+  { label: "Profile", icon: User, href: USER_ROUTES.PROFILE, matchPaths: [USER_ROUTES.EDIT_PROFILE] },
   { label: "Settings", icon: Settings, href: "#" },
 ];
 

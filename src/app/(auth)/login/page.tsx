@@ -3,6 +3,7 @@
 import AuthForm from "@/components/AuthForm";
 import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
 import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { authService } from "@/services/auth/auth-service";
 import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
@@ -53,7 +54,7 @@ export default function LoginPage() {
 
       if (res.success) {
         toast.success(res.message);
-        router.replace("/home");
+        router.replace(USER_ROUTES.HOME);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

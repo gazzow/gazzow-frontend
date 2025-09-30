@@ -13,6 +13,7 @@ import { useState } from "react";
 import { authService } from "@/services/auth/auth-service";
 import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
 import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 
 const fields = [
   {
@@ -56,9 +57,6 @@ export default function SignupPage() {
     resolver: zodResolver(signupSchema),
   });
 
-  const replaceRoute = () => {
-    router.replace("/verify-otp");
-  };
 
   const handleRegisterSubmit = async (formData: Record<string, string>) => {
     try {
@@ -77,7 +75,7 @@ export default function SignupPage() {
       if (data.success) {
         toast.success("Re-routing to verify otp");
         dispatch(setUserEmail({ email: formData.email }));
-        replaceRoute();
+        router.replace(AUTH_ROUTES.VERIFY_USER);
       }
     } catch (error) {
       console.log("error while api call", error);

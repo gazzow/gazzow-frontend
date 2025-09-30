@@ -22,17 +22,22 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useAppDispatch } from "@/store/store";
 import { clearAdmin } from "@/store/slices/adminSlice";
+import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
 
 const sections = [
   {
     title: "Overview",
     items: [
-      { label: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
+      {
+        label: "Dashboard",
+        icon: LayoutDashboard,
+        href: ADMIN_ROUTES.DASHBOARD,
+      },
     ],
   },
   {
     title: "User Management",
-    items: [{ label: "Users", icon: Users, href: "/admin/user-management" }],
+    items: [{ label: "Users", icon: Users, href: ADMIN_ROUTES.USER_MANAGEMENT }],
   },
   {
     title: "Project & Tasks",
@@ -56,7 +61,7 @@ const sections = [
     items: [
       { label: "Notifications", icon: Bell, href: "" },
       { label: "Reports", icon: ShieldAlert, href: "" },
-      { label: "Profile", icon: User, href: "" },
+      { label: "Profile", icon: User, href: ADMIN_ROUTES.PROFILE },
     ],
   },
 ];
@@ -64,14 +69,14 @@ const sections = [
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
     try {
       await authService.logout();
 
       toast.success("Logged out successfully");
-      dispatch(clearAdmin())
+      dispatch(clearAdmin());
       router.push("/admin/login"); // redirect
     } catch (error) {
       if (axios.isAxiosError(error)) {

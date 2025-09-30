@@ -1,5 +1,6 @@
 "use client";
 
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { userService } from "@/services/user/user-service";
 import axios from "axios";
 import { Pen, User } from "lucide-react";
@@ -70,7 +71,7 @@ const ProfilePage = () => {
             )}
           </div>
           <div className="ml-auto">
-            <Link href="/profile/edit">
+            <Link href={USER_ROUTES.EDIT_PROFILE}>
               <button className="flex items-center gap-2 py-2 px-4 bg-btn-primary hover:bg-btn-primary-hover rounded-lg cursor-pointer">
                 <Pen size={14} /> <span>Edit</span>
               </button>

@@ -5,7 +5,6 @@ import { Camera, Loader, Save } from "lucide-react";
 import { uploadImageToCloudinary } from "@/lib/cloudinary/config";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import api from "@/lib/axios/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { setOnboardingStatus, setUserProfile } from "@/store/slices/userSlice";
@@ -14,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OnboardingInput, onboardingSchema } from "@/validators/onboarding";
 import { userService } from "@/services/user/user-service";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 const roles = [
   "Frontend Developer",
@@ -138,7 +138,7 @@ export default function ProfileSetup() {
         toast.success(res.message);
         dispatch(setOnboardingStatus(false));
         dispatch(setUserProfile(res.data));
-        router.replace("/home");
+        router.replace(USER_ROUTES.HOME);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

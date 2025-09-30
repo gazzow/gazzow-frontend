@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginInput } from "@/validators/auth-login";
 import z from "zod";
 import { adminAuthService } from "@/services/admin/auth-login";
+import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
 
 
 const fields = [
@@ -50,7 +51,7 @@ export default function AdminLoginPage() {
       console.log("Login response data: ", response.data);
       if (response.success) {
         dispatch(setAdmin(response.data))
-        router.replace("/admin/dashboard");
+        router.replace(ADMIN_ROUTES.DASHBOARD);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

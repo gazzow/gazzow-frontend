@@ -10,6 +10,8 @@ import { setOnboardingStatus, setUser } from "@/store/slices/userSlice";
 import { clearAuthEmail } from "@/store/slices/authSlice";
 import axios from "axios";
 import { authService } from "@/services/auth/auth-service";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 export default function VerifyOtp() {
   const router = useRouter();
@@ -33,7 +35,7 @@ export default function VerifyOtp() {
 
   useEffect(() => {
     if (expiryTimer === 0) {
-      router.replace("/signup");
+      router.replace(AUTH_ROUTES.SIGNUP);
     }
   }, [expiryTimer, router]);
 
@@ -57,7 +59,7 @@ export default function VerifyOtp() {
       toast.info(
         "User registered! Re-routing to onboarding to finish profile setup"
       );
-      router.replace("/onboarding");
+      router.replace(USER_ROUTES.ONBOARDING);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("verification error: ", error);
@@ -113,7 +115,7 @@ export default function VerifyOtp() {
               Resend available in {formatTime(reSendTimer)}
             </p>
           )}
-          <Link className="text-blue-300" href={"/login"}>
+          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
             &larr; Back to login
           </Link>
         </div>

@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/layout/admin/Navbar";
 import Sidebar from "@/components/layout/admin/Sidebar";
+import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
 import { useAppSelector } from "@/store/store";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,8 +13,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isLogin = pathname === "/admin/login";
   const [checking, setChecking] = useState(true);
+  const isLogin = pathname === ADMIN_ROUTES.LOGIN;
 
   const router = useRouter();
   const admin = useAppSelector((state) => state.admin);
@@ -21,9 +22,9 @@ export default function AdminLayout({
 
   useEffect(() => {
     if (!admin.id && !isLogin) {
-      router.replace("/admin/login");
+      router.replace(ADMIN_ROUTES.LOGIN);
     } else if (admin.id && isLogin) {
-      router.replace("/admin/dashboard");
+      router.replace(ADMIN_ROUTES.DASHBOARD);
     }
     setChecking(false);
   }, [router, isLogin, admin]);
