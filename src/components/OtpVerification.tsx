@@ -1,5 +1,6 @@
 "use client";
 
+import { AUTH_API } from "@/constants/apis/auth-api";
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { authService } from "@/services/auth/auth-service";
@@ -43,8 +44,8 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
   }, [expiryTimer, reSendTimer]);
 
   const getEndPoint: IGetEndPoint = {
-    register: AUTH_ROUTES.SIGNUP,
-    forgotPassword: AUTH_ROUTES.FORGOT_PASSWORD,
+    register: AUTH_API.REGISTER,
+    forgotPassword: AUTH_API.FORGOT_PASSWORD,
   };
 
   const endpoint: string = getEndPoint[mode];

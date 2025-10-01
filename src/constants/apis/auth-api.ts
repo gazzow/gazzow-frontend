@@ -6,5 +6,5 @@ export const AUTH_API = {
   VERIFY_USER: "/auth/verify-otp",
   FORGOT_PASSWORD: "/auth/forgot-password",
   VERIFY_OTP: "/auth/forgot-password/verify-otp",
-  RESET_PASSWORD: "/reset-password",
+  RESET_PASSWORD: "/auth/reset-password",
 };
