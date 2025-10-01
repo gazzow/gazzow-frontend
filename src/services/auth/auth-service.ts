@@ -33,6 +33,11 @@ export const authService = {
     console.log("verify otp response: ", res);
     return res.data;
   },
+  async resendOtp(email: string, purpose: "register" | "reset") {
+    const res = await api.post(AUTH_API.RESEND_OTP, { email, purpose });
+     console.log("resend otp response: ", res);
+     return res.data
+  },
   async logout() {
     return api.post(AUTH_API.LOGOUT);
   },
