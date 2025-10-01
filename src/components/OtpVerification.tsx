@@ -44,8 +44,8 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
   }, [expiryTimer, reSendTimer]);
 
   const getEndPoint: IGetEndPoint = {
-    register: AUTH_API.REGISTER,
-    forgotPassword: AUTH_API.FORGOT_PASSWORD,
+    register: AUTH_API.VERIFY_USER,
+    forgotPassword: AUTH_API.VERIFY_OTP,
   };
 
   const endpoint: string = getEndPoint[mode];
@@ -54,6 +54,7 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
     console.log("Email:", email, "OTP:", otp);
 
     try {
+      console.log(`verify otp endpoint check: ${endpoint}`)
       const res = await authService.verifyOtp(endpoint, email, otp);
       toast.success(res.message);
       if (mode === "register") {

@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function ForgotPassword() {
       const res = await authService.forgotPassword(data.email);
 
       console.log("response: ", res);
+      toast.success(res.message)
 
       if (res.success) {
         router.replace(AUTH_ROUTES.VERIFY_OTP);
