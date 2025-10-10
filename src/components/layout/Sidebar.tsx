@@ -19,12 +19,12 @@ import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 const sections = [
   { label: "Dashboard", icon: Home, href: USER_ROUTES.HOME },
-  { label: "Projects", icon: Folder, href: "#" },
-  { label: "My Contributions", icon: GitPullRequest, href: "#" },
+  { label: "Projects", icon: Folder, href: "/projects" },
+  { label: "Contributions", icon: GitPullRequest, href: "#" },
   { label: "Messages", icon: MessageSquare, href: "#" },
-  { label: "Subscription", icon: CreditCard, href: "#" },
+  { label: "Pricing", icon: CreditCard, href: "#" },
   { label: "Notifications", icon: Bell, href: "#" },
-  { label: "Quick saves", icon: Star, href: "#" },
+  { label: "Favorites", icon: Star, href: "#" },
   { label: "Wallet", icon: Wallet, href: "#" },
   { label: "Profile", icon: User, href: USER_ROUTES.PROFILE, matchPaths: [USER_ROUTES.EDIT_PROFILE] },
   { label: "Settings", icon: Settings, href: "#" },
@@ -34,7 +34,7 @@ export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="md:min-w-60 h-full mt-16 p-4 flex flex-col gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out">
+    <aside className="md:min-w-40 h-full mt-16 p-4 flex flex-col gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out">
       {sections.map(({ label, icon: Icon, href, matchPaths}) => (
         <ul key={label}>
           <li key={label}>
