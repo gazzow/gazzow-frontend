@@ -1,6 +1,10 @@
+"use client";
+
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { Clock, DollarSign } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import ApplyModal from "./ApplyModal";
 
 interface ProjectCardProps {
   id: string;
@@ -28,6 +32,8 @@ export default function ProjectCard({
   durationMax,
   durationUnit,
 }: ProjectCardProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="bg-secondary/30 p-5 rounded-2xl border border-gray-800 hover:border-gray-600 transition-all">
       <h3 className="text-white text-lg font-semibold mb-2">{title}</h3>
@@ -65,13 +71,28 @@ export default function ProjectCard({
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
-            <Link href={PROJECT_ROUTES.DETAILS(id)} className="py-2 px-4 bg-secondary border border-gray-100  text-white text-sm rounded-lg cursor-pointer">
+            <Link
+              href={PROJECT_ROUTES.DETAILS(id)}
+              className="py-2 px-4 bg-secondary border border-gray-100  text-white text-sm rounded-lg cursor-pointer"
+            >
               View More
             </Link>
-            <button className="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg cursor-pointer">
+            <button
+              className="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg cursor-pointer"
+              onClick={() => setIsOpen(true)}
+            >
               Apply
             </button>
           </div>
+          {isOpen && (
+            <div>
+              <ApplyModal
+                key={id}
+                projectId={id}
+                closeModal={setIsOpen}
+              ></ApplyModal>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -15,6 +15,11 @@ type CreateProjectPayload = {
   durationUnit: "weeks" | "months";
 };
 
+type ApplyProjectPayload = {
+  proposal?: string;
+  expectedRate: number | "";
+};
+
 export const projectService = {
   async createProject(data: CreateProjectPayload) {
     const res = await api.post(PROJECT_API.CREATE_PROJECT, data);
@@ -23,7 +28,12 @@ export const projectService = {
   },
   async listProjects() {
     const res = await api.get(PROJECT_API.LIST_PROJECTS);
-    console.log('list project response: ', res);
+    console.log("list project response: ", res);
     return res.data;
-  }
+  },
+  async applyProject(data: ApplyProjectPayload, projectId: string) {
+    const res = await api.post(PROJECT_API.APPLY_PROJECT(projectId), data);
+    console.log("Apply project response: ", res);
+    return res.data;
+  },
 };

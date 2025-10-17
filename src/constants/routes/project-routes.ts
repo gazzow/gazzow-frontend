@@ -1,5 +1,6 @@
 export const PROJECT_ROUTES = {
-    LIST : "/projects",
+    BROWSE : "/projects",
     DETAILS: (id: string) => `/projects/${id}`,
-    CREATE: '/projects/create'
+    CREATE: '/projects/create',
+    MY_PROJECTS: '/projects/my-projects',
 }
