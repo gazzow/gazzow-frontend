@@ -1,20 +1,24 @@
 "use client"; // if using Next.js 13 app directory
 
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import axiosAuth from "@/lib/axios/axios-auth";
 import { Shield } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { setUser } from "@/store/slices/userSlice";
+import { setOnboardingStatus, setUser } from "@/store/slices/userSlice";
+import { clearAuthEmail } from "@/store/slices/authSlice";
+import axios from "axios";
+import { authService } from "@/services/auth/auth-service";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 export default function VerifyOtp() {
   const router = useRouter();
 
   const [otp, setOtp] = useState("");
-  const [expiryTimer, setExpiryTimer] = useState(300); // 5 min in seconds
-  const [reSendTimer, setReSendTimer] = useState(180); // 3 min in seconds
+  const [expiryTimer, setExpiryTimer] = useState(299); // 5 min in seconds
+  const [reSendTimer, setReSendTimer] = useState(59); // 3 min in seconds
 
   const dispatch = useAppDispatch();
   const email = useAppSelector((state) => state.auth.user?.email);
@@ -22,32 +26,45 @@ export default function VerifyOtp() {
   // Countdown timer
   useEffect(() => {
     const interval = setInterval(() => {
-      if (expiryTimer >= 0) {
-        setExpiryTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      }
-      if (reSendTimer >= 0) {
-        setReSendTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      }
+      setExpiryTimer((prev) => (prev > 0 ? prev - 1 : 0));
+      setReSendTimer((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
+
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (expiryTimer === 0) {
+      router.replace(AUTH_ROUTES.SIGNUP);
+    }
+  }, [expiryTimer, router]);
 
   const handleSubmit = async () => {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      const res = await axiosAuth.post("/verify-otp", { email, otp });
+      if (!email || !otp) {
+        console.log("Email or Otp required!");
+        return;
+      }
+      const res = await authService.verifyUser(email, otp);
       toast.success(res.data.message);
       console.log("res data: ", res.data);
 
-      dispatch(setUser(res.data.user));
+      dispatch(setUser(res.data));
+      dispatch(setOnboardingStatus(true));
+      dispatch(clearAuthEmail());
 
       // re-routing
-      toast.info("User registered! re-routing to home");
-      router.replace("/onboarding");
+      toast.info(
+        "User registered! Re-routing to onboarding to finish profile setup"
+      );
+      router.replace(USER_ROUTES.ONBOARDING);
     } catch (error) {
-      console.log("verification error: ", error);
-      toast.error(`verification error: ${error}`);
+      if (axios.isAxiosError(error)) {
+        console.log("verification error: ", error);
+        toast.error(error.response?.data.message || "something went wrong");
+      }
     }
   };
 
@@ -87,10 +104,18 @@ export default function VerifyOtp() {
           </button>
         </div>
 
-        <div className="mt-4 text-center text-gray-300 text-sm">
+        <div className="flex  flex-col mt-4 text-center text-gray-300 text-sm">
           <p>Code expires in {formatTime(expiryTimer)}</p>
-          <p className="mb-6">Resend available in {formatTime(reSendTimer)}</p>
-          <Link className="text-blue-300" href={"/login"}>
+          {reSendTimer === 0 ? (
+            <button className="mb-6 text-red-400 cursor-pointer underline">
+              Resend Otp
+            </button>
+          ) : (
+            <p className="mb-6">
+              Resend available in {formatTime(reSendTimer)}
+            </p>
+          )}
+          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
             &larr; Back to login
           </Link>
         </div>

@@ -1,12 +1,19 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import axiosAuth from "@/lib/axios/axios-auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/store";
 import { setUserEmail } from "@/store/slices/authSlice";
 import { toast } from "react-toastify";
+import { SignupInput, signupSchema } from "@/validators/auth-signup";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { authService } from "@/services/auth/auth-service";
+import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
+import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 
 const fields = [
   {
@@ -27,29 +34,49 @@ const fields = [
     type: "password",
     placeholder: "••••••••",
   },
+  {
+    name: "confirmPassword",
+    label: "Confirm Password",
+    type: "password",
+    placeholder: "••••••••",
+  },
 ];
 
 export default function SignupPage() {
   const router = useRouter();
-
   const dispatch = useAppDispatch();
 
-  const replaceRoute = () => {
-    router.push("/verify-otp");
-  };
+  const [resErrors, setResErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = async (data: Record<string, string>) => {
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<SignupInput>({
+    resolver: zodResolver(signupSchema),
+  });
+
+
+  const handleRegisterSubmit = async (formData: Record<string, string>) => {
     try {
-      console.log("data: ", data);
+      console.log("form data: ", formData);
 
-      const res = await axiosAuth.post("/register", data);
-      if (res.data.success) {
-        toast.success('storing email and re-routing to verify otp')
-        // storing email in auth redux for verification
-        dispatch(setUserEmail({ email: data.email }));
-        replaceRoute();
+      if (formData.password !== formData.confirmPassword) {
+        setError("confirmPassword", {
+          type: "manual",
+          message: "Passwords do not match!",
+        });
+        return;
       }
-      console.log("res data: ", res);
+
+      const data = await authService.signup(formData);
+      console.log("res data: ", data);
+      if (data.success) {
+        toast.success("Re-routing to verify otp");
+        dispatch(setUserEmail({ email: formData.email }));
+        router.replace(AUTH_ROUTES.VERIFY_USER);
+      }
     } catch (error) {
       console.log("error while api call", error);
     }
@@ -61,7 +88,7 @@ export default function SignupPage() {
       subTitle="Join the community of passionate developers"
       submitButtonLabel="signup"
       fields={fields}
-      onSubmit={handleSubmit}
+      onSubmit={handleRegisterSubmit}
       divider={
         <div className="flex items-center my-6">
           <div className="flex-grow h-px bg-gray-600" />
@@ -71,12 +98,8 @@ export default function SignupPage() {
       }
       OAuthButtons={
         <div className="flex gap-4">
-          <button className="flex-1 py-2 bg-white text-black rounded-lg font-medium hover:opacity-90 transition">
-            Google
-          </button>
-          <button className="flex-1 py-2 bg-black text-white rounded-lg font-medium border border-gray-700 hover:opacity-90 transition">
-            GitHub
-          </button>
+          <GoogleAuthButton />
+          <GithubAuthButton />
         </div>
       }
       footer={
@@ -90,6 +113,10 @@ export default function SignupPage() {
           </Link>
         </p>
       }
+      errors={errors}
+      resErrors={resErrors}
+      handleSubmit={handleSubmit}
+      register={register}
     ></AuthForm>
   );
 }

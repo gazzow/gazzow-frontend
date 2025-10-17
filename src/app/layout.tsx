@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-white dark:bg-primary font-sans">
+      <body className="bg-white dark:bg-primary font-sans transition ease-in-out">
         <ThemeProvider>
           <ReduxProvider>
             <ToastProvider>{children}</ToastProvider>

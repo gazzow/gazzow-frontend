@@ -1,13 +1,19 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import axiosAuth from "@/lib/axios/axios-auth";
-import { setUser } from "@/store/slices/userSlice";
+import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
+import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
+import { authService } from "@/services/auth/auth-service";
+import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
+import { LoginInput, loginSchema } from "@/validators/auth-login";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Chromium, Github } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const fields = [
@@ -27,21 +33,28 @@ const fields = [
 
 export default function LoginPage() {
   const router = useRouter();
-
   const dispatch = useAppDispatch();
+  const [resErrors, setResErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = async (data: Record<string, string>) => {
-    console.log("form data:, ", data);
+  const {
+    register,
+    handleSubmit,
+    clearErrors,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const handleLoginSubmit = async (formData: Record<string, string>) => {
+    console.log("form data:, ", formData);
 
     try {
-      const res = await axiosAuth.post("/login", data);
-      console.log(`response: ${JSON.stringify(res.data)}`);
-      // store user data to user slice in redux
+      const res = await authService.login({ ...formData });
+      dispatch(setUserProfile(res.data));
 
-      dispatch(setUser(res.data.user));
-      if (res.data?.success) {
-        toast.success(res.data.message);
-        router.replace("/home");
+      if (res.success) {
+        toast.success(res.message);
+        router.replace(USER_ROUTES.HOME);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -58,7 +71,7 @@ export default function LoginPage() {
       title="Welcome Back"
       subTitle="Sign in to connect with coders around the world"
       fields={fields}
-      onSubmit={handleSubmit}
+      onSubmit={handleLoginSubmit}
       submitButtonLabel="Login"
       divider={
         <div className="mb-4">
@@ -83,14 +96,8 @@ export default function LoginPage() {
       }
       OAuthButtons={
         <div className="flex gap-4">
-          <button className="flex-1 flex items-center justify-center gap-4 py-2 bg-white text-black rounded-lg font-medium hover:opacity-90 transition">
-            <Chromium size={18} />
-            <span>Google</span>
-          </button>
-          <button className="flex-1 flex items-center justify-center gap-4 py-2 bg-black text-white rounded-lg font-medium border border-gray-700 hover:opacity-90 transition">
-            <Github size={18} />
-            <span>GitHub</span>
-          </button>
+          <GoogleAuthButton />
+          <GithubAuthButton />
         </div>
       }
       footer={
@@ -104,6 +111,11 @@ export default function LoginPage() {
           </Link>
         </p>
       }
+      errors={errors}
+      resErrors={resErrors}
+      handleSubmit={handleSubmit}
+      register={register}
+      clearErrors={clearErrors}
     />
   );
 }

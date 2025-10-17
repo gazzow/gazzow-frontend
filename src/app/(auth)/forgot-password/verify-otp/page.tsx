@@ -1,4 +1,4 @@
-"use client"
+  "use client"
 
 import OtpVerification from "@/components/OtpVerification";
 import { useAppSelector } from "@/store/store";
@@ -9,8 +9,8 @@ export default function VerifyOtp() {
   return (
     <OtpVerification
       email={email}
-      mode="forgot-password"
-      key={"forgot-password"}
+      mode="forgotPassword"
+      key={"forgotPassword"}
     ></OtpVerification>
   );
 }

@@ -1,13 +1,15 @@
 "use client";
 
-import axiosAuth from "@/lib/axios/axios-auth";
-import { setUserEmail } from "@/store/slices/authSlice";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
+import api from "@/lib/axios/api";
+import { authService } from "@/services/auth/auth-service";
 import { useAppSelector } from "@/store/store";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -33,17 +35,14 @@ export default function ResetPassword() {
     console.log("confirm password: ", password);
 
     try {
-      const res = await axiosAuth.put("/reset-password", { email, password });
-      console.log("response in reset-password: ", res);
+      const res = await authService.resetPassword(email, password);
+      toast.success(res.message);
+      router.replace(AUTH_ROUTES.LOGIN);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("error in reset-password: ", error);
       }
     }
-
-    setTimeout(() => {
-      router.replace("/login");
-    }, 1000);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +109,7 @@ export default function ResetPassword() {
         </div>
 
         <div className="mt-4 text-center text-gray-300 text-sm">
-          <Link className="text-blue-300" href={"/login"}>
+          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
             &larr; Back to login
           </Link>
         </div>

@@ -1,16 +1,27 @@
 "use client";
 
-import axiosAuth from "@/lib/axios/axios-auth";
+import { AUTH_API } from "@/constants/apis/auth-api";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
+import { authService } from "@/services/auth/auth-service";
 import { formatTime } from "@/utils/auth/formatTime";
+import axios from "axios";
 import { Shield } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+interface IGetEndPoint {
+  register: string;
+  forgotPassword: string;
+}
+
+type Mode = keyof IGetEndPoint;
+
 interface OtpVerificationProps {
   email: string;
-  mode: string;
+  mode: Mode;
 }
 
 export default function OtpVerification({ email, mode }: OtpVerificationProps) {
@@ -20,7 +31,6 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
 
   const router = useRouter();
 
-  // Countdown timer
   useEffect(() => {
     const interval = setInterval(() => {
       if (expiryTimer >= 0) {
@@ -31,32 +41,34 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [expiryTimer,reSendTimer]);
+  }, [expiryTimer, reSendTimer]);
 
-  const endpoint =
-    mode === "register"
-      ? "/verify-otp"
-      : "/forgot-password/verify-otp";
+  const getEndPoint: IGetEndPoint = {
+    register: AUTH_API.VERIFY_USER,
+    forgotPassword: AUTH_API.VERIFY_OTP,
+  };
+
+  const endpoint: string = getEndPoint[mode];
 
   const handleSubmit = async () => {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      const res = await axiosAuth.post(endpoint, { email, otp });
-      toast.success(res.data.message);
-      console.log("res data: ", res.data);
-      setTimeout(() => {
+      console.log(`verify otp endpoint check: ${endpoint}`)
+      const res = await authService.verifyOtp(endpoint, email, otp);
+      toast.success(res.message);
+      if (mode === "register") {
         // re-routing
         toast.info("sign in! re-routing to home");
-        if (mode === "register") {
-          router.replace("/home");
-        } else {
-          router.replace("/reset-password");
-        }
-      }, 3000);
+        router.replace(USER_ROUTES.HOME);
+      } else {
+        router.replace(AUTH_ROUTES.RESET_PASSWORD);
+      }
     } catch (error) {
-      console.log("verification error: ", error);
-      toast.error(`verification error: ${error}`);
+      if (axios.isAxiosError(error)) {
+        console.log("verification error: ", error);
+        toast.error(error.response?.data.message || "Internal server error");
+      }
     }
   };
 
@@ -92,8 +104,16 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
 
         <div className="mt-4 text-center text-gray-300 text-sm">
           <p>Code expires in {formatTime(expiryTimer)}</p>
-          <p className="mb-6">Resend available in {formatTime(reSendTimer)}</p>
-          <Link className="text-blue-300" href={"/login"}>
+          {reSendTimer === 0 ? (
+            <button className="mb-6 text-red-400 cursor-pointer underline">
+              Resend Otp
+            </button>
+          ) : (
+            <p className="mb-6">
+              Resend available in {formatTime(reSendTimer)}
+            </p>
+          )}
+          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
             &larr; Back to login
           </Link>
         </div>
