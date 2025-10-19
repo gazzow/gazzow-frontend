@@ -31,6 +31,11 @@ export const projectService = {
     console.log("list project response: ", res);
     return res.data;
   },
+  async MyProjects() {
+    const res = await api.get(PROJECT_API.MY_PROJECT);
+    console.log("my project response: ", res);
+    return res.data;
+  },
   async applyProject(data: ApplyProjectPayload, projectId: string) {
     const res = await api.post(PROJECT_API.APPLY_PROJECT(projectId), data);
     console.log("Apply project response: ", res);

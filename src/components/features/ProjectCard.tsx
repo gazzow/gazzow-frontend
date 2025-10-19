@@ -1,7 +1,7 @@
 "use client";
 
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
-import { Clock, DollarSign } from "lucide-react";
+import { Calendar, DollarSign } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import ApplyModal from "./ApplyModal";
@@ -55,7 +55,7 @@ export default function ProjectCard({
           <DollarSign size={14} /> {budgetMin} - {budgetMax}
         </div>
         <div className="flex items-center gap-1">
-          <Clock size={14} /> {durationMin} -{durationMax} {durationUnit}
+          <Calendar size={14} /> {durationMin} -{durationMax} {durationUnit}
         </div>
       </div>
 

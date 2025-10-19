@@ -73,13 +73,17 @@ export default function CreateProjectPage() {
       const res = await projectService.createProject(data);
       if (res.success) {
         toast.success(res.message);
-        router.replace(PROJECT_ROUTES.LIST);
+        router.replace(PROJECT_ROUTES.BROWSE);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message || "create project error");
       }
     }
+  };
+
+  const onCancel = () => {
+    router.back();
   };
 
   return (
@@ -318,14 +322,13 @@ export default function CreateProjectPage() {
 
           {/* Buttons */}
           <div className="flex justify-end gap-4 pt-6 border-t border-gray-800">
-            <Link href="/projects">
-              <button
-                type="reset"
-                className="px-6 py-2.5 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition cursor-pointer"
-              >
-                Cancel
-              </button>
-            </Link>
+            <button
+              type="reset"
+              className="px-6 py-2.5 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition cursor-pointer"
+              onClick={onCancel}
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               className="px-6 py-2.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition cursor-pointer"
