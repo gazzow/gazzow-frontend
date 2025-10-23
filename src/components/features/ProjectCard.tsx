@@ -85,13 +85,11 @@ export default function ProjectCard({
             </button>
           </div>
           {isOpen && (
-            <div>
-              <ApplyModal
-                key={id}
-                projectId={id}
-                closeModal={setIsOpen}
-              ></ApplyModal>
-            </div>
+            <ApplyModal
+              key={id}
+              projectId={id}
+              closeModal={setIsOpen}
+            ></ApplyModal>
           )}
         </div>
       </div>

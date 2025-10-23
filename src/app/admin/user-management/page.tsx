@@ -149,7 +149,7 @@ export default function UserManagement() {
       )}
 
       {confirmModalOpen && (
-        <div className="fixed inset-0 bg-primary/6  flex justify-center items-center">
+        <div className="fixed inset-0 bg-primary/60  flex justify-center items-center">
           <div className="bg-white dark:bg-secondary p-4 rounded shadow flex flex-col">
             <p className="font-bold text-black dark:text-white">
               {selectedUser?.status === "active"

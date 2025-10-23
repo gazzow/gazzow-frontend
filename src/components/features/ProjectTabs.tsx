@@ -15,7 +15,7 @@ export default function ProjectTabs({ tabs }: ProjectTabsProp) {
   const pathname = usePathname();
 
   return (
-    <div className="border-b border-gray-700">
+    <div className="w-full border-b border-gray-700">
       <div className="flex gap-6 relative">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;
