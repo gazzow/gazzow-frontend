@@ -9,7 +9,14 @@ import { projectService } from "@/services/user/project-service";
 import { IProject } from "@/types/project";
 import { Role } from "@/types/user";
 import axios from "axios";
-import { ArrowLeft, Calendar, DollarSign, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  DollarSign,
+  Edit,
+  Trash,
+  Users,
+} from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
@@ -46,7 +53,7 @@ export default function ProjectDetails() {
   useEffect(() => {
     if (!projectId) return;
 
-    const fetchProjects = async () => {
+    const fetchProject = async () => {
       try {
         console.log("projectId: ", projectId);
         const res = await projectService.getProject(projectId);
@@ -60,10 +67,10 @@ export default function ProjectDetails() {
         }
       }
     };
-    fetchProjects();
+    fetchProject();
   }, [projectId]);
 
-  const handleGoBack = () => {
+  const onBackClick = () => {
     router.back();
   };
 
@@ -82,14 +89,19 @@ export default function ProjectDetails() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-2 w-full">
-          <button onClick={handleGoBack} className="cursor-pointer">
+          <button onClick={onBackClick} className="cursor-pointer">
             <ArrowLeft />
           </button>
           <div className="flex flex-col gap-2">
             <h1 className="text-2xl md:text-3xl font-semibold ">
               {project?.title}
             </h1>
-            <p className="text-sm text-gray-400">Posted 1/15/2024</p>
+            {project?.createdAt && (
+              <p className="text-sm text-gray-400">
+                Posted{" "}
+                {new Date(project?.createdAt).toLocaleDateString('en-GB')}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -103,44 +115,26 @@ export default function ProjectDetails() {
           {/* Project Description */}
           <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg">
             <h2 className="text-lg font-semibold mb-3">Project Description</h2>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              We’re looking for an experienced React Native developer to build a
-              comprehensive e-commerce mobile application. The app should
-              include user authentication, product catalog, shopping cart,
-              payment integration, and order management.
-              <br />
-              <br />
-              <strong>Key Features Required:</strong> User registration and
-              authentication, product browsing, shopping cart and wishlist,
-              secure payment processing (Stripe integration), order tracking,
-              push notifications, and an admin panel for inventory management.
-              <br />
-              <br />
-              The ideal candidate should have: 3+ years of React Native
-              experience, familiarity with REST APIs and backend integration,
-              experience with Redux/Context API, and app store deployment.
-            </p>
+            {project?.description && (
+              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                {project.description}
+              </p>
+            )}
           </div>
 
           {/* Required Skills */}
           <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg">
             <h2 className="text-lg font-semibold mb-3">Required Skills</h2>
             <div className="flex flex-wrap gap-2">
-              {[
-                "React Native",
-                "Node.js",
-                "MongoDB",
-                "Payment Gateway",
-                "Redux",
-                "TypeScript",
-              ].map((skill, idx) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1 text-sm bg-gray-800 rounded-full border border-gray-700 hover:border-gray-500 cursor-pointer"
-                >
-                  {skill}
-                </span>
-              ))}
+              {project?.requiredSkills &&
+                project.requiredSkills.map((skill, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 text-sm bg-gray-800 rounded-full border border-gray-700 hover:border-gray-500 cursor-pointer"
+                  >
+                    {skill}
+                  </span>
+                ))}
             </div>
           </div>
         </div>
@@ -153,14 +147,25 @@ export default function ProjectDetails() {
               <h2 className="text-lg font-semibold">Budget</h2>
               <div className="flex items-center text-gray-300">
                 <DollarSign className="w-4 h-4 mr-1 text-green-400" />
-                <span>3,500 - 5,500</span>
+                {project?.budgetMax && project?.budgetMin && (
+                  <span>
+                    {project.budgetMin} - {project.budgetMax}
+                  </span>
+                )}
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Deadline</h2>
+              <h2 className="text-lg font-semibold">Duration</h2>
               <div className="flex items-center text-gray-300">
                 <Calendar className="w-4 h-4 mr-1 text-blue-400" />
-                <span>03/09/2025</span>
+                {project?.durationMin &&
+                  project?.durationMax &&
+                  project?.durationUnit && (
+                    <span>
+                      {project.durationMin} - {project.durationMax}{" "}
+                      {project.durationUnit}
+                    </span>
+                  )}
               </div>
             </div>
             <div className="flex items-center justify-between">
@@ -172,20 +177,27 @@ export default function ProjectDetails() {
             </div>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Status</h2>
-              <span className="text-green-400 font-medium">Open</span>
+              {project?.status && (
+                <span className="text-green-400 font-medium">
+                  {project.status.slice(0, 1).toUpperCase() +
+                    project.status.slice(1)}
+                </span>
+              )}
             </div>
 
             <div className="flex space-x-3 pt-4">
               {currentRole === Role.CREATOR ? (
                 <>
-                  <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium cursor-pointer">
-                    Edit Project
+                  <button className="flex-1 flex items-center justify-center gap-2 bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer">
+                    <Edit size={16} />
+                    <span>Edit Project</span>
                   </button>
                   <button
-                    className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium cursor-pointer"
                     onClick={handleConfirmModal}
                   >
-                    Delete
+                    <Trash size={16} />
+                    <span>Delete</span>
                   </button>
                 </>
               ) : currentRole === Role.CONTRIBUTOR ? null : (
@@ -193,35 +205,9 @@ export default function ProjectDetails() {
                   className="flex-1 bg-btn-primary hover:bg-btn-primary text-white py-2 rounded-lg font-medium cursor-pointer"
                   onClick={handleApplyModal}
                 >
-                  Apply
+                  Apply to contribute
                 </button>
               )}
-            </div>
-          </div>
-
-          {/* Suggested Contributors */}
-          <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg">
-            <h2 className="text-lg font-semibold mb-3">
-              Suggested Contributors
-            </h2>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-blue-300" />
-              <div>
-                <h3 className="font-medium">Maria Garcia</h3>
-                <p className="text-sm text-gray-400">
-                  Senior Frontend Engineer
-                </p>
-                <div className="flex gap-2 mt-1">
-                  {["React", "TypeScript", "Next.js"].map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
 

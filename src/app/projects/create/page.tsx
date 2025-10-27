@@ -39,22 +39,22 @@ export default function CreateProjectPage() {
   } = useForm<CreateProjectInput>({
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
-      techStacks: [],
+      requiredSkills: [],
     },
   });
 
-  const techStacks = watch("techStacks");
+  const requiredSkills = watch("requiredSkills");
 
   const handleTechToggle = (tech: string) => {
-    const current = getValues("techStacks");
+    const current = getValues("requiredSkills");
     if (current.includes(tech)) {
       setValue(
-        "techStacks",
+        "requiredSkills",
         current.filter((t) => t !== tech),
         { shouldValidate: true }
       );
     } else {
-      setValue("techStacks", [...current, tech], { shouldValidate: true });
+      setValue("requiredSkills", [...current, tech], { shouldValidate: true });
     }
   };
 
@@ -130,7 +130,7 @@ export default function CreateProjectPage() {
               </label>
               <textarea
                 {...register("description")}
-                rows={4}
+                rows={8}
                 placeholder="Describe your project"
                 className="w-full rounded-lg bg-gray-800 p-3 text-sm text-white placeholder-gray-500 border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
               />
@@ -141,10 +141,10 @@ export default function CreateProjectPage() {
               )}
             </div>
 
-            {/* Tech Stacks */}
+            {/* Required Skills */}
             <div>
               <label className="block text-sm text-gray-400 mb-2">
-                Tech Stacks
+                Required Skills
               </label>
               <div className="flex flex-wrap gap-2">
                 {techOptions.map((tech) => (
@@ -153,7 +153,7 @@ export default function CreateProjectPage() {
                     key={tech}
                     onClick={() => handleTechToggle(tech)}
                     className={`px-3 py-1.5 rounded-full text-sm transition ${
-                      techStacks.includes(tech)
+                      requiredSkills.includes(tech)
                         ? "bg-purple-600 text-white"
                         : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                     }`}
@@ -162,9 +162,9 @@ export default function CreateProjectPage() {
                   </button>
                 ))}
               </div>
-              {errors.techStacks && (
+              {errors.requiredSkills && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.techStacks.message}
+                  {errors.requiredSkills.message}
                 </p>
               )}
             </div>

@@ -1,10 +1,11 @@
 import { PROJECT_API } from "@/constants/apis/project-api";
 import api from "@/lib/axios/api";
+import { ApplicationStatus } from "@/types/application";
 
 type CreateProjectPayload = {
   title: string;
   description: string;
-  techStacks: string[];
+  requiredSkills: string[];
   visibility: "public" | "invite";
   developersNeeded: number;
   experience: string;
@@ -18,6 +19,12 @@ type CreateProjectPayload = {
 type ApplyProjectPayload = {
   proposal?: string;
   expectedRate: number | "";
+};
+
+type UpdateApplicationStatusPayload = {
+  projectId: string;
+  applicationId: string;
+  status: ApplicationStatus;
 };
 
 export const projectService = {
@@ -44,6 +51,19 @@ export const projectService = {
   async applyProject(data: ApplyProjectPayload, projectId: string) {
     const res = await api.post(PROJECT_API.APPLY_PROJECT(projectId), data);
     console.log("Apply project response: ", res);
+    return res.data;
+  },
+  async listProjectApplicants(projectId: string) {
+    const res = await api.get(PROJECT_API.LIST_APPLICANTS(projectId));
+    console.log("project applicants response: ", res);
+    return res.data;
+  },
+  async updateApplicationStatus(data: UpdateApplicationStatusPayload) {
+    const res = await api.patch(
+      PROJECT_API.UPDATE_APPLICATION_STATUS(data.projectId, data.applicationId),
+      { status: data.status }
+    );
+    console.log("Update application Status response: ", res);
     return res.data;
   },
 };

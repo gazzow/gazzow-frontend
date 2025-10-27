@@ -35,15 +35,17 @@ export default function ProjectCard({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="bg-secondary/30 p-5 rounded-2xl border border-gray-800 hover:border-gray-600 transition-all">
-      <h3 className="text-white text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-gray-400 text-sm mb-3 line-clamp-2">{description}</p>
+    <div className="flex flex-col bg-secondary/30 p-5 rounded-2xl border border-gray-800 hover:border-gray-600 transition-all">
+      <h3 className="flex-1 text-white text-lg font-semibold mb-2">{title}</h3>
+      <p className="flex-1 text-gray-400 text-sm mb-3 line-clamp-2">
+        {description}
+      </p>
 
       <div className="flex flex-wrap gap-2 mb-3">
         {requiredSkills.map((tech) => (
           <span
             key={tech}
-            className="bg-blue-800 text-gray-300 text-xs px-2 py-1 rounded-full"
+            className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
           >
             {tech}
           </span>
@@ -55,7 +57,7 @@ export default function ProjectCard({
           <DollarSign size={14} /> {budgetMin} - {budgetMax}
         </div>
         <div className="flex items-center gap-1">
-          <Calendar size={14} /> {durationMin} -{durationMax} {durationUnit}
+          <Calendar size={14} /> {durationMin}-{durationMax} {durationUnit}
         </div>
       </div>
 
@@ -73,7 +75,7 @@ export default function ProjectCard({
           <div className="flex items-center gap-2">
             <Link
               href={PROJECT_ROUTES.DETAILS(id)}
-              className="py-2 px-4 bg-secondary border border-gray-100  text-white text-sm rounded-lg cursor-pointer"
+              className="py-2 px-4 bg-secondary border border-border-primary  text-white text-sm rounded-lg cursor-pointer"
             >
               View More
             </Link>
