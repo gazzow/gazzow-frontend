@@ -52,7 +52,7 @@ export default function Sidebar() {
             <Link
               href={href}
               className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                pathname === href || matchPaths?.includes(pathname)
+                pathname === href || matchPaths?.includes(pathname) || pathname.split('/').includes(label.toLowerCase())
                   ? "bg-btn-primary text-white"
                   : "hover:bg-secondary/30 hover:text-white"
               }`}
