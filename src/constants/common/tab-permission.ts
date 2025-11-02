@@ -4,6 +4,7 @@ export const projectTabPermissions: Record<string, string[]> = {
   creator: [
     "Overview",
     "Applications",
+    "Contributors",
     "Tasks",
     "Team Chat",
     "Meetings",

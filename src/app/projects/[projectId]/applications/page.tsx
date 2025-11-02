@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 const tabRoutes = [
   { name: "Overview", path: "" },
   { name: "Applications", path: "/applications" },
+  { name: "Contributors", path: "/contributors" },
   { name: "Tasks", path: "/tasks" },
   { name: "Team Chat", path: "/chat" },
   { name: "Meetings", path: "/meetings" },

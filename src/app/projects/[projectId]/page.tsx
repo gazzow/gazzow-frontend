@@ -4,6 +4,7 @@ import ApplyModal from "@/components/features/ApplyModal";
 import ProjectTabs from "@/components/features/ProjectTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
+import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
 import { IProject } from "@/types/project";
@@ -24,6 +25,7 @@ import { toast } from "react-toastify";
 const tabRoutes = [
   { name: "Overview", path: "" },
   { name: "Applications", path: "/applications" },
+  { name: "Contributors", path: "/contributors" },
   { name: "Tasks", path: "/tasks" },
   { name: "Team Chat", path: "/chat" },
   { name: "Meetings", path: "/meetings" },
@@ -71,7 +73,13 @@ export default function ProjectDetails() {
   }, [projectId]);
 
   const onBackClick = () => {
-    router.back();
+    if (currentRole === Role.CREATOR) {
+      router.replace(PROJECT_ROUTES.MY_PROJECTS);
+    } else if (currentRole === Role.CONTRIBUTOR) {
+      router.replace(PROJECT_ROUTES.BROWSE);
+    } else {
+      router.replace(PROJECT_ROUTES.BROWSE);
+    }
   };
 
   const handleConfirmModal = () => {
@@ -99,7 +107,7 @@ export default function ProjectDetails() {
             {project?.createdAt && (
               <p className="text-sm text-gray-400">
                 Posted{" "}
-                {new Date(project?.createdAt).toLocaleDateString('en-GB')}
+                {new Date(project?.createdAt).toLocaleDateString("en-GB")}
               </p>
             )}
           </div>
@@ -220,7 +228,7 @@ export default function ProjectDetails() {
                 </p>
                 <div className="flex justify-end gap-4 mt-4">
                   <button
-                    className="bg-red-400 text-white py-1 px-4 rounded cursor-pointer"
+                    className="bg-red-400 text-white py-1 px-4 hover:  rounded cursor-pointer"
                     onClick={() => setConfirmModal(false)}
                   >
                     No

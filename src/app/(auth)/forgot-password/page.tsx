@@ -34,7 +34,7 @@ export default function ForgotPassword() {
       const res = await authService.forgotPassword(data.email);
 
       console.log("response: ", res);
-      toast.success(res.message)
+      toast.success(res.message);
 
       if (res.success) {
         router.replace(AUTH_ROUTES.VERIFY_OTP);
@@ -42,6 +42,7 @@ export default function ForgotPassword() {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("forgot error: ", error);
+        toast.error(error.response?.data.message || "Internal server error");
       }
     }
   };
