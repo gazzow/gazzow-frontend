@@ -2,7 +2,6 @@
 
 import UserProfileModal from "@/components/features/UserProfileModal";
 import { userManagementService } from "@/services/admin/user-management";
-import { UserStatus } from "@/types/user";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -32,7 +31,7 @@ export default function UserManagement() {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<{
     id: string;
-    status: UserStatus;
+    status: string;
   } | null>(null);
 
   const getSortParams = (sortOption: string) => {
@@ -92,7 +91,7 @@ export default function UserManagement() {
     };
   }, [search]);
 
-  const handleToggleClick = (id: string, status: UserStatus) => {
+  const handleToggleClick = (id: string, status: string) => {
     setSelectedUser({ id, status });
     setConfirmModalOpen(true);
   };
