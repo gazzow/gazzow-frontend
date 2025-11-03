@@ -2,20 +2,6 @@ import { PROJECT_API } from "@/constants/apis/project-api";
 import api from "@/lib/axios/api";
 import { ApplicationStatus } from "@/types/application";
 
-type CreateProjectPayload = {
-  title: string;
-  description: string;
-  requiredSkills: string[];
-  visibility: "public" | "invite";
-  developersNeeded: number;
-  experience: string;
-  budgetMin: number;
-  budgetMax: number;
-  durationMin: number;
-  durationMax: number;
-  durationUnit: "weeks" | "months";
-};
-
 type ApplyProjectPayload = {
   proposal?: string;
   expectedRate: number | "";
@@ -28,7 +14,7 @@ type UpdateApplicationStatusPayload = {
 };
 
 export const projectService = {
-  async createProject(data: CreateProjectPayload) {
+  async createProject(data: FormData) {
     const res = await api.post(PROJECT_API.CREATE_PROJECT, data);
     console.log("create project response: ", res);
     return res.data;
@@ -48,7 +34,12 @@ export const projectService = {
     console.log("my project response: ", res);
     return res.data;
   },
-  async applyProject(data: ApplyProjectPayload, projectId: string) {
+  async generateSignedUrl(fileKey: string) {
+    const res = await api.get(PROJECT_API.GENERATE_SIGNED_URL(fileKey));
+    console.log('signed url response: ', res)
+    return res.data;
+  },
+  async createApplication(data: ApplyProjectPayload, projectId: string) {
     const res = await api.post(PROJECT_API.APPLY_PROJECT(projectId), data);
     console.log("Apply project response: ", res);
     return res.data;

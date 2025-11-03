@@ -14,6 +14,7 @@ export interface IProject {
   visibility: ProjectVisibility;
   status: ProjectStatus;
   contributors: IContributor[];
+  documents: IProjectFile[];
   createdAt: string;
   updatedAt: string;
 }
@@ -24,6 +25,11 @@ export interface IContributor {
   invitedAt?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IProjectFile {
+  key: string;
+  name: string;
 }
 
 export enum ContributorStatus {
@@ -53,5 +59,3 @@ export enum ProjectDurationUnit {
   WEEKS = "weeks",
   MONTHS = "months",
 }
-
-

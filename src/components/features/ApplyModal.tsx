@@ -23,7 +23,7 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
 
     console.log("Project application submitting for Id: ", projectId);
     try {
-      const res = await projectService.applyProject(
+      const res = await projectService.createApplication(
         { proposal, expectedRate },
         projectId
       );

@@ -37,8 +37,10 @@ export default function ProjectCard({
   return (
     <div className="flex flex-col bg-secondary/30 p-5 rounded-2xl border border-gray-800 hover:border-gray-600 transition-all">
       <h3 className="flex-1 text-white text-lg font-semibold mb-2">{title}</h3>
-      <p className="flex-1 text-gray-400 text-sm mb-3 line-clamp-2">
-        {description}
+      <p className="flex-1 text-gray-400 text-sm mb-3">
+        {description.length > 75
+          ? description.slice(0, 75) + "..."
+          : description}
       </p>
 
       <div className="flex flex-wrap gap-2 mb-3">

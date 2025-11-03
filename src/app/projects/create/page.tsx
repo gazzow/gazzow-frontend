@@ -1,5 +1,6 @@
 "use client";
 
+import ProjectFileUpload from "@/components/features/FileUpload";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { projectService } from "@/services/user/project-service";
 import {
@@ -9,7 +10,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -29,6 +30,9 @@ const experiences = ["beginner", "intermediate", "expert"];
 
 export default function CreateProjectPage() {
   const router = useRouter();
+
+  const [files, setFiles] = useState<File[]>([]);
+
   const {
     register,
     handleSubmit,
@@ -61,15 +65,32 @@ export default function CreateProjectPage() {
   const onSubmit = async (values: CreateProjectInput) => {
     const data = {
       ...values,
-      developersNeeded: Number(values.developersNeeded),
-      budgetMin: Number(values.budgetMin),
-      budgetMax: Number(values.budgetMax),
-      durationMin: Number(values.durationMin),
-      durationMax: Number(values.durationMax),
+      developersNeeded: values.developersNeeded,
+      budgetMin: values.budgetMin,
+      budgetMax: values.budgetMax,
+      durationMin: values.durationMin,
+      durationMax: values.durationMax,
     };
-    console.log("New Project Data:", data);
+
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === "projectDocuments" || value === undefined || value === null)
+        return;
+      if (Array.isArray(value)) {
+        value.forEach((v) => formData.append(key, String(v)));
+      } else {
+        formData.append(key, String(value));
+      }
+    });
+
+    if (files.length) {
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+
     try {
-      const res = await projectService.createProject(data);
+      const res = await projectService.createProject(formData);
       if (res.success) {
         toast.success(res.message);
         router.replace(PROJECT_ROUTES.BROWSE);
@@ -252,24 +273,24 @@ export default function CreateProjectPage() {
               Budget & Timeline
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="flex flex-row flex-wrap gap-6">
               {/* Budget Range */}
               <div>
                 <label className="block text-sm text-gray-400 mb-2">
                   Budget Range ($)
                 </label>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   <input
                     type="number"
                     {...register("budgetMin")}
                     placeholder="Min e.g., 8000"
-                    className="w-1/2 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="flex-1 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <input
                     type="number"
                     {...register("budgetMax")}
                     placeholder="Max e.g., 12000"
-                    className="w-1/2 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="flex-1 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
                 {(errors.budgetMin || errors.budgetMax) && (
@@ -280,45 +301,67 @@ export default function CreateProjectPage() {
               </div>
 
               {/* Duration Range */}
-              <div>
+              <div className="flex-1">
                 <label className="block text-sm text-gray-400 mb-2">
                   Project Duration
                 </label>
-                <div className="flex gap-3">
-                  <input
-                    type="number"
-                    {...register("durationMin")}
-                    placeholder="Min e.g., 1"
-                    className="w-1/3 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <input
-                    type="number"
-                    {...register("durationMax")}
-                    placeholder="Max e.g., 3"
-                    className="w-1/3 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <select
-                    {...register("durationUnit")}
-                    className="w-1/3 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="">Select Unit</option>
-                    <option value="weeks">Weeks</option>
-                    <option value="months">Months</option>
-                  </select>
+                <div className="flex flex-wrap gap-3">
+                  {/* Min Duration */}
+                  <div className="flex-1 flex flex-col">
+                    <input
+                      type="number"
+                      {...register("durationMin")}
+                      placeholder="Min e.g., 1"
+                      className="rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    {errors.durationMin && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.durationMin?.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Max Duration */}
+                  <div className="flex-1 flex flex-col">
+                    <input
+                      type="number"
+                      {...register("durationMax")}
+                      placeholder="Max e.g., 3"
+                      className="rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    {errors.durationMax && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.durationMax?.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Duration Unit */}
+                  <div className="flex-1 flex flex-col">
+                    <select
+                      {...register("durationUnit")}
+                      className="rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="">Select Unit</option>
+                      <option value="weeks">Weeks</option>
+                      <option value="months">Months</option>
+                    </select>
+                    {errors.durationUnit && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.durationUnit?.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                {(errors.durationMin ||
-                  errors.durationMax ||
-                  errors.durationUnit) && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.durationMin?.message ||
-                      errors.durationMax?.message ||
-                      errors.durationUnit?.message}
-                  </p>
-                )}
               </div>
             </div>
           </section>
 
+          {/* Upload Documents  ( ADD validation file limit)*/}
+          <ProjectFileUpload
+            label="Upload Documents"
+            onFilesChange={setFiles}
+          />
           {/* Buttons */}
           <div className="flex justify-end gap-4 pt-6 border-t border-gray-800">
             <button

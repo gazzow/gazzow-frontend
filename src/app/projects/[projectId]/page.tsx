@@ -15,6 +15,8 @@ import {
   Calendar,
   DollarSign,
   Edit,
+  Eye,
+  Files,
   Trash,
   Users,
 } from "lucide-react";
@@ -82,6 +84,23 @@ export default function ProjectDetails() {
     }
   };
 
+  const handleViewFile = async (fileKey: string) => {
+    try {
+      const res = await projectService.generateSignedUrl(
+        encodeURIComponent(fileKey)
+      );
+
+      if (res.success) {
+        toast.success(res.message);
+      }
+      window.open(res.data, "_black", "noopener,noreferrer");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Failed to get signed URL");
+      }
+    }
+  };
+
   const handleConfirmModal = () => {
     setConfirmModal(true);
   };
@@ -145,6 +164,35 @@ export default function ProjectDetails() {
                 ))}
             </div>
           </div>
+
+          {/* Uploaded Documents */}
+          {project?.documents && project.documents.length > 0 && (
+            <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg">
+              <div className="flex items-center gap-1">
+                <Files size={18} />
+                <h2 className="text-lg font-semibold">Attachments</h2>
+              </div>
+              <ul className="mt-3 space-y-2">
+                {project.documents.map((file, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between bg-secondary px-3 py-4 rounded-lg text-sm text-gray-300"
+                  >
+                    <span>{file.name}</span>
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => handleViewFile(file.key)}
+                        className="flex gap-2 hover:text-red-300 text-xs cursor-pointer"
+                      >
+                        <Eye size={18} />
+                        <span>view</span>
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Right Section */}
@@ -196,7 +244,7 @@ export default function ProjectDetails() {
             <div className="flex space-x-3 pt-4">
               {currentRole === Role.CREATOR ? (
                 <>
-                  <button className="flex-1 flex items-center justify-center gap-2 bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer">
+                  <button className="flex-1 flex items-center justify-center gap-2 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer">
                     <Edit size={16} />
                     <span>Edit Project</span>
                   </button>
@@ -210,7 +258,7 @@ export default function ProjectDetails() {
                 </>
               ) : currentRole === Role.CONTRIBUTOR ? null : (
                 <button
-                  className="flex-1 bg-btn-primary hover:bg-btn-primary text-white py-2 rounded-lg font-medium cursor-pointer"
+                  className="flex-1 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer"
                   onClick={handleApplyModal}
                 >
                   Apply to contribute

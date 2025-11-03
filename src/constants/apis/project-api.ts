@@ -4,6 +4,8 @@ export const PROJECT_API = {
   LIST_PROJECTS: "/projects",
   APPLY_PROJECT: (projectId: string) => `/projects/${projectId}/applications`,
   MY_PROJECT: "/projects/me",
+  GENERATE_SIGNED_URL: (fileKey: string) =>
+    `/projects/generate-signed-url?fileKey=${fileKey}`,
   LIST_APPLICANTS: (projectId: string) => `/projects/${projectId}/applications`,
   UPDATE_APPLICATION_STATUS: (projectId: string, applicationId: string) =>
     `/projects/${projectId}/applications/${applicationId}`,

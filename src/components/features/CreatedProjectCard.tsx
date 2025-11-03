@@ -42,21 +42,22 @@ export default function CreatedProjectCard({
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
-          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mt-1">
-            <span className="flex items-center gap-1">
-              <DollarSign size={14} />{budgetMin.toLocaleString()} -{" "}
-              {budgetMax.toLocaleString()}
-            </span>
-            <span className="flex items-center gap-1">
-              <Calendar size={14} /> {durationMin}-{durationMax} {durationUnit}
-            </span>
-          </div>
         </div>
         <span
           className={`text-xs flex items-center gap-1 px-2 py-1 rounded-md ${statusColor} bg-opacity-10`}
         >
           <Circle size={8} className={statusColor} />
           {status}
+        </span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 mt-1">
+        <span className="flex items-center gap-1">
+          <DollarSign size={14} />
+          {budgetMin.toLocaleString()} - {budgetMax.toLocaleString()}
+        </span>
+        <span className="flex items-center gap-1">
+          <Calendar size={14} /> {durationMin}-{durationMax} {durationUnit}
         </span>
       </div>
 
