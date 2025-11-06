@@ -33,9 +33,9 @@ export interface IProjectFile {
 }
 
 export enum ContributorStatus {
-  INVITED = "invited",
   ACTIVE = "active",
   REMOVED = "removed",
+  IN_ACTIVE = "in_active"
 }
 
 export enum ProjectVisibility {
@@ -58,4 +58,18 @@ export enum ProjectExperience {
 export enum ProjectDurationUnit {
   WEEKS = "weeks",
   MONTHS = "months",
+}
+
+export interface IPopulatedContributor {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  imageUrl: string;
+  developerRole: string;
+  status: ContributorStatus;
+  expectedRate: number;
+  invitedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }

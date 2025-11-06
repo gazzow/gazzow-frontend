@@ -36,7 +36,7 @@ export const projectService = {
   },
   async generateSignedUrl(fileKey: string) {
     const res = await api.get(PROJECT_API.GENERATE_SIGNED_URL(fileKey));
-    console.log('signed url response: ', res)
+    console.log("signed url response: ", res);
     return res.data;
   },
   async createApplication(data: ApplyProjectPayload, projectId: string) {
@@ -55,6 +55,11 @@ export const projectService = {
       { status: data.status }
     );
     console.log("Update application Status response: ", res);
+    return res.data;
+  },
+  async listProjectContributors(projectId: string) {
+    const res = await api.get(PROJECT_API.LIST_CONTRIBUTORS(projectId));
+    console.log("project contributors response: ", res);
     return res.data;
   },
 };
