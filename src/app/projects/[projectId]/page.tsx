@@ -7,8 +7,7 @@ import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
-import { IProject } from "@/types/project";
-import { Role } from "@/types/user";
+import { IProject, Role } from "@/types/project";
 import axios from "axios";
 import {
   ArrowLeft,

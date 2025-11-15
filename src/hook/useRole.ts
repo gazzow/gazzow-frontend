@@ -1,6 +1,5 @@
 import { useAppSelector } from "@/store/store";
-import { IProject } from "@/types/project";
-import { Role } from "@/types/user";
+import { IProject, Role } from "@/types/project";
 
 export const useRole = (project?: IProject | null): Role => {
   const user = useAppSelector((state) => state.user);

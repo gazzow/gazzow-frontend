@@ -60,6 +60,13 @@ export enum ProjectDurationUnit {
   MONTHS = "months",
 }
 
+export enum Role {
+  VIEWER = "viewer",
+  CREATOR = "creator",
+  CONTRIBUTOR = "contributor",
+}
+
+
 export interface IPopulatedContributor {
   id: string;
   userId: string;

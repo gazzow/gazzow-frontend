@@ -7,7 +7,11 @@ import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
-import { ContributorStatus, IPopulatedContributor, IProject } from "@/types/project";
+import {
+  ContributorStatus,
+  IPopulatedContributor,
+  IProject,
+} from "@/types/project";
 
 import axios from "axios";
 import { ArrowLeft } from "lucide-react";
@@ -92,9 +96,8 @@ export default function ApplicationsList() {
 
   const handleStatusChange = (id: string, newStatus: ContributorStatus) => {
     if (contributors.length <= 0) return;
-
     const updatedContributors = contributors?.map((c) =>
-      c.id === id ? { ...c, status: newStatus } : c
+      c.userId === id ? { ...c, status: newStatus } : c
     );
     setContributors(updatedContributors);
   };

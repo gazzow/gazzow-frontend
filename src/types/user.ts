@@ -31,10 +31,3 @@ export enum Provider {
   GOOGLE = "google",
 }
 
-
-
-export enum Role {
-  VIEWER = "viewer",
-  CREATOR = "creator",
-  CONTRIBUTOR = "contributor",
-}
