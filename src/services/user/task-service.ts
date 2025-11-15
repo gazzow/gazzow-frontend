@@ -1,6 +1,6 @@
 import { TASK_API } from "@/constants/apis/task-api";
 import api from "@/lib/axios/api";
-import { Role } from "@/types/user";
+import { Role } from "@/types/project";
 import { CreateTaskInput } from "@/validators/task-create";
 
 export const taskService = {
