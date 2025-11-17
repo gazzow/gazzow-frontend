@@ -42,7 +42,7 @@ const sections = [
   {
     title: "Project & Tasks",
     items: [
-      { label: "Projects", icon: FolderKanban, href: "" },
+      { label: "Projects", icon: FolderKanban, href: ADMIN_ROUTES.PROJECTS },
       { label: "Tasks", icon: CheckSquare, href: "" },
       { label: "Meetings", icon: CalendarClock, href: "" },
       { label: "Reviews", icon: Star, href: "" },
