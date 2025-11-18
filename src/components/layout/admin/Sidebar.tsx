@@ -37,12 +37,14 @@ const sections = [
   },
   {
     title: "User Management",
-    items: [{ label: "Users", icon: Users, href: ADMIN_ROUTES.USER_MANAGEMENT }],
+    items: [
+      { label: "Users", icon: Users, href: ADMIN_ROUTES.USER_MANAGEMENT },
+    ],
   },
   {
     title: "Project & Tasks",
     items: [
-      { label: "Projects", icon: FolderKanban, href: "" },
+      { label: "Projects", icon: FolderKanban, href: ADMIN_ROUTES.PROJECTS },
       { label: "Tasks", icon: CheckSquare, href: "" },
       { label: "Meetings", icon: CalendarClock, href: "" },
       { label: "Reviews", icon: Star, href: "" },
