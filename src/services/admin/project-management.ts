@@ -7,4 +7,9 @@ export const projectManagementService = {
     console.log("list project response: ", res.data);
     return res.data;
   },
+  getProjectDetails: async (projectId: string) => {
+    const res = await api.get(ADMIN_API.GET_PROJECT_DETAILS(projectId));
+    console.log("get project details response: ", res);
+    return res.data;
+  },
 };

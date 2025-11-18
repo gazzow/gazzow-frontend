@@ -4,4 +4,5 @@ export const ADMIN_API = {
   SINGLE_USER: (id: string) => `/admin/users/${id}/`,
   UPDATE_STATUS: (id: string) => `/admin/users/${id}/status`,
   LIST_PROJECTS: `/admin/projects`,
+  GET_PROJECT_DETAILS: (projectId: string) => `/admin/projects/${projectId}`,
 };

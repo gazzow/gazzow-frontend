@@ -37,7 +37,9 @@ const sections = [
   },
   {
     title: "User Management",
-    items: [{ label: "Users", icon: Users, href: ADMIN_ROUTES.USER_MANAGEMENT }],
+    items: [
+      { label: "Users", icon: Users, href: ADMIN_ROUTES.USER_MANAGEMENT },
+    ],
   },
   {
     title: "Project & Tasks",

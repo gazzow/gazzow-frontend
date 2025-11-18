@@ -1,8 +1,10 @@
 "use client";
 
+import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
 import { projectManagementService } from "@/services/admin/project-management";
 import { IProject, ProjectStatus } from "@/types/project";
 import axios from "axios";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 export default function ProjectManagement() {
@@ -70,7 +72,7 @@ export default function ProjectManagement() {
             placeholder="Search by name or email"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="md:min-w-80 px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="md:min-w-80 px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
 
           {/* Status Filter */}
@@ -79,12 +81,12 @@ export default function ProjectManagement() {
             onChange={(e) => {
               setFilterStatus(e.target.value);
             }}
-            className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
-            <option value="all">All Status</option>
+            <option value="all" className="bg-secondary">All Status</option>
             {Object.values(ProjectStatus).map((val, index) => {
               return (
-                <option key={index} value={val}>
+                <option key={index} value={val} className="bg-secondary">
                   {val
                     .replace("_", " ")
                     .replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -93,17 +95,16 @@ export default function ProjectManagement() {
             })}
           </select>
 
-
           {/* Sort */}
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="title-asc">Title A → Z</option>
-            <option value="title-desc">Title Z → A</option>
+            <option className="bg-secondary" value="newest">Newest First</option>
+            <option className="bg-secondary" value="oldest">Oldest First</option>
+            <option className="bg-secondary" value="title-asc">Title A → Z</option>
+            <option className="bg-secondary" value="title-desc">Title Z → A</option>
           </select>
         </div>
       </div>
@@ -173,9 +174,12 @@ export default function ProjectManagement() {
                   })}
                 </td>
                 <td className="p-3">
-                  <button className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 transition cursor-pointer">
+                  <Link
+                    href={ADMIN_ROUTES.PROJECT_DETAILS(project.id)}
+                    className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 transition cursor-pointer"
+                  >
                     View
-                  </button>
+                  </Link>
                 </td>
               </tr>
             ))}
