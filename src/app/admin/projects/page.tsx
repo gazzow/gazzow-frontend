@@ -1,6 +1,8 @@
 "use client";
 
 import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
+import { useDebounce } from "@/hook/useDebounce";
+import { usePagination } from "@/hook/usePaginationOptions";
 import { projectManagementService } from "@/services/admin/project-management";
 import { IProject, ProjectStatus } from "@/types/project";
 import axios from "axios";
@@ -10,42 +12,70 @@ import { useCallback, useEffect, useState } from "react";
 export default function ProjectManagement() {
   const [projects, setProjects] = useState<IProject[]>([]);
 
+  const {
+    page,
+    skip,
+    limit,
+    totalPages,
+    hasNextPage,
+    hasPrevPage,
+    nextPage,
+    prevPage,
+    setTotal,
+  } = usePagination({ limit: 6 });
+
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortOption, setSortOption] = useState("newest");
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
 
-  // const getSortParams = (sortOption: string) => {
-  //   switch (sortOption) {
-  //     case "newest":
-  //       return { sortField: "createdAt", sortOrder: "desc" };
-  //     case "oldest":
-  //       return { sortField: "createdAt", sortOrder: "asc" };
-  //     case "name-asc":
-  //       return { sortField: "name", sortOrder: "asc" };
-  //     case "name-desc":
-  //       return { sortField: "name", sortOrder: "desc" };
-  //     default:
-  //       return { sortField: "createdAt", sortOrder: "desc" };
-  //   }
-  // };
+  const getSortParams = (sortOption: string) => {
+    switch (sortOption) {
+      case "newest":
+        return { sortField: "createdAt", sortOrder: "desc" };
+      case "oldest":
+        return { sortField: "createdAt", sortOrder: "asc" };
+      case "title-asc":
+        return { sortField: "title", sortOrder: "asc" };
+      case "title-desc":
+        return { sortField: "title", sortOrder: "desc" };
+      default:
+        return { sortField: "createdAt", sortOrder: "desc" };
+    }
+  };
 
   const fetchProjects = useCallback(async () => {
     try {
-      const res = await projectManagementService.listProjects();
+      const { sortField, sortOrder } = getSortParams(sortOption);
+      const res = await projectManagementService.listProjects({
+        skip,
+        limit,
+        search: debouncedSearch || undefined,
+        status: filterStatus !== "all" ? filterStatus : undefined,
+        sortField,
+        sortOrder,
+      });
       console.log("Projects list data: ", res.data);
       if (res.success) {
         setProjects(res.data);
+        setTotal(res.meta.total);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("User management error: ", error);
       }
     }
-  }, []);
+  }, [debouncedSearch, filterStatus, limit, sortOption, skip, setTotal]);
 
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
+
+  useEffect(() => {
+    if (page !== 1) {
+      prevPage();
+    }
+  }, [debouncedSearch, filterStatus, sortOption, page, prevPage]);
 
   return (
     <div className="p-8">
@@ -69,7 +99,7 @@ export default function ProjectManagement() {
           {/* Search */}
           <input
             type="text"
-            placeholder="Search by name or email"
+            placeholder="Search by title or description"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="md:min-w-80 px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -83,7 +113,9 @@ export default function ProjectManagement() {
             }}
             className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
-            <option value="all" className="bg-secondary">All Status</option>
+            <option value="all" className="bg-secondary">
+              All Status
+            </option>
             {Object.values(ProjectStatus).map((val, index) => {
               return (
                 <option key={index} value={val} className="bg-secondary">
@@ -101,10 +133,18 @@ export default function ProjectManagement() {
             onChange={(e) => setSortOption(e.target.value)}
             className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
-            <option className="bg-secondary" value="newest">Newest First</option>
-            <option className="bg-secondary" value="oldest">Oldest First</option>
-            <option className="bg-secondary" value="title-asc">Title A → Z</option>
-            <option className="bg-secondary" value="title-desc">Title Z → A</option>
+            <option className="bg-secondary" value="newest">
+              Newest First
+            </option>
+            <option className="bg-secondary" value="oldest">
+              Oldest First
+            </option>
+            <option className="bg-secondary" value="title-asc">
+              Title A → Z
+            </option>
+            <option className="bg-secondary" value="title-desc">
+              Title Z → A
+            </option>
           </select>
         </div>
       </div>
@@ -188,6 +228,27 @@ export default function ProjectManagement() {
       </div>
 
       {/* Pagination */}
+      <div className="flex justify-between items-center mt-4 text-sm text-text-secondary">
+        <p>
+          Page {page} of {totalPages}
+        </p>
+        <div className="flex gap-2">
+          <button
+            disabled={!hasPrevPage}
+            onClick={prevPage}
+            className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
+          >
+            Previous
+          </button>
+          <button
+            disabled={!hasNextPage}
+            onClick={nextPage}
+            className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
