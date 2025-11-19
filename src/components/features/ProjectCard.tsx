@@ -36,7 +36,9 @@ export default function ProjectCard({
 
   return (
     <div className="flex flex-col bg-secondary/30 p-5 rounded-md border border-gray-800 hover:border-gray-600 transition-all">
-      <h3 className="flex-1 text-white text-lg font-semibold mb-2">{title.replace(/\b\w/g, (c) => c.toUpperCase())}</h3>
+      <h3 className="flex-1 text-white text-lg font-semibold mb-2">
+        {title.replace(/\b\w/g, (c) => c.toUpperCase())}
+      </h3>
       <p className="flex-1 text-gray-400 text-sm mb-3">
         {description.length > 75
           ? description.slice(0, 75) + "..."
@@ -44,14 +46,23 @@ export default function ProjectCard({
       </p>
 
       <div className="flex flex-wrap gap-2 mb-3">
-        {requiredSkills.map((tech) => (
-          <span
-            key={tech}
-            className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
-          >
-            {tech}
-          </span>
-        ))}
+        {requiredSkills.length > 4
+          ? requiredSkills.slice(0, 4).map((tech) => (
+              <span
+                key={tech}
+                className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
+              >
+                {tech}
+              </span>
+            ))
+          : requiredSkills.map((tech) => (
+              <span
+                key={tech}
+                className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
+              >
+                {tech}
+              </span>
+            ))}
       </div>
 
       <div className="flex items-center text-sm text-gray-400 gap-4 mb-3">

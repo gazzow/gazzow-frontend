@@ -15,6 +15,8 @@ import {
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import ProjectTabs from "@/components/features/ProjectTabs";
 import { useDebounce } from "@/hook/useDebounce";
+import Pagination from "@/components/features/Pagination";
+import { usePagination } from "@/hook/usePaginationOptions";
 
 const tabs = [
   { name: "Browse Projects", href: PROJECT_ROUTES.BROWSE },
@@ -29,6 +31,17 @@ export default function ProjectList() {
   });
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
+  const {
+    page,
+    totalPages,
+    setTotal,
+    hasNextPage,
+    hasPrevPage,
+    prevPage,
+    nextPage,
+  } = usePagination({
+    limit: 6,
+  });
 
   const updateFilter = (key: keyof ProjectFilters, value: unknown) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -42,21 +55,23 @@ export default function ProjectList() {
       });
       if (res.success) {
         console.log("res data: ", res.data);
+        console.log("res meta: ", res.meta);
         setProjects(res.data);
+        setTotal(res.meta.total);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message);
       }
     }
-  }, [debouncedSearch, filters]);
+  }, [debouncedSearch, filters, setTotal]);
 
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects, debouncedSearch, filters]);
 
   return (
-    <div className="max-w-7xl w-full shadow-lg space-y-6">
+    <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
       <div className="flex justify-between">
         <div>
           <h1 className="text-white font-semibold text-2xl">Projects</h1>
@@ -66,9 +81,9 @@ export default function ProjectList() {
         </div>
         <div>
           <Link href={PROJECT_ROUTES.CREATE}>
-            <button className="flex gap-2 bg-btn-primary py-2 px-4 rounded-lg cursor-pointer">
-              <Plus size={22} />
-              Post Project
+            <button className="flex items-center gap-2 bg-btn-primary py-1 px-2 rounded cursor-pointer">
+              <Plus size={18} />
+              <span>Post Project</span>
             </button>
           </Link>
         </div>
@@ -163,6 +178,16 @@ export default function ProjectList() {
           <p>No project found</p>
         )}
       </div>
+
+      {/* Pagination */}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          hasNextPage={hasNextPage}
+          hasPrevPage={hasPrevPage}
+          prevPage={prevPage}
+          nextPage={nextPage}
+        />
     </div>
   );
 }
