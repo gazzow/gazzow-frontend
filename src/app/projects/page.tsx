@@ -5,11 +5,16 @@ import { projectService } from "@/services/user/project-service";
 import axios from "axios";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { IProject } from "../../types/project";
+import {
+  IProject,
+  ProjectExperience,
+  ProjectFilters,
+} from "../../types/project";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import ProjectTabs from "@/components/features/ProjectTabs";
+import { useDebounce } from "@/hook/useDebounce";
 
 const tabs = [
   { name: "Browse Projects", href: PROJECT_ROUTES.BROWSE },
@@ -17,24 +22,38 @@ const tabs = [
 ];
 
 export default function ProjectList() {
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await projectService.listProjects();
-        if (res.success) {
-          console.log("res data: ", res.data);
-          setProjects(res.data);
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data.message);
-        }
-      }
-    };
-    fetchProjects();
-  }, []);
-
   const [projects, setProjects] = useState<IProject[]>([]);
+  const [filters, setFilters] = useState<ProjectFilters>({
+    experience: "",
+    budgetOrder: "asc",
+  });
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
+
+  const updateFilter = (key: keyof ProjectFilters, value: unknown) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const fetchProjects = useCallback(async () => {
+    try {
+      const res = await projectService.listProjects({
+        search: debouncedSearch,
+        ...filters,
+      });
+      if (res.success) {
+        console.log("res data: ", res.data);
+        setProjects(res.data);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  }, [debouncedSearch, filters]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects, debouncedSearch, filters]);
 
   return (
     <div className="max-w-7xl w-full shadow-lg space-y-6">
@@ -58,22 +77,91 @@ export default function ProjectList() {
       {/* Project Tab */}
       <ProjectTabs tabs={tabs} />
 
-      <div className="py-4">
-        <div className="flex justify-between items-center mb-4">
-          <input
-            type="text"
-            placeholder="Search projects"
-            className=" text-gray-300 w-full max-w-md px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-1 focus:ring-purple-500"
-          />
-        </div>
+      {/* Search & Filter */}
+      <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
+        {/* 🔍 Search */}
+        <input
+          type="text"
+          placeholder="Search by title or description"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="md:min-w-80 px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {projects.length > 0 ? (
-            projects.map((p) => <ProjectCard key={p.id} {...p} />)
-          ) : (
-            <p>No project found</p>
-          )}
-        </div>
+        {/* 🧠 Experience Filter */}
+        <select
+          value={filters.experience}
+          onChange={(e) => updateFilter("experience", e.target.value)}
+          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option className="bg-secondary" value="">
+            Experience Level
+          </option>
+          {Object.values(ProjectExperience).map((exp) => (
+            <option key={exp} value={exp} className="bg-secondary">
+              {exp.replace(/\b\w/, (c) => c.toUpperCase())}
+            </option>
+          ))}
+        </select>
+
+        {/* 🧩 Skills Multi-Select */}
+
+        {/* 💰 Budget Sorting */}
+        <select
+          value={filters.budgetOrder}
+          onChange={(e) => updateFilter("budgetOrder", e.target.value)}
+          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option className="bg-secondary">Budget Sort</option>
+          <option value="asc" className="bg-secondary">
+            Low → High
+          </option>
+          <option value="desc" className="bg-secondary">
+            High → Low
+          </option>
+        </select>
+
+        {/* ⏳ Duration Sorting */}
+        {/* <select
+          value={filters.durationSort}
+          onChange={(e) => updateFilter("durationSort", e.target.value)}
+          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option value="" className="bg-secondary">
+            Duration
+          </option>
+          <option value="short" className="bg-secondary">
+            Shortest First
+          </option>
+          <option value="long" className="bg-secondary">
+            Longest First
+          </option>
+        </select> */}
+
+        {/* 🕓 Duration Unit */}
+        {/* <select
+          value={filters.durationUnit}
+          onChange={(e) => updateFilter("durationUnit", e.target.value)}
+          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option value="" className="bg-secondary">
+            Duration Unit
+          </option>
+          {Object.values(ProjectDurationUnit).map((unit) => (
+            <option key={unit} value={unit} className="bg-secondary">
+              {unit.replace(/\b\w/, (c) => c.toUpperCase())}
+            </option>
+          ))}
+        </select> */}
+      </div>
+
+      {/* Project Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {projects.length > 0 ? (
+          projects.map((p) => <ProjectCard key={p.id} {...p} />)
+        ) : (
+          <p>No project found</p>
+        )}
       </div>
     </div>
   );

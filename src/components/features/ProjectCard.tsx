@@ -35,8 +35,8 @@ export default function ProjectCard({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex flex-col bg-secondary/30 p-5 rounded-2xl border border-gray-800 hover:border-gray-600 transition-all">
-      <h3 className="flex-1 text-white text-lg font-semibold mb-2">{title}</h3>
+    <div className="flex flex-col bg-secondary/30 p-5 rounded-md border border-gray-800 hover:border-gray-600 transition-all">
+      <h3 className="flex-1 text-white text-lg font-semibold mb-2">{title.replace(/\b\w/g, (c) => c.toUpperCase())}</h3>
       <p className="flex-1 text-gray-400 text-sm mb-3">
         {description.length > 75
           ? description.slice(0, 75) + "..."
@@ -77,12 +77,12 @@ export default function ProjectCard({
           <div className="flex items-center gap-2">
             <Link
               href={PROJECT_ROUTES.DETAILS(id)}
-              className="py-2 px-4 bg-secondary border border-border-primary  text-white text-sm rounded-lg cursor-pointer"
+              className="px-2 py-1 bg-secondary/30  border border-border-primary  text-white text-sm rounded hover:bg-secondary cursor-pointer transition ease-in"
             >
               View More
             </Link>
             <button
-              className="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg cursor-pointer"
+              className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded cursor-pointer transition ease-in"
               onClick={() => setIsOpen(true)}
             >
               Apply

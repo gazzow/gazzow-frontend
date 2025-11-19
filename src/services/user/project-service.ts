@@ -24,8 +24,12 @@ export const projectService = {
     console.log("get single project response: ", res);
     return res.data;
   },
-  async listProjects() {
-    const res = await api.get(PROJECT_API.LIST_PROJECTS);
+  async listProjects(params: {
+    search: string;
+    experience?: string;
+    budgetOrder?: "asc" | "desc";
+  }) {
+    const res = await api.get(PROJECT_API.LIST_PROJECTS, { params });
     console.log("list project response: ", res);
     return res.data;
   },
