@@ -32,6 +32,8 @@ export default function ProjectList() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
   const {
+    skip,
+    limit,
     page,
     totalPages,
     setTotal,
@@ -52,6 +54,8 @@ export default function ProjectList() {
       const res = await projectService.listProjects({
         search: debouncedSearch,
         ...filters,
+        skip,
+        limit,
       });
       if (res.success) {
         console.log("res data: ", res.data);
@@ -64,7 +68,7 @@ export default function ProjectList() {
         toast.error(error.response?.data.message);
       }
     }
-  }, [debouncedSearch, filters, setTotal]);
+  }, [debouncedSearch, filters, setTotal, skip, limit]);
 
   useEffect(() => {
     fetchProjects();
@@ -74,8 +78,10 @@ export default function ProjectList() {
     <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
       <div className="flex justify-between">
         <div>
-          <h1 className="text-white font-semibold text-2xl">Projects</h1>
-          <p className="text-text-secondary">
+          <h1 className="text-primary dark:text-white font-semibold text-2xl">
+            Projects
+          </h1>
+          <p className="text-primary dark:text-text-secondary">
             Discover and manage projects that match your expertise
           </p>
         </div>
@@ -180,14 +186,14 @@ export default function ProjectList() {
       </div>
 
       {/* Pagination */}
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          hasNextPage={hasNextPage}
-          hasPrevPage={hasPrevPage}
-          prevPage={prevPage}
-          nextPage={nextPage}
-        />
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPrevPage={hasPrevPage}
+        prevPage={prevPage}
+        nextPage={nextPage}
+      />
     </div>
   );
 }

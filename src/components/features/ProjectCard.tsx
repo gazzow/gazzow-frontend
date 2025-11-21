@@ -35,17 +35,13 @@ export default function ProjectCard({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex flex-col bg-secondary/30 p-5 rounded-md border border-gray-800 hover:border-gray-600 transition-all">
-      <h3 className="flex-1 text-white text-lg font-semibold mb-2">
+    <div className="flex flex-col space-y-3 bg-secondary/30 p-4 rounded-md border border-gray-800 hover:border-gray-600 transition-all">
+      <h3 className="flex-1 text-white text-lg font-semibold">
         {title.replace(/\b\w/g, (c) => c.toUpperCase())}
       </h3>
-      <p className="flex-1 text-gray-400 text-sm mb-3">
-        {description.length > 75
-          ? description.slice(0, 75) + "..."
-          : description}
-      </p>
+      <p className="text-gray-400 text-sm line-clamp-1">{description}</p>
 
-      <div className="flex flex-wrap gap-2 mb-3">
+      <div className="flex flex-wrap gap-2">
         {requiredSkills.length > 4
           ? requiredSkills.slice(0, 4).map((tech) => (
               <span
@@ -65,7 +61,7 @@ export default function ProjectCard({
             ))}
       </div>
 
-      <div className="flex items-center text-sm text-gray-400 gap-4 mb-3">
+      <div className="flex items-center text-sm text-gray-400 gap-4 ">
         <div className="flex items-center gap-1">
           <DollarSign size={14} /> {budgetMin} - {budgetMax}
         </div>

@@ -1,3 +1,5 @@
+"use client";
+
 interface PaginationProp {
   page: number;
   totalPages: number;
@@ -24,14 +26,14 @@ export default function Pagination({
         <button
           disabled={!hasPrevPage}
           onClick={prevPage}
-          className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
+          className="px-2 py-1 border border-border-primary rounded-md text-white hover:bg-secondary"
         >
           Previous
         </button>
         <button
           disabled={!hasNextPage}
           onClick={nextPage}
-          className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
+          className="px-2 py-1 border border-border-primary rounded-md text-white hover:bg-secondary"
         >
           Next
         </button>

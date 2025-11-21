@@ -1,5 +1,6 @@
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
-import { Calendar, Users, DollarSign, Circle } from "lucide-react";
+import { ProjectStatus } from "@/types/project";
+import { Calendar, Users, DollarSign } from "lucide-react";
 import Link from "next/link";
 
 interface CreatedProjectCardProps {
@@ -13,7 +14,7 @@ interface CreatedProjectCardProps {
   applicants: number;
   progress: number;
   contributors: number;
-  status: "Active" | "Completed" | "Paused";
+  status: ProjectStatus;
 }
 
 export default function CreatedProjectCard({
@@ -30,24 +31,21 @@ export default function CreatedProjectCard({
   status,
 }: CreatedProjectCardProps) {
   const statusColor =
-    status === "Active"
-      ? "text-green-400"
-      : status === "Completed"
-      ? "text-blue-400"
-      : "text-yellow-400";
+    status === ProjectStatus.OPEN
+      ? "text-blue-800 bg-blue-100"
+      : status === ProjectStatus.COMPLETED
+      ? "text-green-800 bg-green-100"
+      : "text-yellow-800 bg-yellow-100";
 
   return (
-    <div className="bg-[#111418] text-gray-100 p-5 rounded-2xl shadow-lg border border-gray-800 hover:border-gray-700 transition-all">
+    <div className="bg-white dark:bg-secondary/30 text-gray-100 p-4 rounded-2xl shadow-lg border border-gray-800 hover:border-gray-700 transition-all">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
-        <div>
-          <h3 className="text-lg font-semibold">{title}</h3>
-        </div>
+      <div className="flex items-center justify-between md:flex-row gap-3">
+        <h3 className="text-lg font-semibold">{title}</h3>
         <span
-          className={`text-xs flex items-center gap-1 px-2 py-1 rounded-md ${statusColor} bg-opacity-10`}
+          className={`text-xs font-medium flex items-center gap-1 px-2 py-0.5 rounded-full ${statusColor}`}
         >
-          <Circle size={8} className={statusColor} />
-          {status}
+          {status.replace(/\b\w/, (c) => c.toUpperCase())}
         </span>
       </div>
 
@@ -87,7 +85,7 @@ export default function CreatedProjectCard({
         </div>
         <Link
           href={PROJECT_ROUTES.DETAILS(id)}
-          className="px-3 py-1.5 text-sm text-white rounded-md bg-purple-600 hover:bg-purple-700 transition"
+          className="px-2 py-1 text-sm text-white rounded-md bg-purple-600 hover:bg-purple-700 transition"
         >
           Manage
         </Link>

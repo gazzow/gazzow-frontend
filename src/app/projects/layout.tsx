@@ -22,7 +22,7 @@ export default function ProjectLayout({
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 w-full text-white">
-          <div className="min-h-screen w-full mt-16 p-6 flex bg-primary dark:bg-white text-black dark:text-white transition ease-in-out">
+          <div className="min-h-screen w-full mt-16 p-6 flex bg-white dark:bg-primary text-black dark:text-white transition ease-in-out">
             {children}
           </div>
         </main>
