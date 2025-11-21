@@ -90,6 +90,7 @@ api.interceptors.response.use(
       }
 
       if (status >= 500) {
+        window.location.href = "/InternalServerError";
         toast.error("Server error. Please try again later.");
       }
     } else {
