@@ -21,8 +21,8 @@ export default function ProjectLayout({
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 text-white">
-          <div className="min-h-screen mt-16 bg-primary p-6 flex text-black dark:text-white transition ease-in-out">
+        <main className="flex-1 w-full text-white">
+          <div className="min-h-screen w-full mt-16 p-6 flex bg-white dark:bg-primary text-black dark:text-white transition ease-in-out">
             {children}
           </div>
         </main>

@@ -35,7 +35,7 @@ export interface IProjectFile {
 export enum ContributorStatus {
   ACTIVE = "active",
   REMOVED = "removed",
-  IN_ACTIVE = "in_active"
+  IN_ACTIVE = "in_active",
 }
 
 export enum ProjectVisibility {
@@ -66,7 +66,6 @@ export enum Role {
   CONTRIBUTOR = "contributor",
 }
 
-
 export interface IPopulatedContributor {
   id: string;
   userId: string;
@@ -80,3 +79,8 @@ export interface IPopulatedContributor {
   createdAt: string;
   updatedAt: string;
 }
+
+export type ProjectFilters = {
+  experience?: string;
+  budgetOrder?: "asc" | "desc";
+};

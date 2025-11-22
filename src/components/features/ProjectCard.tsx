@@ -35,26 +35,33 @@ export default function ProjectCard({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex flex-col bg-secondary/30 p-5 rounded-2xl border border-gray-800 hover:border-gray-600 transition-all">
-      <h3 className="flex-1 text-white text-lg font-semibold mb-2">{title}</h3>
-      <p className="flex-1 text-gray-400 text-sm mb-3">
-        {description.length > 75
-          ? description.slice(0, 75) + "..."
-          : description}
-      </p>
+    <div className="flex flex-col space-y-3 bg-secondary/30 p-4 rounded-md border border-gray-800 hover:border-gray-600 transition-all">
+      <h3 className="flex-1 text-white text-lg font-semibold">
+        {title.replace(/\b\w/g, (c) => c.toUpperCase())}
+      </h3>
+      <p className="text-gray-400 text-sm line-clamp-1">{description}</p>
 
-      <div className="flex flex-wrap gap-2 mb-3">
-        {requiredSkills.map((tech) => (
-          <span
-            key={tech}
-            className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
-          >
-            {tech}
-          </span>
-        ))}
+      <div className="flex flex-wrap gap-2">
+        {requiredSkills.length > 4
+          ? requiredSkills.slice(0, 4).map((tech) => (
+              <span
+                key={tech}
+                className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
+              >
+                {tech}
+              </span>
+            ))
+          : requiredSkills.map((tech) => (
+              <span
+                key={tech}
+                className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
+              >
+                {tech}
+              </span>
+            ))}
       </div>
 
-      <div className="flex items-center text-sm text-gray-400 gap-4 mb-3">
+      <div className="flex items-center text-sm text-gray-400 gap-4 ">
         <div className="flex items-center gap-1">
           <DollarSign size={14} /> {budgetMin} - {budgetMax}
         </div>
@@ -77,12 +84,12 @@ export default function ProjectCard({
           <div className="flex items-center gap-2">
             <Link
               href={PROJECT_ROUTES.DETAILS(id)}
-              className="py-2 px-4 bg-secondary border border-border-primary  text-white text-sm rounded-lg cursor-pointer"
+              className="px-2 py-1 bg-secondary/30  border border-border-primary  text-white text-sm rounded hover:bg-secondary cursor-pointer transition ease-in"
             >
               View More
             </Link>
             <button
-              className="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg cursor-pointer"
+              className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded cursor-pointer transition ease-in"
               onClick={() => setIsOpen(true)}
             >
               Apply

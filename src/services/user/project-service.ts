@@ -13,6 +13,21 @@ type UpdateApplicationStatusPayload = {
   status: ApplicationStatus;
 };
 
+type ListProjectsParams = {
+  search: string;
+  experience?: string;
+  budgetOrder?: "asc" | "desc";
+  skip?: number;
+  limit?: number;
+};
+
+type ListMyProjectsParams = {
+  search?: string;
+  status?: string;
+  budgetOrder?: "asc" | "desc" | "";
+  skip: number;
+  limit: number;
+};
 export const projectService = {
   async createProject(data: FormData) {
     const res = await api.post(PROJECT_API.CREATE_PROJECT, data);
@@ -24,13 +39,13 @@ export const projectService = {
     console.log("get single project response: ", res);
     return res.data;
   },
-  async listProjects() {
-    const res = await api.get(PROJECT_API.LIST_PROJECTS);
+  async listProjects(params: ListProjectsParams) {
+    const res = await api.get(PROJECT_API.LIST_PROJECTS, { params });
     console.log("list project response: ", res);
     return res.data;
   },
-  async MyProjects() {
-    const res = await api.get(PROJECT_API.MY_PROJECT);
+  async myProjects(params: ListMyProjectsParams) {
+    const res = await api.get(PROJECT_API.MY_PROJECT, { params });
     console.log("my project response: ", res);
     return res.data;
   },
