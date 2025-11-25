@@ -17,6 +17,7 @@ import {
 import { LogoutButton } from "../ui/LogoutButton";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
+import { ContributorRoutes } from "@/constants/routes/contributor-routes";
 
 const sections = [
   { label: "Dashboard", icon: Home, href: USER_ROUTES.HOME },
@@ -26,7 +27,11 @@ const sections = [
     href: PROJECT_ROUTES.BROWSE,
     matchPaths: Object.values(PROJECT_ROUTES),
   },
-  { label: "Contributions", icon: GitPullRequest, href: "#" },
+  {
+    label: "Contributions",
+    icon: GitPullRequest,
+    href: ContributorRoutes.ACTIVE,
+  },
   { label: "Messages", icon: MessageSquare, href: "#" },
   { label: "Pricing", icon: CreditCard, href: "#" },
   { label: "Notifications", icon: Bell, href: "#" },
@@ -52,7 +57,9 @@ export default function Sidebar() {
             <Link
               href={href}
               className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                pathname === href || matchPaths?.includes(pathname) || pathname.split('/').includes(label.toLowerCase())
+                pathname === href ||
+                matchPaths?.includes(pathname) ||
+                pathname.split("/").includes(label.toLowerCase())
                   ? "bg-btn-primary text-white"
                   : "hover:bg-secondary/30 hover:text-white"
               }`}

@@ -1,7 +1,7 @@
 "use client";
 
 import ContributorCard from "@/components/features/ContributorCard";
-import ProjectTabs from "@/components/features/ProjectTabs";
+import {SectionTabs} from "@/components/features/SectionTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
@@ -126,7 +126,7 @@ export default function ApplicationsList() {
       </div>
 
       {/* Tabs */}
-      <ProjectTabs tabs={visibleTabs} />
+      <SectionTabs tabs={visibleTabs} />
 
       {/* Contributors List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

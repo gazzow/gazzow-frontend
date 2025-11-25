@@ -1,7 +1,7 @@
 "use client";
 
 import CreateTaskModal from "@/components/features/CreateTaskModal";
-import ProjectTabs from "@/components/features/ProjectTabs";
+import { SectionTabs } from "@/components/features/SectionTabs";
 import TaskBoard from "@/components/features/TaskBoard";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
@@ -136,17 +136,18 @@ export default function Tasks() {
               )}
             </div>
           </div>
-          {currentRole === Role.CREATOR || currentRole === Role.CONTRIBUTOR && (
-            <div>
-              <button
-                className="flex gap-1 items-center justify-center bg-btn-primary px-2 py-1 rounded cursor-pointer"
-                onClick={() => setOpen(!open)}
-              >
-                <Plus size={18} />
-                <span>Create</span>
-              </button>
-            </div>
-          )}
+          {currentRole === Role.CREATOR ||
+            (currentRole === Role.CONTRIBUTOR && (
+              <div>
+                <button
+                  className="flex gap-1 items-center justify-center bg-btn-primary px-2 py-1 rounded cursor-pointer"
+                  onClick={() => setOpen(!open)}
+                >
+                  <Plus size={18} />
+                  <span>Create</span>
+                </button>
+              </div>
+            ))}
         </div>
       </div>
 
@@ -159,7 +160,7 @@ export default function Tasks() {
       />
 
       {/* Tabs */}
-      <ProjectTabs tabs={visibleTabs} />
+      <SectionTabs tabs={visibleTabs} />
 
       {/*  Search & filter */}
 

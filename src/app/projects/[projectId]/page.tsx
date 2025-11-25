@@ -1,9 +1,10 @@
 "use client";
 
 import ApplyModal from "@/components/features/ApplyModal";
-import ProjectTabs from "@/components/features/ProjectTabs";
+import { SectionTabs } from "@/components/features/SectionTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
+import { ContributorRoutes } from "@/constants/routes/contributor-routes";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
@@ -77,7 +78,7 @@ export default function ProjectDetails() {
     if (currentRole === Role.CREATOR) {
       router.replace(PROJECT_ROUTES.MY_PROJECTS);
     } else if (currentRole === Role.CONTRIBUTOR) {
-      router.replace(PROJECT_ROUTES.BROWSE);
+      router.replace(ContributorRoutes.ACTIVE);
     } else {
       router.replace(PROJECT_ROUTES.BROWSE);
     }
@@ -133,7 +134,7 @@ export default function ProjectDetails() {
       </div>
 
       {/* Tabs */}
-      <ProjectTabs tabs={visibleTabs} />
+      <SectionTabs tabs={visibleTabs} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Section */}
@@ -199,7 +200,7 @@ export default function ProjectDetails() {
           {/* Project Info */}
           <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Budget</h2>
+              <h2 className="font-semibold">Budget</h2>
               <div className="flex items-center text-gray-300">
                 <DollarSign className="w-4 h-4 mr-1 text-green-400" />
                 {project?.budgetMax && project?.budgetMin && (
@@ -240,7 +241,7 @@ export default function ProjectDetails() {
               )}
             </div>
 
-            <div className="flex space-x-3 pt-4">
+            <div className="flex space-x-3">
               {currentRole === Role.CREATOR ? (
                 <>
                   <button className="flex-1 flex items-center justify-center gap-2 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer">

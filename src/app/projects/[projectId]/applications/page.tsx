@@ -1,7 +1,7 @@
 "use client";
 
 import ApplicantCard from "@/components/features/ApplicantCard";
-import ProjectTabs from "@/components/features/ProjectTabs";
+import {SectionTabs} from "@/components/features/SectionTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
@@ -133,7 +133,7 @@ export default function ApplicationsList() {
       </div>
 
       {/* Tabs */}
-      <ProjectTabs tabs={visibleTabs} />
+      <SectionTabs tabs={visibleTabs} />
 
       {/* Applicant Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

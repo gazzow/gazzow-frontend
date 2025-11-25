@@ -1,7 +1,7 @@
 "use client";
 import CreatedProjectCard from "@/components/features/CreatedProjectCard";
 import Pagination from "@/components/features/Pagination";
-import ProjectTabs from "@/components/features/ProjectTabs";
+import { SectionTabs } from "@/components/features/SectionTabs";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useDebounce } from "@/hook/useDebounce";
 import { usePagination } from "@/hook/usePaginationOptions";
@@ -112,7 +112,7 @@ export default function MyProject() {
       </div>
 
       {/* Project Tab */}
-      <ProjectTabs tabs={tabs} />
+      <SectionTabs tabs={tabs} />
 
       {/* Search & Filter */}
       <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
