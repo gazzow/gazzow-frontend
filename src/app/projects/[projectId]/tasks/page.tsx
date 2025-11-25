@@ -136,18 +136,17 @@ export default function Tasks() {
               )}
             </div>
           </div>
-          {currentRole === Role.CREATOR ||
-            (currentRole === Role.CONTRIBUTOR && (
-              <div>
-                <button
-                  className="flex gap-1 items-center justify-center bg-btn-primary px-2 py-1 rounded cursor-pointer"
-                  onClick={() => setOpen(!open)}
-                >
-                  <Plus size={18} />
-                  <span>Create</span>
-                </button>
-              </div>
-            ))}
+          {currentRole === Role.CREATOR && (
+            <div>
+              <button
+                className="flex gap-1 items-center justify-center bg-btn-primary px-2 py-1 rounded cursor-pointer"
+                onClick={() => setOpen(!open)}
+              >
+                <Plus size={18} />
+                <span>Create</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
