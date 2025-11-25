@@ -26,7 +26,6 @@ export default function CreateProjectPage() {
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
     watch,
     formState: { errors },
