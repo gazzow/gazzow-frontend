@@ -186,7 +186,12 @@ export default function CreateTaskModal({
                 {contributors.length > 0 ? (
                   contributors.map((c, idx) => (
                     <option key={idx} value={c.userId}>
-                      {c.name}
+                      {c.name.split(" ").length > 2
+                        ? c.name.split(" ").slice(0, 2).join(" ") +
+                          " - " +
+                          c.expectedRate +
+                          "/hr"
+                        : c.name + " - " + c.expectedRate + "/hr"}
                     </option>
                   ))
                 ) : (
@@ -260,7 +265,7 @@ export default function CreateTaskModal({
                 {Object.values(TaskPriority).map((priority, idx) => {
                   return (
                     <option value={priority} key={idx}>
-                      {priority.slice(0,1).toUpperCase() + priority.slice(1)}
+                      {priority.slice(0, 1).toUpperCase() + priority.slice(1)}
                     </option>
                   );
                 })}

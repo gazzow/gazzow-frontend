@@ -1,4 +1,4 @@
-export const ContributorRoutes = {
+export const CONTRIBUTOR_ROUTES = {
   ACTIVE: "/contributor",
   PENDING: "/contributor/pending",
   REJECTED: "/contributor/rejected",

@@ -4,7 +4,7 @@ import ApplyModal from "@/components/features/ApplyModal";
 import { SectionTabs } from "@/components/features/SectionTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
-import { ContributorRoutes } from "@/constants/routes/contributor-routes";
+import { CONTRIBUTOR_ROUTES } from "@/constants/routes/contributor-routes";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
@@ -78,7 +78,7 @@ export default function ProjectDetails() {
     if (currentRole === Role.CREATOR) {
       router.replace(PROJECT_ROUTES.MY_PROJECTS);
     } else if (currentRole === Role.CONTRIBUTOR) {
-      router.replace(ContributorRoutes.ACTIVE);
+      router.replace(CONTRIBUTOR_ROUTES.ACTIVE);
     } else {
       router.replace(PROJECT_ROUTES.BROWSE);
     }

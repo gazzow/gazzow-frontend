@@ -17,7 +17,7 @@ import {
 import { LogoutButton } from "../ui/LogoutButton";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
-import { ContributorRoutes } from "@/constants/routes/contributor-routes";
+import { CONTRIBUTOR_ROUTES } from "@/constants/routes/contributor-routes";
 
 const sections = [
   { label: "Dashboard", icon: Home, href: USER_ROUTES.HOME },
@@ -30,7 +30,8 @@ const sections = [
   {
     label: "Contributions",
     icon: GitPullRequest,
-    href: ContributorRoutes.ACTIVE,
+    href: CONTRIBUTOR_ROUTES.ACTIVE,
+    matchPaths: Object.values(CONTRIBUTOR_ROUTES),
   },
   { label: "Messages", icon: MessageSquare, href: "#" },
   { label: "Pricing", icon: CreditCard, href: "#" },
