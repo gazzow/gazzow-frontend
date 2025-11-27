@@ -1,4 +1,6 @@
 import { AUTH_API } from "@/constants/apis/auth-api";
+import { ERROR_MESSAGES } from "@/constants/messages";
+import { HttpStatusCode } from "@/constants/status-codes";
 import { clearAdmin } from "@/store/slices/adminSlice";
 import { clearUser } from "@/store/slices/userSlice";
 import { store } from "@/store/store";
@@ -72,7 +74,7 @@ api.interceptors.response.use(
           // 🔑 Add logout logic here
           store.dispatch(clearUser());
           store.dispatch(clearAdmin());
-          toast.error("Session expired. Please login again.");
+          toast.error(ERROR_MESSAGES.SESSION_EXPIRED);
 
           window.location.href = "/login";
           return Promise.reject(err);
@@ -81,17 +83,17 @@ api.interceptors.response.use(
         }
       }
 
-      if (status === 403) {
-        toast.error("You don’t have permission for this action.");
+      if (status === HttpStatusCode.FORBIDDEN) {
+        toast.error(ERROR_MESSAGES.FORBIDDEN);
       }
 
-      if (status === 404) {
-        toast.error("The requested resource was not found.");
+      if (status === HttpStatusCode.NOT_FOUND) {
+        toast.error(ERROR_MESSAGES.NOT_FOUND);
       }
 
-      if (status >= 500) {
+      if (status >= HttpStatusCode.INTERNAL_SERVER_ERROR) {
         window.location.href = "/InternalServerError";
-        toast.error("Server error. Please try again later.");
+        toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
       }
     } else {
       // No response (network error, CORS issue, etc.)
