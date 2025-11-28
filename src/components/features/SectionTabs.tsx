@@ -11,7 +11,7 @@ interface ProjectTabsProp {
   tabs: Tab[];
 }
 
-export default function ProjectTabs({ tabs }: ProjectTabsProp) {
+export function SectionTabs({ tabs }: ProjectTabsProp) {
   const pathname = usePathname();
 
   return (

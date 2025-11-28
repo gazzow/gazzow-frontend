@@ -1,32 +1,27 @@
 "use client";
 
 import ProjectCard from "@/components/features/ProjectCard";
-import { projectService } from "@/services/user/project-service";
 import axios from "axios";
-import { Plus } from "lucide-react";
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import {
-  IProject,
-  ProjectExperience,
-  ProjectFilters,
-} from "../../types/project";
-import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
+import { IProject, ProjectFilters } from "../../types/project";
 import { SectionTabs } from "@/components/features/SectionTabs";
 import { useDebounce } from "@/hook/useDebounce";
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
+import { contributorService } from "@/services/user/contributor-service";
+import { CONTRIBUTOR_ROUTES } from "@/constants/routes/contributor-routes";
 
 const tabs = [
-  { name: "Browse Projects", href: PROJECT_ROUTES.BROWSE },
-  { name: "My Projects", href: PROJECT_ROUTES.MY_PROJECTS },
+  { name: "Active", href: CONTRIBUTOR_ROUTES.ACTIVE },
+  { name: "Pending", href: CONTRIBUTOR_ROUTES.PENDING },
+  { name: "Rejected", href: CONTRIBUTOR_ROUTES.REJECTED },
+  { name: "Completed", href: CONTRIBUTOR_ROUTES.COMPLETED },
 ];
 
 export default function ProjectList() {
   const [projects, setProjects] = useState<IProject[]>([]);
   const [filters, setFilters] = useState<ProjectFilters>({
-    experience: "",
     budgetOrder: "asc",
   });
   const [search, setSearch] = useState("");
@@ -51,12 +46,13 @@ export default function ProjectList() {
 
   const fetchProjects = useCallback(async () => {
     try {
-      const res = await projectService.listProjects({
+      const res = await contributorService.listContributorProjects({
         search: debouncedSearch,
-        ...filters,
+        budgetOrder: filters.budgetOrder,
         skip,
         limit,
       });
+
       if (res.success) {
         console.log("res data: ", res.data);
         console.log("res meta: ", res.meta);
@@ -68,34 +64,26 @@ export default function ProjectList() {
         toast.error(error.response?.data.message);
       }
     }
-  }, [debouncedSearch, filters, setTotal, skip, limit]);
+  }, [setTotal, debouncedSearch, filters, skip, limit]);
 
   useEffect(() => {
     fetchProjects();
-  }, [fetchProjects, debouncedSearch, filters]);
+  }, [fetchProjects]);
 
   return (
     <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
       <div className="flex justify-between">
         <div>
           <h1 className="text-primary dark:text-white font-semibold text-2xl">
-            Projects
+            Contributions
           </h1>
           <p className="text-primary dark:text-text-secondary">
             Discover and manage projects that match your expertise
           </p>
         </div>
-        <div>
-          <Link href={PROJECT_ROUTES.CREATE}>
-            <button className="flex items-center gap-2 bg-btn-primary py-1 px-2 rounded cursor-pointer">
-              <Plus size={18} />
-              <span>Post Project</span>
-            </button>
-          </Link>
-        </div>
       </div>
 
-      {/* Project Tab */}
+      {/* Section Tab */}
       <SectionTabs tabs={tabs} />
 
       {/* Search & Filter */}
@@ -108,24 +96,6 @@ export default function ProjectList() {
           onChange={(e) => setSearch(e.target.value)}
           className="md:min-w-80 px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
-
-        {/* 🧠 Experience Filter */}
-        <select
-          value={filters.experience}
-          onChange={(e) => updateFilter("experience", e.target.value)}
-          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option className="bg-secondary" value="">
-            Experience Level
-          </option>
-          {Object.values(ProjectExperience).map((exp) => (
-            <option key={exp} value={exp} className="bg-secondary">
-              {exp.replace(/\b\w/, (c) => c.toUpperCase())}
-            </option>
-          ))}
-        </select>
-
-        {/* 🧩 Skills Multi-Select */}
 
         {/* 💰 Budget Sorting */}
         <select
@@ -141,45 +111,14 @@ export default function ProjectList() {
             High → Low
           </option>
         </select>
-
-        {/* ⏳ Duration Sorting */}
-        {/* <select
-          value={filters.durationSort}
-          onChange={(e) => updateFilter("durationSort", e.target.value)}
-          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option value="" className="bg-secondary">
-            Duration
-          </option>
-          <option value="short" className="bg-secondary">
-            Shortest First
-          </option>
-          <option value="long" className="bg-secondary">
-            Longest First
-          </option>
-        </select> */}
-
-        {/* 🕓 Duration Unit */}
-        {/* <select
-          value={filters.durationUnit}
-          onChange={(e) => updateFilter("durationUnit", e.target.value)}
-          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option value="" className="bg-secondary">
-            Duration Unit
-          </option>
-          {Object.values(ProjectDurationUnit).map((unit) => (
-            <option key={unit} value={unit} className="bg-secondary">
-              {unit.replace(/\b\w/, (c) => c.toUpperCase())}
-            </option>
-          ))}
-        </select> */}
       </div>
 
       {/* Project Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {projects.length > 0 ? (
-          projects.map((p) => <ProjectCard key={p.id} {...p} />)
+          projects.map((p) => (
+            <ProjectCard key={p.id} {...p} isContributor={true} />
+          ))
         ) : (
           <p>No project found</p>
         )}

@@ -44,7 +44,7 @@ export default function NotFound() {
         </p>
 
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/home")}
           className="font-mono flex items-center gap-2 mx-auto px-3 py-1 cursor-pointer border border-blue-400 text-white rounded-md uppercase tracking-wider hover:bg-blue-500/20 transition shadow-[0_0_10px_rgba(59,130,246,0.3)]"
         >
           <Home size={18} />

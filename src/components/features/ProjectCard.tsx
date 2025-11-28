@@ -19,6 +19,7 @@ interface ProjectCardProps {
   creator?: string;
   rating?: number;
   applicants?: number;
+  isContributor?: boolean;
 }
 
 export default function ProjectCard({
@@ -31,6 +32,7 @@ export default function ProjectCard({
   durationMin,
   durationMax,
   durationUnit,
+  isContributor,
 }: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -88,12 +90,14 @@ export default function ProjectCard({
             >
               View More
             </Link>
-            <button
-              className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded cursor-pointer transition ease-in"
-              onClick={() => setIsOpen(true)}
-            >
-              Apply
-            </button>
+            {!isContributor && (
+              <button
+                className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded cursor-pointer transition ease-in"
+                onClick={() => setIsOpen(true)}
+              >
+                Apply
+              </button>
+            )}
           </div>
           {isOpen && (
             <ApplyModal

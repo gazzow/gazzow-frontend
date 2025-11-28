@@ -12,7 +12,7 @@ export default function InternalServerError() {
     router.replace(USER_ROUTES.HOME);
   };
   const handleRefresh = () => {
-    router.refresh();
+    router.back();
   };
 
   return (

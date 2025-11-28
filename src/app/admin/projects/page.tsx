@@ -1,5 +1,6 @@
 "use client";
 
+import Pagination from "@/components/features/Pagination";
 import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
 import { useDebounce } from "@/hook/useDebounce";
 import { usePagination } from "@/hook/usePaginationOptions";
@@ -22,6 +23,7 @@ export default function ProjectManagement() {
     nextPage,
     prevPage,
     setTotal,
+    goToPage,
   } = usePagination({ limit: 6 });
 
   const [filterStatus, setFilterStatus] = useState("all");
@@ -62,20 +64,18 @@ export default function ProjectManagement() {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("User management error: ", error);
+        console.log("Project management error: ", error);
       }
     }
-  }, [debouncedSearch, filterStatus, limit, sortOption, skip, setTotal]);
+  }, [debouncedSearch, filterStatus, limit, setTotal, skip, sortOption]);
 
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 
   useEffect(() => {
-    if (page !== 1) {
-      prevPage();
-    }
-  }, [debouncedSearch, filterStatus, sortOption, page, prevPage]);
+    goToPage(1);
+  }, [debouncedSearch, filterStatus, sortOption, goToPage]);
 
   return (
     <div className="p-8">
@@ -150,7 +150,7 @@ export default function ProjectManagement() {
       </div>
 
       {/* Table Wrapper */}
-      <div className="overflow-x-auto shadow rounded-lg border border-border-primary">
+      <div className="overflow-x-auto shadow rounded-lg border border-border-primary mb-4">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="text-left text-text-primary">
@@ -228,27 +228,14 @@ export default function ProjectManagement() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-4 text-sm text-text-secondary">
-        <p>
-          Page {page} of {totalPages}
-        </p>
-        <div className="flex gap-2">
-          <button
-            disabled={!hasPrevPage}
-            onClick={prevPage}
-            className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
-          >
-            Previous
-          </button>
-          <button
-            disabled={!hasNextPage}
-            onClick={nextPage}
-            className="px-3 py-1 border rounded-md text-white hover:bg-secondary"
-          >
-            Next
-          </button>
-        </div>
-      </div>
+      <Pagination
+        hasNextPage={hasNextPage}
+        hasPrevPage={hasPrevPage}
+        nextPage={nextPage}
+        page={page}
+        prevPage={prevPage}
+        totalPages={totalPages}
+      />
     </div>
   );
 }

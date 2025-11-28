@@ -14,7 +14,6 @@ import {
   Eye,
   Files,
   Trash,
-  Users,
 } from "lucide-react";
 import { projectService } from "@/services/user/project-service";
 import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";

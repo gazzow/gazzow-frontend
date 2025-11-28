@@ -1,6 +1,7 @@
 "use client";
 
 import ProjectFileUpload from "@/components/features/FileUpload";
+import SkillSelector from "@/components/ui/SkillSelector";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { projectService } from "@/services/user/project-service";
 import {
@@ -14,17 +15,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-const techOptions = [
-  "JavaScript",
-  "TypeScript",
-  "React",
-  "Next.js",
-  "Node.js",
-  "Express",
-  "MongoDB",
-  "PostgreSQL",
-  "TailwindCSS",
-];
 
 const experiences = ["beginner", "intermediate", "expert"];
 
@@ -36,7 +26,6 @@ export default function CreateProjectPage() {
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
     watch,
     formState: { errors },
@@ -47,20 +36,8 @@ export default function CreateProjectPage() {
     },
   });
 
-  const requiredSkills = watch("requiredSkills");
+  const selectedSkills = watch("requiredSkills");
 
-  const handleTechToggle = (tech: string) => {
-    const current = getValues("requiredSkills");
-    if (current.includes(tech)) {
-      setValue(
-        "requiredSkills",
-        current.filter((t) => t !== tech),
-        { shouldValidate: true }
-      );
-    } else {
-      setValue("requiredSkills", [...current, tech], { shouldValidate: true });
-    }
-  };
 
   const onSubmit = async (values: CreateProjectInput) => {
     const data = {
@@ -163,32 +140,13 @@ export default function CreateProjectPage() {
             </div>
 
             {/* Required Skills */}
-            <div>
-              <label className="block text-sm text-gray-400 mb-2">
-                Required Skills
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {techOptions.map((tech) => (
-                  <button
-                    type="button"
-                    key={tech}
-                    onClick={() => handleTechToggle(tech)}
-                    className={`px-3 py-1.5 rounded-full text-sm transition ${
-                      requiredSkills.includes(tech)
-                        ? "bg-purple-600 text-white"
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                    }`}
-                  >
-                    {tech}
-                  </button>
-                ))}
-              </div>
-              {errors.requiredSkills && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.requiredSkills.message}
-                </p>
-              )}
-            </div>
+            <SkillSelector
+              requiredSkills={selectedSkills}
+              setRequiredSkills={(skills) =>
+                setValue("requiredSkills", skills, { shouldValidate: true })
+              }
+              errors={errors}
+            />
 
             {/* Visibility, Developers, Experience */}
             <div className="grid md:grid-cols-3 gap-6">
