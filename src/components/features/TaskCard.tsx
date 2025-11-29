@@ -37,25 +37,23 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
             .replace("_", " ")
             .replace(/\b\w/g, (c) => c.toUpperCase())}
         </span>
-        <span className="px-3 py-1 bg-gray-700/50 text-gray-300 rounded-full">
-          {task.paymentStatus?.replace(/\b\w/g, (c) => c.toUpperCase()) ||
-            "N/A"}
-        </span>
       </div>
 
       {/* Profile data */}
-      <div className="flex items-center gap-2">
-        <div className="bg-blue-600 text-white text-xs font-semibold w-7 h-7 flex items-center justify-center rounded-full">
-          {/* Replace First letter with Image url */}
-          {task.assigneeId.name && task.assigneeId.name[0]}
+      {task.assignee && (
+        <div className="flex items-center gap-2">
+          <div className="bg-blue-600 text-white text-xs font-semibold w-7 h-7 flex items-center justify-center rounded-full">
+            {/* Replace First letter with Image url */}
+            {task.assignee.name && task.assignee.name[0]}
+          </div>
+          <div>
+            <p className="text-sm text-gray-300">{task.assignee.name}</p>
+            <p className="text-xs text-gray-400 ">
+              {task.assignee.developerRole}
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm text-gray-300">{task.assigneeId.name}</p>
-          <p className="text-xs text-gray-400 ">
-            {task.assigneeId.developerRole}
-          </p>
-        </div>
-      </div>
+      )}
 
       <div className="flex gap-1 items-center text-xs text-gray-400">
         <Calendar size={14} />

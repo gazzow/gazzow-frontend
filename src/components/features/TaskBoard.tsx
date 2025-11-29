@@ -11,10 +11,10 @@ const statusColumns: Record<
   string,
   { label: string; color: string; statuses: TaskStatus[] }
 > = {
-  assigned: {
-    label: "Assigned",
+  todo: {
+    label: "To Do",
     color: "border-border-primary",
-    statuses: [TaskStatus.ASSIGNED],
+    statuses: [TaskStatus.ASSIGNED, TaskStatus.UNASSIGNED],
   },
   in_progress: {
     label: "In Progress",
@@ -48,7 +48,9 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
           className={`min-h-screen border ${column.color} rounded-xl p-4`}
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">{column.label.toUpperCase()}</h2>
+            <h2 className="text-lg font-semibold text-white">
+              {column.label.toUpperCase()}
+            </h2>
 
             <div className="flex items-center justify-center w-7 h-7 rounded-full bg-secondary">
               <span className="text-sm font-semibold text-white">

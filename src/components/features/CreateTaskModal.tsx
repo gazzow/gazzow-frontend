@@ -82,7 +82,7 @@ export default function CreateTaskModal({
   }, [fetchContributors]);
 
   useEffect(() => {
-    if (!contributors.length || !assigneeId) return;
+    if (!contributors.length) return;
     const contributor = contributors.find((c) => c.userId === assigneeId);
 
     const hours = Number(estimatedHours);
@@ -94,7 +94,7 @@ export default function CreateTaskModal({
     } else {
       setCalculatedAmount(0);
     }
-  }, [assigneeId, estimatedHours, contributors]);
+  }, [assigneeId, estimatedHours, contributors, setCalculatedAmount]);
 
   const handleFormSubmit = (data: CreateTaskInput) => {
     const assignee = contributors.find((c) => c.userId === data.assigneeId);

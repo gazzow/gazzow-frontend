@@ -6,7 +6,7 @@ export const createTaskSchema = z.object({
     .string()
     .min(10, "Description must be at least 10 characters")
     .max(699, "Description must not exceed 699 characters"),
-  assigneeId: z.string().min(1, "Please select a contributor"),
+  assigneeId: z.string().optional(),
   estimatedHours: z.number().refine((val) => val > 0, {
     message: "Estimated hours must be greater than 0",
   }),
