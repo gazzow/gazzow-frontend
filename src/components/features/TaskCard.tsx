@@ -1,6 +1,7 @@
 import { ITask, TaskPriority } from "@/types/task";
 import { Calendar } from "lucide-react";
-import React from "react";
+import React, { ReactEventHandler, useState } from "react";
+import TaskDetailsModal from "./TaskDetailsModal";
 
 type TaskCardProps = {
   task: ITask;
@@ -9,8 +10,17 @@ type TaskCardProps = {
 };
 
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleCloseModal = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
-    <div className="bg-secondary/30  border border-gray-700 space-y-2 rounded-md p-4 shadow-md text-gray-100 hover:shadow-lg transition duration-200">
+    <div
+      className="bg-secondary/30  border border-gray-700 space-y-2 rounded-md p-4 shadow-md text-gray-100 hover:shadow-lg transition duration-200"
+      onClick={handleCloseModal}
+    >
       <div className="flex justify-between items-start ">
         <h3 className="text-md font-semibold text-sm text-white">
           {task.title}
@@ -66,6 +76,16 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
           })}
         </span>
       </div>
+
+      {isOpen && (
+        <TaskDetailsModal
+          taskId={task.id}
+          projectId={task.project.id as string}
+          onAction={(id: string) => {}}
+          onClose={handleCloseModal}
+          key={task.id}
+        />
+      )}
     </div>
   );
 };

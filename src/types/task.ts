@@ -47,9 +47,10 @@ export interface ITask {
   id: string;
   title: string;
   project: Partial<IProject>;
-  assignee?: Partial<IUser> | null;
+  assignee?: Partial<IUser>;
   creator: Partial<IUser>;
   description: string;
+  expectedRate: number;
   estimatedHours: number; // estimated time
   proposedAmount: number; // expectedRate * estimatedHours
   status: TaskStatus;
@@ -57,19 +58,20 @@ export interface ITask {
   documents: IProjectFile[];
   submissionLinks: SubmissionLink[];
   paymentStatus?: PaymentStatus;
-  rejectionReason?: string; // reason provided by assignee when declined
   cancellationReason?: string; // for creator/admin cancellation
   revisionCount?: number; // track how many revisions were requested
-  ExpiredAt?: string; // record when task expired
-  cancelledAt?: string;
-  acceptedAt?: string;
-  submittedAt?: string;
-  completedAt?: string;
-  dueDate: string;
-  closedAt?: string; // when admin marks as done (after payment)
-  paidAt?: string;
+  expiredAt?: Date; // record when task expired
+  acceptedAt?: Date;
+  cancelledAt?: Date;
+  submittedAt?: Date;
+  completedAt?: Date;
+  dueDate: Date;
+  closedAt?: Date; // when admin marks as done (after payment)
+  paidAt?: Date;
+
   revisions?: Revision[];
+
   isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

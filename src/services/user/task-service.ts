@@ -14,4 +14,9 @@ export const taskService = {
     console.log("List task response: ", res);
     return res.data;
   },
+  async getTaskDetails(taskId: string, projectId: string) {
+    const res = await api.get(TASK_API.GET_TASK(taskId, projectId));
+    console.log("Get task details response: ", res);
+    return res.data;
+  },
 };
