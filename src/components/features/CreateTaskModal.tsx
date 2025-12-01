@@ -108,7 +108,7 @@ export default function CreateTaskModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+    <div className="fixed min-h-full inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
       <div className="bg-secondary text-white w-full max-w-lg rounded-lg shadow-lg">
         {/* Header */}
         <div className="flex justify-between items-center border-b border-border-primary px-6 py-4">

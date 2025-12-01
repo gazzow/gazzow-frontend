@@ -6,4 +6,6 @@ export const TASK_API = {
     `/projects/${projectId}/tasks/${role}`,
   GET_TASK: (taskId: string, projectId: string) =>
     `/projects/${projectId}/tasks/${taskId}`,
+  UPDATE_TASK: (taskId: string, projectId: string) =>
+    `/projects/${projectId}/tasks/${taskId}`,
 };

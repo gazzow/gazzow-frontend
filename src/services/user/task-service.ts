@@ -1,6 +1,7 @@
 import { TASK_API } from "@/constants/apis/task-api";
 import api from "@/lib/axios/api";
 import { Role } from "@/types/project";
+import { ITask } from "@/types/task";
 import { CreateTaskInput } from "@/validators/task-create";
 
 export const taskService = {
@@ -16,6 +17,11 @@ export const taskService = {
   },
   async getTaskDetails(taskId: string, projectId: string) {
     const res = await api.get(TASK_API.GET_TASK(taskId, projectId));
+    console.log("Get task details response: ", res);
+    return res.data;
+  },
+  async updateTask(taskId: string, projectId: string, data: Partial<ITask>) {
+    const res = await api.patch(TASK_API.UPDATE_TASK(taskId, projectId), data);
     console.log("Get task details response: ", res);
     return res.data;
   },
