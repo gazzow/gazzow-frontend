@@ -165,7 +165,7 @@ export default function Tasks() {
 
       {/* Tasks List*/}
       <main className="min-h-screen">
-        <TaskBoard tasks={tasks} />
+        <TaskBoard tasks={tasks} fetchTasks={fetchTasks} />
       </main>
     </div>
   );

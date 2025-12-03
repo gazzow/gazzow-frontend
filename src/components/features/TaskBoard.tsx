@@ -5,6 +5,7 @@ import { ITask, TaskStatus } from "@/types/task";
 
 interface TaskBoardProps {
   tasks: ITask[];
+  fetchTasks: () => void;
 }
 
 const statusColumns: Record<
@@ -13,7 +14,7 @@ const statusColumns: Record<
 > = {
   todo: {
     label: "To Do",
-    statuses: [TaskStatus.ASSIGNED, TaskStatus.UNASSIGNED],
+    statuses: [TaskStatus.TODO],
   },
   in_progress: {
     label: "In Progress",
@@ -29,7 +30,7 @@ const statusColumns: Record<
   },
 };
 
-export default function TaskBoard({ tasks }: TaskBoardProps) {
+export default function TaskBoard({ tasks, fetchTasks }: TaskBoardProps) {
   const [openMenuTaskId, setOpenMenuTaskId] = useState<string | null>(null);
 
   const handleOnToggleMenu = (taskId: string) => {
@@ -71,6 +72,7 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
                   task={task}
                   isMenuOpen={openMenuTaskId === task.id}
                   onToggleMenu={handleOnToggleMenu}
+                  fetchTasks={fetchTasks}
                 />
               ))
             )}

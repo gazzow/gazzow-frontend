@@ -25,4 +25,11 @@ export const taskService = {
     console.log("Get task details response: ", res);
     return res.data;
   },
+  async startWork(taskId: string, projectId: string, time: string) {
+    const res = await api.put(TASK_API.START_WORK(taskId, projectId), {
+      time,
+    });
+    console.log("Start task work response: ", res);
+    return res.data;
+  },
 };

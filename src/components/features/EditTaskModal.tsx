@@ -9,10 +9,10 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 import { useForm, useWatch } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "next/navigation";
 import { X } from "lucide-react";
+import { FormValues, schema } from "@/validators/edit-task";
 
 interface Contributor {
   id: string;
@@ -27,25 +27,13 @@ interface Contributor {
 type EditTaskModalProps = {
   taskId: string;
   onClose: () => void;
-  onUpdated: () => void;
+  fetchTasks: () => void;
 };
-
-const schema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  assigneeId: z.string().optional().nullable(),
-  estimatedHours: z.number().min(1, "Estimated hours must be at least 1"),
-  dueDate: z.string().min(1, "Due date is required"),
-  priority: z.enum(Object.values(TaskPriority)),
-  expectedRate: z.number().min(0).optional(),
-});
-
-type FormValues = z.infer<typeof schema>;
 
 export default function EditTaskModal({
   taskId,
   onClose,
-  onUpdated,
+  fetchTasks,
 }: EditTaskModalProps) {
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [task, setTask] = useState<ITask | null>(null);
@@ -73,7 +61,6 @@ export default function EditTaskModal({
       const res = await taskService.getTaskDetails(taskId, projectId);
 
       if (!res.success) throw new Error("Failed to fetch task.");
-
       const t = res.data;
       setTask(t);
 
@@ -139,8 +126,8 @@ export default function EditTaskModal({
 
       if (!res.success) throw new Error();
 
-      toast.success("Task updated successfully");
-      onUpdated();
+      toast.success(res.message);
+      fetchTasks();
       onClose();
       reset();
     } catch {
@@ -214,11 +201,18 @@ export default function EditTaskModal({
               <label className="text-sm">Assign To</label>
               <select
                 {...register("assigneeId")}
-                className="w-full  border border-gray-700 rounded-md px-3 py-2 text-sm mt-1"
+                className="w-full border border-border-primary rounded-md px-3 py-2 text-sm mt-1"
               >
-                <option value="">Unassigned</option>
+                <option value="" className="bg-gray-800">
+                  Unassigned
+                </option>
                 {contributors.map((c) => (
-                  <option key={c.userId} value={c.userId}>
+                  <option
+                    defaultValue={task.assignee?.id || ""}
+                    key={c.userId}
+                    value={c.userId}
+                    className="bg-gray-800"
+                  >
                     {c.name} — ${c.expectedRate}/hr
                   </option>
                 ))}
@@ -256,10 +250,10 @@ export default function EditTaskModal({
               <label className="text-sm">Priority</label>
               <select
                 {...register("priority")}
-                className="w-full  border border-gray-700 rounded-md px-3 py-2 text-sm mt-1"
+                className="w-full border border-gray-700 rounded-md px-3 py-2 text-sm mt-1"
               >
                 {Object.values(TaskPriority).map((p) => (
-                  <option key={p} value={p}>
+                  <option key={p} value={p} className="bg-gray-800">
                     {p}
                   </option>
                 ))}

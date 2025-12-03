@@ -1,71 +1,113 @@
 "use client";
 
 import { taskService } from "@/services/user/task-service";
-import { ITask, PaymentStatus } from "@/types/task";
+import { ITask, PaymentStatus, TaskStatus } from "@/types/task";
+import { formatTaskStatus } from "@/utils/format-task-status";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 type TaskRole = "creator" | "contributor";
 
 type TaskDetailsModalProps = {
   taskId: string;
-  role?: TaskRole;
-  openEditModal: () => void;
+  role: TaskRole;
   onClose: () => void;
-  onAction: (id: string) => void;
+  fetchTasks: () => void;
 };
 
 export default function TaskDetailsModal({
   taskId,
-  role = "creator",
-  openEditModal,
+  role,
   onClose,
-  onAction,
+  fetchTasks,
 }: TaskDetailsModalProps) {
   const { projectId } = useParams<{ projectId: string }>();
+  console.log("TaskDetailsModal projectId: ", projectId);
 
   const [task, setTask] = useState<ITask | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const fetchTask = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const res = await taskService.getTaskDetails(taskId, projectId);
+      if (res.success) {
+        setTask(res.data);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [taskId, projectId]);
+
   useEffect(() => {
-    let isMounted = true;
+    fetchTask();
+  }, [fetchTask]);
 
-    async function fetchTask() {
-      try {
-        setLoading(true);
-        setError("");
-
-        const res = await taskService.getTaskDetails(taskId, projectId);
-        if (!res.success) throw new Error("Failed to fetch task");
-
-        if (isMounted) setTask(res.data);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data.message);
-        }
-      } finally {
-        setLoading(false);
+  const startWork = async (taskId: string) => {
+    console.log("Starting work on task:", taskId);
+    try {
+      const now = new Date().toISOString();
+      const res = await taskService.startWork(taskId, projectId, now);
+      if (res.success) {
+        toast.success("Work started on task.");
+        onClose();
+        fetchTasks();
+      }
+      // Refresh task details
+      const updatedTaskRes = await taskService.getTaskDetails(
+        taskId,
+        projectId
+      );
+      if (updatedTaskRes.success) {
+        setTask(updatedTaskRes.data);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Failed to start work on task");
+        toast.error(error.response?.data.message);
       }
     }
+  };
 
-    fetchTask();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [taskId, projectId]);
+  const handleUpdateStatus = async (taskId: string) => {};
 
   const actions = {
     contributor: [
-      { label: "Start Work", id: "start", show: task && !task.acceptedAt },
-      { label: "Submit Work", id: "submit", show: task && task.acceptedAt },
+      {
+        label: "Start Work",
+        id: "start",
+        show: task && task.acceptedAt === null,
+        onSubmit: startWork,
+      },
+      {
+        label: "Submit Work",
+        id: "submit",
+        show: task && task.acceptedAt && task.status === TaskStatus.IN_PROGRESS,
+        onSubmit: handleUpdateStatus,
+      },
     ],
     creator: [
-      { label: "Change Status", id: "change-status", show: true },
-      { label: "Cancel Task", id: "cancel", show: task && task.cancelledAt },
+      {
+        label: "Change Status",
+        id: "change-status",
+        show: true,
+        onSubmit: handleUpdateStatus,
+      },
+      {
+        label: "Cancel Task",
+        id: "cancel",
+        show: task && task.cancelledAt,
+        onSubmit: handleUpdateStatus,
+      },
     ],
   };
 
@@ -77,8 +119,8 @@ export default function TaskDetailsModal({
       >
         {/* Header */}
         <div className="flex justify-between items-center px-5 py-4 bg-primary/30 rounded-t-2xl  border-b border-gray-700/50 backdrop-blur-sm">
-          <h2 className="text-lg font-bold text-gray-100 tracking-wide">
-            {loading ? "Loading Task..." : task?.title}
+          <h2 className="text-md font-bold text-gray-100 tracking-wide">
+            {loading ? "Loading Task..." : task?.title.toUpperCase()}
           </h2>
 
           <button
@@ -108,7 +150,7 @@ export default function TaskDetailsModal({
               {/* Status & Priority */}
               <div className="flex flex-wrap items-center gap-3">
                 <span className="px-3 py-1 text-xs bg-blue-500/20 border border-blue-500 rounded-full">
-                  {task.status}
+                  {formatTaskStatus(task.status)}
                 </span>
                 <span className="px-3 py-1 text-xs bg-yellow-500/20 border border-yellow-500 rounded-full">
                   Priority: {task.priority}
@@ -184,19 +226,15 @@ export default function TaskDetailsModal({
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Due Date:</span>
-                  <span>
-                    {new Date(task.dueDate).toLocaleDateString("en-US", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
+                  <span>{new Date(task.dueDate).toLocaleString()}</span>
                 </div>
 
                 {task.acceptedAt && (
                   <div className="flex justify-between">
                     <span className="text-gray-400">Accepted:</span>
-                    <span>{new Date(task.acceptedAt).toLocaleString()}</span>
+                    <span>
+                      {new Date(task.acceptedAt).toLocaleString()}
+                    </span>
                   </div>
                 )}
               </div>
@@ -233,8 +271,8 @@ export default function TaskDetailsModal({
                 .map((btn, i) => (
                   <button
                     key={i}
-                    onClick={() => onAction(btn.id)}
-                    className="px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm"
+                    onClick={() => btn.onSubmit(task.id)}
+                    className="px-2 py-1 bg-btn-primary hover:bg-btn-primary-hover rounded-md text-white text-sm"
                   >
                     {btn.label}
                   </button>

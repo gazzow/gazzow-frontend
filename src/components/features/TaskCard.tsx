@@ -5,6 +5,7 @@ import {
   MoreVertical,
   SquareCheckBig,
   Trash,
+  X,
 } from "lucide-react";
 import React, { useState } from "react";
 import TaskDetailsModal from "./TaskDetailsModal";
@@ -16,12 +17,14 @@ type TaskCardProps = {
   className?: string;
   isMenuOpen: boolean;
   onToggleMenu: (taskId: string) => void;
+  fetchTasks: () => void;
 };
 
 const TaskCard: React.FC<TaskCardProps> = ({
   task,
   isMenuOpen,
   onToggleMenu,
+  fetchTasks,
 }) => {
   const [isTaskDetailModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] =
@@ -71,12 +74,16 @@ const TaskCard: React.FC<TaskCardProps> = ({
               }}
               className="p-2 rounded-lg hover:bg-gray-700/40 transition text-gray-400"
             >
-              <MoreVertical size={16} />
+              {isMenuOpen ? (
+                <X size={16} className="animate-flip-up" />
+              ) : (
+                <MoreVertical size={16} className="animate-flip-up" />
+              )}
             </button>
 
             {/* Menu Dropdown */}
             {isMenuOpen && (
-              <div className="absolute  right-0 mt-1 w-45 bg-secondary border border-gray-700 rounded-lg shadow-lg overflow-hidden animate-fadeIn z-20">
+              <div className="absolute right-0 mt-1 w-45 bg-secondary border border-gray-700 rounded-lg shadow-lg overflow-hidden animate-fadeIn z-20">
                 <button
                   onClick={() => {
                     onToggleMenu(task.id);
@@ -122,12 +129,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
             .replace(/\b\w/g, (c) => c.toUpperCase())}
         </span>
         <span
-          className={`px-3 py-1 bg-gray-700/50 text-gray-300 rounded-full ${
+          className={`px-3 py-1 rounded-full ${
             task.priority === TaskPriority.HIGH
               ? "bg-red-500/10 border border-red-500 text-red-400"
               : task.priority === TaskPriority.MEDIUM
-              ? "bg-blue-500/10 text-blue-400"
-              : "bg-gray-500 text-gray-400"
+              ? "bg-yellow-500/10 text-orange-400 border border-orange-500"
+              : "bg-blue-500/10 text-blue-400 border border-blue-500"
           }`}
         >
           {task.priority}
@@ -162,22 +169,23 @@ const TaskCard: React.FC<TaskCardProps> = ({
         </span>
       </div>
 
+      {/* Task details Modal */}
       {isTaskDetailModalOpen && !isMenuOpen && (
         <TaskDetailsModal
           taskId={task.id}
-          role={task.assignee?.id === user.id ? "contributor" : "creator"}
-          openEditModal={openEditModal}
-          onAction={(id: string) => {}}
+          role={task.creator.id === user.id ? "creator" : "contributor"}
           onClose={handleCloseModal}
           key={task.id}
+          fetchTasks={fetchTasks}
         />
       )}
 
+      {/* Task Edit Modal */}
       {isEditTaskModalOpen && (
         <EditTaskModal
           onClose={closeEditModal}
-          onUpdated={() => {}}
           taskId={task.id}
+          fetchTasks={fetchTasks}
         />
       )}
     </div>

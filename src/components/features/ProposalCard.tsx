@@ -7,7 +7,6 @@ import {
   Calendar,
   FileText,
   PenLine,
-  BadgeDollarSign,
 } from "lucide-react";
 import ApplyModal from "./ApplyModal";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
