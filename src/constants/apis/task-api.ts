@@ -12,4 +12,6 @@ export const TASK_API = {
     `/projects/${projectId}/tasks/${taskId}/start`,
   SUBMIT_TASK: (taskId: string, projectId: string) =>
     `/projects/${projectId}/tasks/${taskId}/submit`,
+  COMPLETE_TASK: (taskId: string, projectId: string) =>
+    `/projects/${projectId}/tasks/${taskId}/complete`,
 };

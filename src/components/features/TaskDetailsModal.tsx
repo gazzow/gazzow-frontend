@@ -96,6 +96,24 @@ export default function TaskDetailsModal({
     }
   };
 
+  const completeTask = async (taskId: string) => {
+    console.log("Completing task:", taskId);
+    try {
+      const now = new Date().toISOString();
+      const res = await taskService.completeTask(taskId, projectId, now);
+      if (res.success) {
+        toast.success("Task marked as completed.");
+        onClose();
+        fetchTasks();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Failed to complete task");
+        toast.error(error.response?.data.message);
+      }
+    }
+  };
+
   const handleUpdateStatus = async (taskId: string) => {};
 
   const actions = {
@@ -118,7 +136,7 @@ export default function TaskDetailsModal({
         label: "Mark as Completed",
         id: "complete",
         show: task && task.submittedAt && task.status !== TaskStatus.COMPLETED,
-        onSubmit: handleUpdateStatus,
+        onSubmit: completeTask,
       },
       {
         label: "Cancel Task",

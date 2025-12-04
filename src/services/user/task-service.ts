@@ -39,4 +39,11 @@ export const taskService = {
     console.log("Submit task response: ", res);
     return res.data;
   },
+  async completeTask(taskId: string, projectId: string, time: string) {
+    const res = await api.put(TASK_API.COMPLETE_TASK(taskId, projectId), {
+      time,
+    });
+    console.log("Complete task response: ", res);
+    return res.data;
+  },
 };
