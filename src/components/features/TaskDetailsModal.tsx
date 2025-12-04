@@ -78,6 +78,24 @@ export default function TaskDetailsModal({
     }
   };
 
+  const submitWork = async (taskId: string) => {
+    console.log("Submitting work on task:", taskId);
+    try {
+      const now = new Date().toISOString();
+      const res = await taskService.submitTask(taskId, projectId, now);
+      if (res.success) {
+        toast.success("Task submitted for review.");
+        onClose();
+        fetchTasks();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Failed to submit work on task");
+        toast.error(error.response?.data.message);
+      }
+    }
+  };
+
   const handleUpdateStatus = async (taskId: string) => {};
 
   const actions = {
@@ -89,17 +107,17 @@ export default function TaskDetailsModal({
         onSubmit: startWork,
       },
       {
-        label: "Submit Work",
+        label: "Submit Task",
         id: "submit",
         show: task && task.acceptedAt && task.status === TaskStatus.IN_PROGRESS,
-        onSubmit: handleUpdateStatus,
+        onSubmit: submitWork,
       },
     ],
     creator: [
       {
-        label: "Change Status",
-        id: "change-status",
-        show: true,
+        label: "Mark as Completed",
+        id: "complete",
+        show: task && task.submittedAt && task.status !== TaskStatus.COMPLETED,
         onSubmit: handleUpdateStatus,
       },
       {
@@ -232,9 +250,13 @@ export default function TaskDetailsModal({
                 {task.acceptedAt && (
                   <div className="flex justify-between">
                     <span className="text-gray-400">Accepted:</span>
-                    <span>
-                      {new Date(task.acceptedAt).toLocaleString()}
-                    </span>
+                    <span>{new Date(task.acceptedAt).toLocaleString()}</span>
+                  </div>
+                )}
+                {task.submittedAt && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Submitted:</span>
+                    <span>{new Date(task.submittedAt).toLocaleString()}</span>
                   </div>
                 )}
               </div>
@@ -263,7 +285,7 @@ export default function TaskDetailsModal({
                 onClick={onClose}
                 className="px-2 py-1 rounded-md border border-gray-500 hover:bg-gray-700 transition text-sm"
               >
-                Cancel
+                Close
               </button>
 
               {actions[role]

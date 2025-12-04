@@ -32,4 +32,11 @@ export const taskService = {
     console.log("Start task work response: ", res);
     return res.data;
   },
+  async submitTask(taskId: string, projectId: string, time: string) {
+    const res = await api.put(TASK_API.SUBMIT_TASK(taskId, projectId), {
+      time,
+    });
+    console.log("Submit task response: ", res);
+    return res.data;
+  },
 };
