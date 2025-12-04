@@ -195,46 +195,6 @@ export default function EditTaskModal({
             )}
           </div>
 
-          {/* Assignee + Hours */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm">Assign To</label>
-              <select
-                {...register("assigneeId")}
-                className="w-full border border-border-primary rounded-md px-3 py-2 text-sm mt-1"
-              >
-                <option value="" className="bg-gray-800">
-                  Unassigned
-                </option>
-                {contributors.map((c) => (
-                  <option
-                    defaultValue={task.assignee?.id || ""}
-                    key={c.userId}
-                    value={c.userId}
-                    className="bg-gray-800"
-                  >
-                    {c.name} — ${c.expectedRate}/hr
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="text-sm">Estimated Hours</label>
-              <input
-                {...register("estimatedHours", { valueAsNumber: true })}
-                type="number"
-                min="0"
-                className="w-full  border border-gray-700 rounded-md px-3 py-2 text-sm mt-1"
-              />
-              {errors.estimatedHours && (
-                <p className="text-red-500 text-sm">
-                  {errors.estimatedHours.message}
-                </p>
-              )}
-            </div>
-          </div>
-
           {/* Due Date + Priority */}
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -261,13 +221,75 @@ export default function EditTaskModal({
             </div>
           </div>
 
+          {/* Assignee + Hours */}
+          {task.assignee ? (
+            <div className="flex items-center justify-between bg-slate-700 p-3 rounded">
+              <div className="flex items-center gap-2 ">
+                <div className="bg-blue-600 text-white text-xs font-semibold w-7 h-7 flex items-center justify-center rounded-full">
+                  {/* Replace First letter with Image url */}
+                  {task.assignee.name && task.assignee.name[0]}
+                </div>
+                <div>
+                  <p className="text-sm text-gray-300">{task.assignee.name}</p>
+                  <p className="text-xs text-gray-400 ">
+                    {task.assignee.developerRole}
+                  </p>
+                </div>
+              </div>
+              <button type="button" className="bg-gray-500 py-1 px-2 rounded">
+                Change
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm">Assign To</label>
+                <select
+                  {...register("assigneeId")}
+                  className="w-full border border-border-primary rounded-md px-3 py-2 text-sm mt-1"
+                >
+                  <option value="" className="bg-gray-800">
+                    Select Contributor
+                  </option>
+                  {contributors.map((c) => (
+                    <option
+                      defaultValue={task.assignee?.id || ""}
+                      key={c.userId}
+                      value={c.userId}
+                      className="bg-gray-800"
+                    >
+                      {c.name} — ${c.expectedRate}/hr
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm">Estimated Hours</label>
+                <input
+                  {...register("estimatedHours", { valueAsNumber: true })}
+                  type="number"
+                  min="0"
+                  className="w-full  border border-gray-700 rounded-md px-3 py-2 text-sm mt-1"
+                />
+                {errors.estimatedHours && (
+                  <p className="text-red-500 text-sm">
+                    {errors.estimatedHours.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Payable Amount */}
-          <div className="flex justify-between text-sm">
-            <span>Total Payable:</span>
-            <span className="font-semibold text-green-400">
-              ₹ {calculatedAmount.toLocaleString()}
-            </span>
-          </div>
+          {task.assignee && (
+            <div className="flex justify-between text-sm">
+              <span>Total Payable:</span>
+              <span className="font-semibold text-green-400">
+                ₹ {calculatedAmount.toLocaleString()}
+              </span>
+            </div>
+          )}
 
           {/* Buttons */}
           <div className="flex justify-end gap-3 pt-3">
