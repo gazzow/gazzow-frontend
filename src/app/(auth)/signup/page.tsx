@@ -14,6 +14,7 @@ import { authService } from "@/services/auth/auth-service";
 import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
 import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
+import axios from "axios";
 
 const fields = [
   {
@@ -57,7 +58,6 @@ export default function SignupPage() {
     resolver: zodResolver(signupSchema),
   });
 
-
   const handleRegisterSubmit = async (formData: Record<string, string>) => {
     try {
       console.log("form data: ", formData);
@@ -78,7 +78,10 @@ export default function SignupPage() {
         router.replace(AUTH_ROUTES.VERIFY_USER);
       }
     } catch (error) {
-      console.log("error while api call", error);
+      if (axios.isAxiosError(error)) {
+        console.log("error while api call", error);
+        toast.error(error.response?.data.message || "Error while signup");
+      }
     }
   };
 
