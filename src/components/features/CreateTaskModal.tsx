@@ -231,7 +231,7 @@ export default function CreateTaskModal({
           <div className="flex items-center justify-between mt-2">
             <span className="text-sm text-gray-300">Payable Amount: </span>
             <span className="text-base font-semibold text-green-500">
-              ₹ {calculatedAmount.toLocaleString("en-IN")}
+              $ {calculatedAmount.toLocaleString("en-IN")}
             </span>
           </div>
 

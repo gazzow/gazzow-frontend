@@ -1,7 +1,9 @@
 "use client";
 
+import { paymentService } from "@/services/user/payment-service";
 import { taskService } from "@/services/user/task-service";
 import { ITask, PaymentStatus, TaskStatus } from "@/types/task";
+import { formatTaskDate } from "@/utils/format-task-date";
 import { formatTaskStatus } from "@/utils/format-task-status";
 import axios from "axios";
 import { useParams } from "next/navigation";
@@ -52,8 +54,13 @@ export default function TaskDetailsModal({
     fetchTask();
   }, [fetchTask]);
 
-  const startWork = async (taskId: string) => {
+  const startWork = async (taskId: string, paymentStatus?: PaymentStatus) => {
     console.log("Starting work on task:", taskId);
+
+    if (!paymentStatus || paymentStatus === PaymentStatus.PENDING) {
+      toast.error("Payment is pending. Unable to start work on this task.");
+      return;
+    }
     try {
       const now = new Date().toISOString();
       const res = await taskService.startWork(taskId, projectId, now);
@@ -116,6 +123,21 @@ export default function TaskDetailsModal({
 
   const handleUpdateStatus = async (taskId: string) => {};
 
+  const handlePayment = async (taskId: string) => {
+    try {
+      const res = await paymentService.taskCheckoutSession(taskId);
+      if (res.success) {
+        toast.success("Redirecting to payment...");
+        window.location.href = res.data.checkoutUrl;
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Failed to initiate payment for task");
+        toast.error(error.response?.data.message);
+      }
+    }
+  };
+
   const actions = {
     contributor: [
       {
@@ -135,7 +157,11 @@ export default function TaskDetailsModal({
       {
         label: "Mark as Completed",
         id: "complete",
-        show: task && task.submittedAt && task.status !== TaskStatus.COMPLETED,
+        show:
+          task &&
+          task.submittedAt &&
+          task.status === TaskStatus.SUBMITTED &&
+          task.paymentStatus === PaymentStatus.ESCROW_HELD,
         onSubmit: completeTask,
       },
       {
@@ -236,9 +262,7 @@ export default function TaskDetailsModal({
 
                   <div>
                     <p className="text-xs text-gray-400">Budget Estimate</p>
-                    <p className="text-green-400 font-bold">
-                      ${task.proposedAmount}
-                    </p>
+                    <p className="font-bold">${task.proposedAmount}</p>
                   </div>
 
                   <div>
@@ -261,20 +285,26 @@ export default function TaskDetailsModal({
               {/* Dates & Payment */}
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Due Date:</span>
-                  <span>{new Date(task.dueDate).toLocaleString()}</span>
+                  <span className="text-gray-300 font-medium">Due Date</span>
+                  <span>{formatTaskDate(task.dueDate)}</span>
                 </div>
 
                 {task.acceptedAt && (
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Accepted:</span>
-                    <span>{new Date(task.acceptedAt).toLocaleString()}</span>
+                    <span className="text-gray-300 font-medium">Accepted</span>
+                    <span>{formatTaskDate(task.acceptedAt)}</span>
                   </div>
                 )}
                 {task.submittedAt && (
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Submitted:</span>
-                    <span>{new Date(task.submittedAt).toLocaleString()}</span>
+                    <span className="text-gray-300 font-medium">Submitted</span>
+                    <span>{formatTaskDate(task.submittedAt)}</span>
+                  </div>
+                )}
+                {task.paidAt && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-300 font-medium">Paid</span>
+                    <span>{formatTaskDate(task.paidAt)}</span>
                   </div>
                 )}
               </div>
@@ -305,13 +335,23 @@ export default function TaskDetailsModal({
               >
                 Close
               </button>
+              {role === "creator" &&
+                task.assignee &&
+                task.paymentStatus === PaymentStatus.PENDING && (
+                  <button
+                    className="px-2 py-1 bg-green-600 hover:bg-green-700 rounded-md text-white text-sm"
+                    onClick={() => handlePayment(task.id)}
+                  >
+                    Pay Now
+                  </button>
+                )}
 
               {actions[role]
                 .filter((btn) => btn.show)
                 .map((btn, i) => (
                   <button
                     key={i}
-                    onClick={() => btn.onSubmit(task.id)}
+                    onClick={() => btn.onSubmit(task.id, task.paymentStatus)}
                     className="px-2 py-1 bg-btn-primary hover:bg-btn-primary-hover rounded-md text-white text-sm"
                   >
                     {btn.label}

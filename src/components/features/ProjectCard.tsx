@@ -5,6 +5,9 @@ import { Calendar, DollarSign } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import ApplyModal from "./ApplyModal";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { userService } from "@/services/user/user-service";
 
 interface ProjectCardProps {
   id: string;
@@ -35,6 +38,23 @@ export default function ProjectCard({
   isContributor,
 }: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleApplyClick = async () => {
+    try {
+      const res = await userService.getUser();
+      if (res.success && res.data.stripeAccountId) {
+        setIsOpen(true);
+      } else {
+        toast.info(
+          "Please complete your Stripe setup in Settings before applying for jobs. You need to be able to receive payments to work on paid projects."
+        );
+      }
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        console.log("Error fetching user data: ", e.response?.data);
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col space-y-3 bg-secondary/30 p-4 rounded-md border border-gray-800 hover:border-gray-600 transition-all">
@@ -93,7 +113,7 @@ export default function ProjectCard({
             {!isContributor && (
               <button
                 className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded cursor-pointer transition ease-in"
-                onClick={() => setIsOpen(true)}
+                onClick={handleApplyClick}
               >
                 Apply
               </button>

@@ -286,7 +286,7 @@ export default function EditTaskModal({
             <div className="flex justify-between text-sm">
               <span>Total Payable:</span>
               <span className="font-semibold text-green-400">
-                ₹ {calculatedAmount.toLocaleString()}
+                $ {calculatedAmount.toLocaleString()}
               </span>
             </div>
           )}
