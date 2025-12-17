@@ -117,9 +117,13 @@ export default function EditTaskModal({
       setSubmitting(true);
 
       const payload = {
-        ...data,
+        title: data.title,
+        description: data.description,
+        assigneeId: task?.assignee?.id,
+        estimatedHours: data.estimatedHours,
         dueDate: new Date(data.dueDate),
-        expectedRate: data.expectedRate ?? 0,
+        expectedRate: task?.expectedRate,
+        totalAmount: task?.totalAmount,
       };
 
       const res = await taskService.updateTask(taskId, projectId, payload);
@@ -130,8 +134,10 @@ export default function EditTaskModal({
       fetchTasks();
       onClose();
       reset();
-    } catch {
-      toast.error("Failed to update task");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message || "Failed to update task");
+      }
     } finally {
       setSubmitting(false);
     }
@@ -179,7 +185,6 @@ export default function EditTaskModal({
               <p className="text-red-500 text-sm">{errors.title.message}</p>
             )}
           </div>
-
           {/* Description */}
           <div>
             <label className="text-sm">Description</label>
@@ -194,6 +199,22 @@ export default function EditTaskModal({
               </p>
             )}
           </div>
+          {task.assignee && (
+            <div>
+              <label className="text-sm">Estimated Hours</label>
+              <input
+                {...register("estimatedHours", { valueAsNumber: true })}
+                type="number"
+                min="0"
+                className="w-full  border border-gray-700 rounded-md px-3 py-2 text-sm mt-1"
+              />
+              {errors.estimatedHours && (
+                <p className="text-red-500 text-sm">
+                  {errors.estimatedHours.message}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Due Date + Priority */}
           <div className="grid grid-cols-2 gap-4">
@@ -221,12 +242,11 @@ export default function EditTaskModal({
             </div>
           </div>
 
-          {/* Assignee + Hours */}
+          {/* Assignee*/}
           {task.assignee ? (
             <div className="flex items-center justify-between bg-slate-700 p-3 rounded">
               <div className="flex items-center gap-2 ">
                 <div className="bg-blue-600 text-white text-xs font-semibold w-7 h-7 flex items-center justify-center rounded-full">
-                  {/* Replace First letter with Image url */}
                   {task.assignee.name && task.assignee.name[0]}
                 </div>
                 <div>
@@ -236,9 +256,6 @@ export default function EditTaskModal({
                   </p>
                 </div>
               </div>
-              <button type="button" className="bg-gray-500 py-1 px-2 rounded">
-                Change
-              </button>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4">
@@ -253,7 +270,7 @@ export default function EditTaskModal({
                   </option>
                   {contributors.map((c) => (
                     <option
-                      defaultValue={task.assignee?.id || ""}
+                      defaultValue={task.assignee?.id}
                       key={c.userId}
                       value={c.userId}
                       className="bg-gray-800"
@@ -263,7 +280,6 @@ export default function EditTaskModal({
                   ))}
                 </select>
               </div>
-
               <div>
                 <label className="text-sm">Estimated Hours</label>
                 <input
@@ -282,7 +298,7 @@ export default function EditTaskModal({
           )}
 
           {/* Payable Amount */}
-          {task.assignee && (
+          {assigneeId && estimatedHours && (
             <div className="flex justify-between text-sm">
               <span>Total Payable:</span>
               <span className="font-semibold text-green-400">
@@ -290,7 +306,6 @@ export default function EditTaskModal({
               </span>
             </div>
           )}
-
           {/* Buttons */}
           <div className="flex justify-end gap-3 pt-3">
             <button

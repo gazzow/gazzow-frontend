@@ -2,7 +2,7 @@
 
 import { paymentService } from "@/services/user/payment-service";
 import { taskService } from "@/services/user/task-service";
-import { ITask, PaymentStatus, TaskStatus } from "@/types/task";
+import { ITask, PaymentStatus, RefundStatus, TaskStatus } from "@/types/task";
 import { formatTaskDate } from "@/utils/format-task-date";
 import { formatTaskStatus } from "@/utils/format-task-status";
 import axios from "axios";
@@ -233,52 +233,97 @@ export default function TaskDetailsModal({
               <div className="p-4 rounded-xl bg-primary/40 border border-gray-700 space-y-4">
                 {/* Assignee */}
                 {task.assignee && (
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-gray-700/50">
-                    <div className="bg-blue-600 text-white text-sm font-semibold w-10 h-10 flex items-center justify-center rounded-full">
-                      {task.assignee.name?.[0] ?? "?"}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">
-                        {task.assignee.name}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {task.assignee.developerRole}
-                      </p>
+                  <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 border border-gray-700/50">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-blue-600 text-white text-sm font-semibold w-10 h-10 flex items-center justify-center rounded-full">
+                        {task.assignee.name?.[0] ?? "?"}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">
+                          {task.assignee.name}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {task.assignee.developerRole}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
 
-                {/* Financial Rows */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-400">Hourly Rate</p>
-                    <p className="font-semibold">${task.expectedRate}/hr</p>
+                {/* Financial Summary */}
+                <div className="rounded-lg border border-white/10 p-4 space-y-4 bg-black/30">
+                  {/* Cost Breakdown */}
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-400">Estimated Hours</p>
+                      <p className="font-medium">{task.estimatedHours} hrs</p>
+                    </div>
+
+                    <div>
+                      <p className="text-gray-400">Hourly Rate</p>
+                      <p className="font-medium">${task.expectedRate}/hr</p>
+                    </div>
+
+                    <div>
+                      <p className="text-gray-400">Total Cost</p>
+                      <p className="font-semibold">${task.totalAmount}</p>
+                    </div>
                   </div>
 
-                  <div>
-                    <p className="text-xs text-gray-400">Estimated Hours</p>
-                    <p className="font-semibold">{task.estimatedHours} hrs</p>
+                  <hr className="border-white/10" />
+
+                  {/* Payment Snapshot */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-gray-400 text-xs">Paid (Escrow)</p>
+                      <p className="text-xl font-bold text-green-400">
+                        ${task.amountInEscrow}
+                      </p>
+                    </div>
+
+                    {task.refundAmount > 0 ? (
+                      <div>
+                        <p className="text-gray-400 text-xs">Refund Amount</p>
+                        <p className="text-xl font-bold text-yellow-400">
+                          ${task.refundAmount}
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-gray-400 text-xs">
+                          Remaining to Pay
+                        </p>
+                        <p className="text-xl font-bold text-red-400">
+                          ${task.balance}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
-                  <div>
-                    <p className="text-xs text-gray-400">Budget Estimate</p>
-                    <p className="font-bold">${task.proposedAmount}</p>
-                  </div>
+                  {/* Status Message */}
+                  {role === "creator" && (
+                    <div className="text-sm mt-2">
+                      {task.paymentStatus === PaymentStatus.PENDING &&
+                        task.balance > 0 && (
+                          <p className="text-yellow-400">
+                            ⚠️ Please pay ${task.balance} to continue this task.
+                          </p>
+                        )}
 
-                  <div>
-                    <p className="text-xs text-gray-400">Payment Status</p>
-                    <span
-                      className={`font-semibold text-sm uppercase ${
-                        task.paymentStatus === PaymentStatus.PAID
-                          ? "text-green-400"
-                          : task.paymentStatus === PaymentStatus.PENDING
-                          ? "text-yellow-400"
-                          : "text-red-400"
-                      }`}
-                    >
-                      {task.paymentStatus}
-                    </span>
-                  </div>
+                      {task.refundStatus === RefundStatus.PENDING && (
+                        <p className="text-yellow-400">
+                          💸 A Refund of ${task.refundAmount} will be processed
+                          automatically after the task is completed.
+                        </p>
+                      )}
+
+                      {task.paymentStatus === PaymentStatus.ESCROW_HELD && (
+                        <p className="text-green-400">
+                          ✅ Payment completed and securely held in escrow.
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -27,7 +27,14 @@ export enum PaymentStatus {
   PAID = "paid",
   ESCROW_HELD = "escrow_held",
   RELEASED = "released",
+  FAILED = "failed",
+}
+
+export enum RefundStatus {
+  NONE = "none",
+  PENDING = "pending",
   REFUNDED = "refunded",
+  SUCCESS = "success",
   FAILED = "failed",
 }
 
@@ -56,8 +63,13 @@ export interface ITask {
   description: string;
   expectedRate: number;
   estimatedHours: number; // estimated time
-  proposedAmount: number; // expectedRate * estimatedHours
+  totalAmount: number; // estimatedAmount * expectedRate
+  amountInEscrow: number; // Amount in escrow
+  balance: number; // Balance amount to pay
+  refundAmount: number;
+  refundStatus: RefundStatus;
   status: TaskStatus;
+  assigneeStatus: AssigneeStatus;
   priority: TaskPriority;
   documents: IProjectFile[];
   submissionLinks: SubmissionLink[];
@@ -69,6 +81,7 @@ export interface ITask {
   cancelledAt?: Date;
   submittedAt?: Date;
   completedAt?: Date;
+  reassignedAt?: Date;
   dueDate: Date;
   closedAt?: Date; // when admin marks as done (after payment)
   paidAt?: Date;
