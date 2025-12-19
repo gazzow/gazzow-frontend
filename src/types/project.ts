@@ -1,3 +1,5 @@
+import { ContributorStatus } from "./contributor";
+
 export interface IProject {
   id: string;
   title: string;
@@ -13,13 +15,13 @@ export interface IProject {
   experience: ProjectExperience;
   visibility: ProjectVisibility;
   status: ProjectStatus;
-  contributors: IContributor[];
+  contributors: Contributor[];
   documents: IProjectFile[];
   createdAt: string;
   updatedAt: string;
 }
 
-export interface IContributor {
+export interface Contributor {
   userId: string;
   status: ContributorStatus;
   invitedAt?: string;
@@ -30,12 +32,6 @@ export interface IContributor {
 export interface IProjectFile {
   key: string;
   name: string;
-}
-
-export enum ContributorStatus {
-  ACTIVE = "active",
-  REMOVED = "removed",
-  IN_ACTIVE = "in_active",
 }
 
 export enum ProjectVisibility {

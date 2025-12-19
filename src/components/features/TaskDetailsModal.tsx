@@ -9,6 +9,8 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import ReassignTaskModal from "./ReassignTaskModal";
+import { UserPen } from "lucide-react";
 
 type TaskRole = "creator" | "contributor";
 
@@ -30,6 +32,7 @@ export default function TaskDetailsModal({
 
   const [task, setTask] = useState<ITask | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showReassign, setShowReassign] = useState<boolean>(false);
   const [error, setError] = useState("");
 
   const fetchTask = useCallback(async () => {
@@ -44,11 +47,12 @@ export default function TaskDetailsModal({
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message);
+        onClose();
       }
     } finally {
       setLoading(false);
     }
-  }, [taskId, projectId]);
+  }, [taskId, projectId, onClose]);
 
   useEffect(() => {
     fetchTask();
@@ -136,6 +140,15 @@ export default function TaskDetailsModal({
         toast.error(error.response?.data.message);
       }
     }
+  };
+
+  const openReassignModal = () => {
+    setShowReassign(true);
+  };
+
+  const onReassignSuccess = () => {
+    setShowReassign(false);
+    fetchTask();
   };
 
   const actions = {
@@ -230,10 +243,10 @@ export default function TaskDetailsModal({
               </section>
 
               {/* Assignee + Financial Summary */}
-              <div className="p-4 rounded-xl bg-primary/40 border border-gray-700 space-y-4">
+              <div className="p-4 rounded-xl bg-primary/40 border border-gray-700 space-y-4 transition ease-in-out duration-75">
                 {/* Assignee */}
                 {task.assignee && (
-                  <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 border border-gray-700/50">
+                  <div className="items-start flex justify-between gap-3 p-3 rounded-lg bg-white/5 border border-gray-700/50">
                     <div className="flex items-center gap-3">
                       <div className="bg-blue-600 text-white text-sm font-semibold w-10 h-10 flex items-center justify-center rounded-full">
                         {task.assignee.name?.[0] ?? "?"}
@@ -247,6 +260,26 @@ export default function TaskDetailsModal({
                         </p>
                       </div>
                     </div>
+
+                    {!showReassign &&
+                      task.status === TaskStatus.TODO &&
+                      role === "creator" && (
+                        <button
+                          onClick={openReassignModal}
+                          className="flex gap-2 items-center text-left px-4 py-2 text-sm bg-gray-700 transition rounded cursor-pointer"
+                        >
+                          <UserPen size={16} color="cyan" />
+                          <span>Reassign</span>
+                        </button>
+                      )}
+
+                    {showReassign && task.status === TaskStatus.TODO && (
+                      <ReassignTaskModal
+                        task={task}
+                        onClose={() => setShowReassign(false)}
+                        onSuccess={onReassignSuccess}
+                      />
+                    )}
                   </div>
                 )}
 
@@ -344,6 +377,12 @@ export default function TaskDetailsModal({
                   <div className="flex justify-between">
                     <span className="text-gray-300 font-medium">Submitted</span>
                     <span>{formatTaskDate(task.submittedAt)}</span>
+                  </div>
+                )}
+                {task.completedAt && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-300 font-medium">Completed</span>
+                    <span>{formatTaskDate(task.completedAt)}</span>
                   </div>
                 )}
                 {task.paidAt && (

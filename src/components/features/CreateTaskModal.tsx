@@ -5,25 +5,12 @@ import { X } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateTaskInput, createTaskSchema } from "@/validators/task-create";
-import { ContributorStatus } from "@/types/project";
 import { projectService } from "@/services/user/project-service";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { TaskPriority } from "@/types/task";
+import { IContributor } from "@/types/contributor";
 
-interface Contributor {
-  id: string;
-  userId: string;
-  name: string;
-  email: string;
-  status: ContributorStatus;
-  imageUrl: string;
-  expectedRate: number;
-  developerRole: string;
-  invitedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -38,7 +25,7 @@ export default function CreateTaskModal({
   onSubmit,
   projectId,
 }: CreateTaskModalProps) {
-  const [contributors, setContributors] = useState<Contributor[]>([]);
+  const [contributors, setContributors] = useState<IContributor[]>([]);
 
   const [calculatedAmount, setCalculatedAmount] = useState<number>(0);
 
@@ -62,20 +49,20 @@ export default function CreateTaskModal({
   const assigneeId = useWatch({ control, name: "assigneeId" });
   const estimatedHours = useWatch({ control, name: "estimatedHours" });
 
-  const fetchContributors = useCallback(async () => {
-    if (!projectId) return;
-    try {
-      const res = await projectService.listProjectContributors(projectId);
+    const fetchContributors = useCallback(async () => {
+      if (!projectId) return;
+      try {
+        const res = await projectService.listProjectContributors(projectId);
 
-      if (res.success) {
-        setContributors(res.data.contributors);
+        if (res.success) {
+          setContributors(res.data.contributors);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          toast.error(error.response?.data.message);
+        }
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
-    }
-  }, [projectId]);
+    }, [projectId]);
 
   useEffect(() => {
     fetchContributors();
@@ -188,7 +175,7 @@ export default function CreateTaskModal({
                     <option key={idx} value={c.userId}>
                       {c.name.split(" ").length > 2
                         ? c.name.split(" ").slice(0, 2).join(" ") +
-                          " - " +
+                          " — " +
                           c.expectedRate +
                           "/hr"
                         : c.name + " - " + c.expectedRate + "/hr"}

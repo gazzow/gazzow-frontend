@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { ITask, TaskPriority } from "@/types/task";
-import { ContributorStatus } from "@/types/project";
 import { taskService } from "@/services/user/task-service";
 import { projectService } from "@/services/user/project-service";
 import { toast } from "react-toastify";
@@ -13,16 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "next/navigation";
 import { X } from "lucide-react";
 import { FormValues, schema } from "@/validators/edit-task";
-
-interface Contributor {
-  id: string;
-  userId: string;
-  name: string;
-  email: string;
-  status: ContributorStatus;
-  expectedRate: number;
-  developerRole: string;
-}
+import { IContributor } from "@/types/contributor";
 
 type EditTaskModalProps = {
   taskId: string;
@@ -35,7 +25,7 @@ export default function EditTaskModal({
   onClose,
   fetchTasks,
 }: EditTaskModalProps) {
-  const [contributors, setContributors] = useState<Contributor[]>([]);
+  const [contributors, setContributors] = useState<IContributor[]>([]);
   const [task, setTask] = useState<ITask | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [calculatedAmount, setCalculatedAmount] = useState(0);
@@ -67,7 +57,7 @@ export default function EditTaskModal({
       setValue("title", t.title);
       setValue("priority", t.priority);
       setValue("description", t.description);
-      setValue("assigneeId", t.assigneeId || "");
+      setValue("assigneeId", t.assigneeId || null);
       setValue("estimatedHours", t.estimatedHours);
       setValue("expectedRate", t.expectedRate ?? 0);
       setValue("dueDate", new Date(t.dueDate).toISOString().slice(0, 16));
@@ -119,7 +109,7 @@ export default function EditTaskModal({
       const payload = {
         title: data.title,
         description: data.description,
-        assigneeId: task?.assignee?.id,
+        assigneeId: assigneeId,
         estimatedHours: data.estimatedHours,
         dueDate: new Date(data.dueDate),
         expectedRate: task?.expectedRate,
@@ -140,6 +130,7 @@ export default function EditTaskModal({
       }
     } finally {
       setSubmitting(false);
+      onClose();
     }
   };
 

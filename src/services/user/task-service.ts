@@ -46,4 +46,12 @@ export const taskService = {
     console.log("Complete task response: ", res);
     return res.data;
   },
+  async reassignTask(taskId: string, projectId: string, assigneeId: string) {
+    const res = await api.patch(TASK_API.REASSIGN_TASK(taskId, projectId), {
+      assigneeId,
+    });
+
+    console.log("Reassign task response: ", res);
+    return res.data;
+  },
 };

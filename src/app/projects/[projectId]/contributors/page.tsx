@@ -7,8 +7,8 @@ import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
+import { ContributorStatus } from "@/types/contributor";
 import {
-  ContributorStatus,
   IPopulatedContributor,
   IProject,
 } from "@/types/project";
