@@ -113,6 +113,7 @@ export default function EditTaskModal({
         estimatedHours: data.estimatedHours,
         dueDate: new Date(data.dueDate),
         expectedRate: task?.expectedRate,
+        priority: data.priority,
         totalAmount: task?.totalAmount,
       };
 

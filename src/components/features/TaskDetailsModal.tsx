@@ -10,7 +10,8 @@ import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ReassignTaskModal from "./ReassignTaskModal";
-import { UserPen } from "lucide-react";
+import { Eye, Files, UserPen } from "lucide-react";
+import { projectService } from "@/services/user/project-service";
 
 type TaskRole = "creator" | "contributor";
 
@@ -149,6 +150,23 @@ export default function TaskDetailsModal({
   const onReassignSuccess = () => {
     setShowReassign(false);
     fetchTask();
+  };
+
+  const handleViewFile = async (fileKey: string) => {
+    try {
+      const res = await projectService.generateSignedUrl(
+        encodeURIComponent(fileKey)
+      );
+
+      if (res.success) {
+        toast.success(res.message);
+      }
+      window.open(res.data, "_black", "noopener,noreferrer");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Failed to get signed URL");
+      }
+    }
   };
 
   const actions = {
@@ -360,6 +378,35 @@ export default function TaskDetailsModal({
                 </div>
               </div>
 
+              {/* Documents */}
+              {task.documents && task.documents?.length > 0 && (
+                <div className="bg-secondary">
+                  <div className="flex items-center gap-1">
+                    <Files size={18} />
+                    <h2 className="text-md font-semibold">Attachments</h2>
+                  </div>
+                  <ul className="mt-3 space-y-2">
+                    {task.documents.map((file, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center justify-between bg-primary/30 px-2 py-2 rounded-lg text-sm text-gray-300"
+                      >
+                        <span>{file.name}</span>
+                        <div className="flex gap-4">
+                          <button
+                            onClick={() => handleViewFile(file.key)}
+                            className="flex gap-2 hover:text-red-300 text-xs cursor-pointer"
+                          >
+                            <Eye size={18} />
+                            <span>view</span>
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* Dates & Payment */}
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
@@ -392,23 +439,6 @@ export default function TaskDetailsModal({
                   </div>
                 )}
               </div>
-
-              {/* Documents */}
-              {task.documents?.length > 0 && (
-                <div>
-                  <p className="text-xs text-gray-400 mb-2">Documents</p>
-                  <div className="flex flex-col gap-2">
-                    {task.documents.map((doc, i) => (
-                      <button
-                        key={i}
-                        className="flex items-center gap-2 text-blue-400 text-sm hover:underline"
-                      >
-                        📄 {doc.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Footer */}

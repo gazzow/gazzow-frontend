@@ -11,7 +11,6 @@ import { projectService } from "@/services/user/project-service";
 import { taskService } from "@/services/user/task-service";
 import { IProject, Role } from "@/types/project";
 import { ITask } from "@/types/task";
-import { CreateTaskInput } from "@/validators/task-create";
 
 import axios from "axios";
 import { ArrowLeft, Plus } from "lucide-react";
@@ -35,7 +34,6 @@ export default function Tasks() {
 
   const [project, setProject] = useState<IProject | null>(null);
   const [tasks, setTasks] = useState<ITask[]>([]);
-
   const [open, setOpen] = useState(false);
 
   const currentRole = useRole(project);
@@ -98,7 +96,7 @@ export default function Tasks() {
     fetchTasks();
   }, [fetchTasks]);
 
-  const handleCreateTask = async (taskData: CreateTaskInput) => {
+  const handleCreateTask = async (taskData: FormData) => {
     if (!projectId) return;
 
     try {

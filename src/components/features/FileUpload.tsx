@@ -41,7 +41,7 @@ export default function ProjectFileUpload({
 
   return (
     <div className="space-y-3 rounded-2xl">
-      <p className="text-xl font-medium text-white mb-1">{label}</p>
+      <p className="text-md font-medium text-white mb-1">{label}</p>
       <label
         htmlFor="files"
         className="flex flex-col items-center justify-center w-full border-2 border-dashed border-border-primary rounded-xl p-6 text-center transition cursor-pointer"
@@ -60,11 +60,11 @@ export default function ProjectFileUpload({
       </label>
 
       {files.length > 0 && (
-        <ul className="mt-3 space-y-2">
+        <ul className="space-y-1">
           {files.map((file, i) => (
             <li
               key={i}
-              className="flex items-center justify-between bg-secondary px-3 py-4 rounded-lg text-sm text-gray-300"
+              className="flex items-center justify-between bg-primary/30 px-2 py-2 rounded-lg text-sm text-gray-300"
             >
               <span>{file.name}</span>
               <div className="flex gap-4">

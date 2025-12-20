@@ -2,11 +2,10 @@ import { TASK_API } from "@/constants/apis/task-api";
 import api from "@/lib/axios/api";
 import { Role } from "@/types/project";
 import { ITask } from "@/types/task";
-import { CreateTaskInput } from "@/validators/task-create";
 
 export const taskService = {
-  async createTask(projectId: string, taskData: CreateTaskInput) {
-    const res = await api.post(TASK_API.CREATE(projectId), taskData);
+  async createTask(projectId: string, data: FormData) {
+    const res = await api.post(TASK_API.CREATE(projectId), data);
     console.log("create task response: ", res);
     return res.data;
   },
