@@ -3,7 +3,6 @@
 import { paymentService } from "@/services/user/payment-service";
 import { taskService } from "@/services/user/task-service";
 import { ITask, PaymentStatus, RefundStatus, TaskStatus } from "@/types/task";
-import { formatTaskDate } from "@/utils/format-task-date";
 import { formatTaskStatus } from "@/utils/format-task-status";
 import axios from "axios";
 import { useParams } from "next/navigation";
@@ -12,6 +11,7 @@ import { toast } from "react-toastify";
 import ReassignTaskModal from "./ReassignTaskModal";
 import { Eye, Files, UserPen } from "lucide-react";
 import { projectService } from "@/services/user/project-service";
+import { TaskDiscussionPanel } from "./TaskDiscussionPanel";
 
 type TaskRole = "creator" | "contributor";
 
@@ -126,8 +126,6 @@ export default function TaskDetailsModal({
     }
   };
 
-  const handleUpdateStatus = async (taskId: string) => {};
-
   const handlePayment = async (taskId: string) => {
     try {
       const res = await paymentService.taskCheckoutSession(taskId);
@@ -194,12 +192,6 @@ export default function TaskDetailsModal({
           task.status === TaskStatus.SUBMITTED &&
           task.paymentStatus === PaymentStatus.ESCROW_HELD,
         onSubmit: completeTask,
-      },
-      {
-        label: "Cancel Task",
-        id: "cancel",
-        show: task && task.cancelledAt,
-        onSubmit: handleUpdateStatus,
       },
     ],
   };
@@ -376,69 +368,40 @@ export default function TaskDetailsModal({
                     </div>
                   )}
                 </div>
+
+                {/* Documents */}
+                {task.documents && task.documents?.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <Files size={18} />
+                      <h2 className="text-md font-semibold">Attachments</h2>
+                    </div>
+                    <ul className="mt-3 space-y-2">
+                      {task.documents.map((file, i) => (
+                        <li
+                          key={i}
+                          className="flex items-center justify-between bg-primary/30 px-2 py-2 rounded-lg text-sm text-gray-300"
+                        >
+                          <span>{file.name}</span>
+                          <div className="flex gap-4">
+                            <button
+                              onClick={() => handleViewFile(file.key)}
+                              className="flex gap-2 hover:text-red-300 text-xs cursor-pointer"
+                            >
+                              <Eye size={18} />
+                              <span>view</span>
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
               </div>
 
-              {/* Documents */}
-              {task.documents && task.documents?.length > 0 && (
-                <div className="bg-secondary">
-                  <div className="flex items-center gap-1">
-                    <Files size={18} />
-                    <h2 className="text-md font-semibold">Attachments</h2>
-                  </div>
-                  <ul className="mt-3 space-y-2">
-                    {task.documents.map((file, i) => (
-                      <li
-                        key={i}
-                        className="flex items-center justify-between bg-primary/30 px-2 py-2 rounded-lg text-sm text-gray-300"
-                      >
-                        <span>{file.name}</span>
-                        <div className="flex gap-4">
-                          <button
-                            onClick={() => handleViewFile(file.key)}
-                            className="flex gap-2 hover:text-red-300 text-xs cursor-pointer"
-                          >
-                            <Eye size={18} />
-                            <span>view</span>
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Dates & Payment */}
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-300 font-medium">Due Date</span>
-                  <span>{formatTaskDate(task.dueDate)}</span>
-                </div>
-
-                {task.acceptedAt && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-300 font-medium">Accepted</span>
-                    <span>{formatTaskDate(task.acceptedAt)}</span>
-                  </div>
-                )}
-                {task.submittedAt && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-300 font-medium">Submitted</span>
-                    <span>{formatTaskDate(task.submittedAt)}</span>
-                  </div>
-                )}
-                {task.completedAt && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-300 font-medium">Completed</span>
-                    <span>{formatTaskDate(task.completedAt)}</span>
-                  </div>
-                )}
-                {task.paidAt && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-300 font-medium">Paid</span>
-                    <span>{formatTaskDate(task.paidAt)}</span>
-                  </div>
-                )}
-              </div>
+              {/* Activity  & Comment Section */}
+              <TaskDiscussionPanel task={task}/>
             </div>
 
             {/* Footer */}
