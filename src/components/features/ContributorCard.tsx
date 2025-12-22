@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Mail, Calendar, MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { getDisplayName } from "@/utils/getDisplayName";
-import { ContributorStatus } from "@/types/project";
+import { ContributorStatus } from "@/types/contributor";
 
 interface ContributorProps {
   contributor: {

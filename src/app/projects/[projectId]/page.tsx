@@ -8,6 +8,7 @@ import { CONTRIBUTOR_ROUTES } from "@/constants/routes/contributor-routes";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
+import { userService } from "@/services/user/user-service";
 import { IProject, Role } from "@/types/project";
 import axios from "axios";
 import {
@@ -105,8 +106,22 @@ export default function ProjectDetails() {
     setConfirmModal(true);
   };
 
-  const handleApplyModal = () => {
-    setApplyModal(!applyModal);
+  const handleApplyClick = async () => {
+    try {
+      const res = await userService.getUser();
+      if (res.success && res.data.stripeAccountId) {
+        setApplyModal(true);
+      } else {
+        toast.info(
+          "Please complete your Stripe setup in Settings before applying for jobs. You need to be able to receive payments to work on paid projects.",
+          {}
+        );
+      }
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        console.log("Error fetching user data: ", e.response?.data);
+      }
+    }
   };
 
   if (!projectId) return <LoadingSpinner />;
@@ -259,7 +274,7 @@ export default function ProjectDetails() {
               ) : currentRole === Role.CONTRIBUTOR ? null : (
                 <button
                   className="flex-1 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer"
-                  onClick={handleApplyModal}
+                  onClick={handleApplyClick}
                 >
                   Apply to contribute
                 </button>
@@ -294,7 +309,7 @@ export default function ProjectDetails() {
             <ApplyModal
               projectId={projectId}
               key={projectId}
-              closeModal={handleApplyModal}
+              closeModal={() => setApplyModal(false)}
             ></ApplyModal>
           )}
         </div>

@@ -92,7 +92,7 @@ api.interceptors.response.use(
       }
 
       if (status >= HttpStatusCode.INTERNAL_SERVER_ERROR) {
-        window.location.href = "/InternalServerError";
+        // window.location.href = "/InternalServerError";
         toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
       }
     } else {

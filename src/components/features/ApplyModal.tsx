@@ -81,13 +81,13 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
         {/* Footer */}
         <div className="pt-2 flex justify-end gap-4">
           <button
-            className="border py-2 px-4 rounded cursor-pointer"
+            className="border py-1 px-2 rounded border-border-primary hover:border-gray-500 cursor-pointer transition ease-in"
             onClick={() => closeModal(false)}
           >
             Cancel
           </button>
           <button
-            className="py-2 px-4 flex items-center bg-btn-primary rounded gap-2 cursor-pointer"
+            className="py-1 px-2 flex items-center bg-btn-primary rounded gap-2 cursor-pointer"
             onClick={onSubmit}
           >
             <Send size={16} /> <span>Apply</span>

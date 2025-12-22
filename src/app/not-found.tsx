@@ -1,6 +1,6 @@
 "use client";
 
-import { Home } from "lucide-react";
+import { ArrowLeft, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function NotFound() {
@@ -43,13 +43,24 @@ export default function NotFound() {
           {">"} The requested URL does not exist in our system.
         </p>
 
-        <button
-          onClick={() => router.push("/home")}
-          className="font-mono flex items-center gap-2 mx-auto px-3 py-1 cursor-pointer border border-blue-400 text-white rounded-md uppercase tracking-wider hover:bg-blue-500/20 transition shadow-[0_0_10px_rgba(59,130,246,0.3)]"
-        >
-          <Home size={18} />
-          <span>Go Home</span>
-        </button>
+        <div className="flex justify-center gap-6">
+          <button
+            onClick={() => router.back()}
+            aria-label="Go back to previous page"
+            className="font-mono flex items-center gap-2 px-3 py-1 cursor-pointer border border-violet-400 text-white rounded-md uppercase tracking-wider hover:bg-violet-500/20 transition shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+          >
+            <ArrowLeft size={18} />
+            <span>Back</span>
+          </button>
+          <button
+            onClick={() => router.push("/home")}
+              aria-label="Go to home page"
+            className="font-mono flex items-center gap-2 px-3 py-1 cursor-pointer border border-blue-400 text-white rounded-md uppercase tracking-wider hover:bg-blue-500/20 transition shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+          >
+            <Home size={18} />
+            <span>Home</span>
+          </button>
+        </div>
       </div>
     </div>
   );

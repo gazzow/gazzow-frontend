@@ -5,30 +5,17 @@ import { X } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateTaskInput, createTaskSchema } from "@/validators/task-create";
-import { ContributorStatus } from "@/types/project";
 import { projectService } from "@/services/user/project-service";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { TaskPriority } from "@/types/task";
-
-interface Contributor {
-  id: string;
-  userId: string;
-  name: string;
-  email: string;
-  status: ContributorStatus;
-  imageUrl: string;
-  expectedRate: number;
-  developerRole: string;
-  invitedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { IContributor } from "@/types/contributor";
+import ProjectFileUpload from "./FileUpload";
 
 interface CreateTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (taskData: CreateTaskInput & { expectedRate: number }) => void;
+  onSubmit: (taskData: FormData) => void;
   projectId: string;
 }
 
@@ -38,9 +25,9 @@ export default function CreateTaskModal({
   onSubmit,
   projectId,
 }: CreateTaskModalProps) {
-  const [contributors, setContributors] = useState<Contributor[]>([]);
-
+  const [contributors, setContributors] = useState<IContributor[]>([]);
   const [calculatedAmount, setCalculatedAmount] = useState<number>(0);
+  const [files, setFiles] = useState<File[]>([]);
 
   const {
     register,
@@ -82,7 +69,7 @@ export default function CreateTaskModal({
   }, [fetchContributors]);
 
   useEffect(() => {
-    if (!contributors.length || !assigneeId) return;
+    if (!contributors.length) return;
     const contributor = contributors.find((c) => c.userId === assigneeId);
 
     const hours = Number(estimatedHours);
@@ -94,13 +81,34 @@ export default function CreateTaskModal({
     } else {
       setCalculatedAmount(0);
     }
-  }, [assigneeId, estimatedHours, contributors]);
+  }, [assigneeId, estimatedHours, contributors, setCalculatedAmount]);
 
-  const handleFormSubmit = (data: CreateTaskInput) => {
-    const assignee = contributors.find((c) => c.userId === data.assigneeId);
+  const handleFormSubmit = (values: CreateTaskInput) => {
+    const assignee = contributors.find((c) => c.userId === values.assigneeId);
     const expectedRate = assignee?.expectedRate ?? 0;
 
-    onSubmit({ ...data, expectedRate });
+    const data = {
+      ...values,
+      expectedRate,
+    };
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === "projectDocuments" || value === undefined || value === null)
+        return;
+      if (Array.isArray(value)) {
+        value.forEach((v) => formData.append(key, String(v)));
+      } else {
+        formData.append(key, String(value));
+      }
+    });
+
+    if (files.length) {
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+    onSubmit(formData);
     reset();
     onClose();
   };
@@ -108,8 +116,17 @@ export default function CreateTaskModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-      <div className="bg-secondary text-white w-full max-w-lg rounded-lg shadow-lg">
+    <div
+      className="fixed min-h-screen inset-0 z-50 bg-black/50 backdrop-blur-sm 
+                flex items-center justify-center 
+                overflow-y-auto px-4 py-6"
+    >
+      <div
+        className="bg-secondary text-white 
+                  w-full max-w-lg 
+                  rounded-lg shadow-lg
+                  max-h-[90vh] overflow-y-auto"
+      >
         {/* Header */}
         <div className="flex justify-between items-center border-b border-border-primary px-6 py-4">
           <h2 className="text-lg font-semibold ">Create New Task</h2>
@@ -188,7 +205,7 @@ export default function CreateTaskModal({
                     <option key={idx} value={c.userId}>
                       {c.name.split(" ").length > 2
                         ? c.name.split(" ").slice(0, 2).join(" ") +
-                          " - " +
+                          " —  " +
                           c.expectedRate +
                           "/hr"
                         : c.name + " - " + c.expectedRate + "/hr"}
@@ -231,7 +248,7 @@ export default function CreateTaskModal({
           <div className="flex items-center justify-between mt-2">
             <span className="text-sm text-gray-300">Payable Amount: </span>
             <span className="text-base font-semibold text-green-500">
-              ₹ {calculatedAmount.toLocaleString("en-IN")}
+              $ {calculatedAmount.toLocaleString("en-IN")}
             </span>
           </div>
 
@@ -279,10 +296,7 @@ export default function CreateTaskModal({
           </div>
 
           {/* Upload Documents  ( ADD validation file limit)*/}
-          {/* <ProjectFileUpload
-            label="Upload Documents"
-            onFilesChange={setFiles}
-          /> */}
+          <ProjectFileUpload label="Attachments" onFilesChange={setFiles} />
 
           {/* Footer */}
           <div className="flex justify-end gap-3">
