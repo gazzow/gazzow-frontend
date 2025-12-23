@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Users,
   FolderKanban,
-  CheckSquare,
   CalendarClock,
   Star,
   CreditCard,
@@ -42,10 +41,9 @@ const sections = [
     ],
   },
   {
-    title: "Project & Tasks",
+    title: "Project Management",
     items: [
       { label: "Projects", icon: FolderKanban, href: ADMIN_ROUTES.PROJECTS },
-      { label: "Tasks", icon: CheckSquare, href: "" },
       { label: "Meetings", icon: CalendarClock, href: "" },
       { label: "Reviews", icon: Star, href: "" },
     ],
@@ -53,8 +51,12 @@ const sections = [
   {
     title: "Business",
     items: [
-      { label: "Subscriptions", icon: CreditCard, href: "" },
-      { label: "Plans", icon: Package, href: "" },
+      { label: "Plans", icon: Package, href: ADMIN_ROUTES.PLANS },
+      {
+        label: "Subscriptions",
+        icon: CreditCard,
+        href: ADMIN_ROUTES.SUBSCRIPTIONS,
+      },
       { label: "Payments", icon: Wallet, href: "" },
     ],
   },
