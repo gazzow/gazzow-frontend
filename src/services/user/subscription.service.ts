@@ -22,3 +22,4 @@ export const subscriptionService = {
     return res.data;
   },
 };
+  

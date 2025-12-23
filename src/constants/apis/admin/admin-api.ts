@@ -5,4 +5,5 @@ export const ADMIN_API = {
   UPDATE_STATUS: (id: string) => `/admin/users/${id}/status`,
   LIST_PROJECTS: `/admin/projects`,
   GET_PROJECT_DETAILS: (projectId: string) => `/admin/projects/${projectId}`,
+  LIST_SUBSCRIPTIONS:"/admin/subscriptions"
 };
