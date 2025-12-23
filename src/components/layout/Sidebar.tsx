@@ -34,7 +34,7 @@ const sections = [
     matchPaths: Object.values(CONTRIBUTOR_ROUTES),
   },
   { label: "Messages", icon: MessageSquare, href: "#" },
-  { label: "Pricing", icon: CreditCard, href: "#" },
+  { label: "Pricing", icon: CreditCard, href: USER_ROUTES.PRICING },
   { label: "Notifications", icon: Bell, href: "#" },
   { label: "Favorites", icon: Star, href: "#" },
   { label: "Wallet", icon: Wallet, href: "#" },
