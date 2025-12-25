@@ -1,6 +1,7 @@
 import { PROJECT_API } from "@/constants/apis/project-api";
 import api from "@/lib/axios/api";
 import { ApplicationStatus } from "@/types/application";
+import { IProject } from "@/types/project";
 
 type ApplyProjectPayload = {
   proposal?: string;
@@ -36,7 +37,13 @@ export const projectService = {
   },
   async getProject(projectId: string) {
     const res = await api.get(PROJECT_API.GET_PROJECT(projectId));
-    console.log("get single project response: ", res);
+    console.log("Get project response: ", res);
+    return res.data;
+  },
+  async updateProject(projectId: string, data: Partial<IProject>) {
+    console.log("update details: ", data);
+    const res = await api.put(PROJECT_API.UPDATE_PROJECT(projectId), data);
+    console.log("Update project response: ", res);
     return res.data;
   },
   async listProjects(params: ListProjectsParams) {

@@ -1,6 +1,7 @@
 "use client";
 
 import ApplyModal from "@/components/features/ApplyModal";
+import EditProjectModal from "@/components/features/EditProjectModal";
 import { SectionTabs } from "@/components/features/SectionTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
@@ -22,7 +23,7 @@ import {
   Users,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 const tabRoutes = [
@@ -43,6 +44,8 @@ export default function ProjectDetails() {
   const [confirmModal, setConfirmModal] = useState(false);
   const [applyModal, setApplyModal] = useState(false);
 
+  const [editProjectModal, setEditProjectModal] = useState<boolean>(false);
+
   const currentRole = useRole(project);
 
   const visibleTabs = useMemo(() => {
@@ -55,25 +58,24 @@ export default function ProjectDetails() {
       }));
   }, [projectId, currentRole]);
 
-  useEffect(() => {
-    if (!projectId) return;
-
-    const fetchProject = async () => {
-      try {
-        console.log("projectId: ", projectId);
-        const res = await projectService.getProject(projectId);
-        if (res.success) {
-          console.log("res data: ", res.data);
-          setProject(res.data);
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data.message);
-        }
+  const fetchProject = useCallback(async () => {
+    try {
+      console.log("projectId: ", projectId);
+      const res = await projectService.getProject(projectId);
+      if (res.success) {
+        console.log("res data: ", res.data);
+        setProject(res.data);
       }
-    };
-    fetchProject();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    }
   }, [projectId]);
+
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject]);
 
   const onBackClick = () => {
     if (currentRole === Role.CREATOR) {
@@ -122,6 +124,15 @@ export default function ProjectDetails() {
         console.log("Error fetching user data: ", e.response?.data);
       }
     }
+  };
+
+  const handleEditProjectClick = () => {
+    setEditProjectModal(true);
+  };
+
+  const onProjectEditUpdated = () => {
+    setEditProjectModal(true);
+    fetchProject();
   };
 
   if (!projectId) return <LoadingSpinner />;
@@ -259,7 +270,10 @@ export default function ProjectDetails() {
             <div className="flex space-x-3">
               {currentRole === Role.CREATOR ? (
                 <>
-                  <button className="flex-1 flex items-center justify-center gap-2 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer">
+                  <button
+                    className="flex-1 flex items-center justify-center gap-2 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer"
+                    onClick={handleEditProjectClick}
+                  >
                     <Edit size={16} />
                     <span>Edit Project</span>
                   </button>
@@ -311,6 +325,16 @@ export default function ProjectDetails() {
               key={projectId}
               closeModal={() => setApplyModal(false)}
             ></ApplyModal>
+          )}
+
+          {/* Edit Project modal */}
+          {editProjectModal && (
+            <EditProjectModal
+              isOpen={editProjectModal}
+              onClose={() => setEditProjectModal(false)}
+              onUpdated={onProjectEditUpdated}
+              projectId={projectId}
+            />
           )}
         </div>
       </div>
