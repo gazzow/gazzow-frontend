@@ -62,6 +62,7 @@ export function NotificationProvider({
     //     browserNotification.close();
     //   };
     // }
+
   }, [notification]);
 
   return <>{children}</>;
