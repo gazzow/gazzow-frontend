@@ -1,17 +1,14 @@
 "use client";
 
 import ContributorCard from "@/components/features/ContributorCard";
-import {SectionTabs} from "@/components/features/SectionTabs";
+import { SectionTabs } from "@/components/features/SectionTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
 import { ContributorStatus } from "@/types/contributor";
-import {
-  IPopulatedContributor,
-  IProject,
-} from "@/types/project";
+import { IPopulatedContributor, IProject } from "@/types/project";
 
 import axios from "axios";
 import { ArrowLeft } from "lucide-react";
@@ -94,12 +91,29 @@ export default function ApplicationsList() {
     fetchContributors();
   }, [fetchContributors]);
 
-  const handleStatusChange = (id: string, newStatus: ContributorStatus) => {
+  const handleStatusChange = async (
+    contributorId: string,
+    newStatus: ContributorStatus
+  ) => {
     if (contributors.length <= 0) return;
-    const updatedContributors = contributors?.map((c) =>
-      c.userId === id ? { ...c, status: newStatus } : c
-    );
-    setContributors(updatedContributors);
+    try {
+      const res = await projectService.updateContributorStatus(
+        projectId,
+        contributorId,
+        newStatus
+      );
+
+      if (res.success) {
+        fetchContributors();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data.message ||
+            "Error: Update contributor status change"
+        );
+      }
+    }
   };
 
   if (!projectId) return <LoadingSpinner />;

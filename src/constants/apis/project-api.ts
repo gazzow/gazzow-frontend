@@ -10,5 +10,7 @@ export const PROJECT_API = {
   LIST_APPLICANTS: (projectId: string) => `/projects/${projectId}/applications`,
   UPDATE_APPLICATION_STATUS: (projectId: string, applicationId: string) =>
     `/projects/${projectId}/applications/${applicationId}`,
-  LIST_CONTRIBUTORS: (projectId: string) => `/projects/${projectId}/contributors`,
+  LIST_CONTRIBUTORS: (projectId: string) =>
+    `/projects/${projectId}/contributors`,
+  UPDATE_CONTRIBUTOR_STATUS: (projectId: string) => `/projects/${projectId}/contributors`,
 };

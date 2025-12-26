@@ -1,6 +1,7 @@
 import { PROJECT_API } from "@/constants/apis/project-api";
 import api from "@/lib/axios/api";
 import { ApplicationStatus } from "@/types/application";
+import { ContributorStatus } from "@/types/contributor";
 import { IProject } from "@/types/project";
 
 type ApplyProjectPayload = {
@@ -82,6 +83,18 @@ export const projectService = {
   async listProjectContributors(projectId: string) {
     const res = await api.get(PROJECT_API.LIST_CONTRIBUTORS(projectId));
     console.log("project contributors response: ", res);
+    return res.data;
+  },
+  async updateContributorStatus(
+    projectId: string,
+    contributorId: string,
+    status: ContributorStatus
+  ) {
+    const res = await api.patch(
+      PROJECT_API.UPDATE_CONTRIBUTOR_STATUS(projectId),
+      { contributorId, status }
+    );
+    console.log("update contributor status response: ", res);
     return res.data;
   },
 };
