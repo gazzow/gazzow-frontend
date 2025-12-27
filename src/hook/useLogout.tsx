@@ -17,6 +17,7 @@ export function useLogout() {
     try {
       await notificationService.deleteToken();
       await authService.logout();
+      localStorage.clear()
 
       toast.success("Logged out successfully");
       // clear user store

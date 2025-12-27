@@ -56,7 +56,7 @@ export default function Pricing() {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("Project management error: ", error);
+        console.log("current subscription error: ", error);
       }
     }
   }, []);
@@ -134,7 +134,7 @@ export default function Pricing() {
   };
 
   const getPlanLabel = (plan: IPlan, subscription: ISubscription | null) => {
-    if (!subscription) return;
+    if (!subscription) return `Subscribe to ${plan.name}`;
 
     const targetDurationLevel = DURATION_ORDER[plan.duration];
     const targetTypeLevel = PLAN_ORDER[plan.type];
