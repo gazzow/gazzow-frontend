@@ -21,7 +21,6 @@ const tabRoutes = [
   { name: "Contributors", path: "/contributors" },
   { name: "Tasks", path: "/tasks" },
   { name: "Team Chat", path: "/chat" },
-  { name: "Meetings", path: "/meetings" },
   { name: "Payments", path: "/payments" },
 ];
 
