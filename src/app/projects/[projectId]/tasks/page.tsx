@@ -38,6 +38,7 @@ export default function Tasks() {
 
   const currentRole = useRole(project);
 
+
   const visibleTabs = useMemo(() => {
     if (!projectId) return [];
     return tabRoutes
@@ -111,6 +112,8 @@ export default function Tasks() {
       }
     }
   };
+
+
 
   if (!projectId) return <LoadingSpinner />;
 

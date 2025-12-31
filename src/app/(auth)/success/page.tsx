@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "@/store/store";
 import { setOnboardingStatus, setUserProfile } from "@/store/slices/userSlice";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { userService } from "@/services/user/user-service";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
@@ -18,13 +18,13 @@ export default function SuccessPage() {
 
   useEffect(() => {
     const isNewUser = searchParams.get("isNewUser");
-    console.log('isNewUser: ', isNewUser)
+    console.log("isNewUser: ", isNewUser);
     userService
       .getUser()
       .then((res) => {
         console.log("User data on success:", res.data);
         dispatch(setUserProfile(res.data));
-        if (isNewUser === 'true') {
+        if (isNewUser === "true") {
           dispatch(setOnboardingStatus(true));
           router.replace(USER_ROUTES.ONBOARDING);
         } else {
