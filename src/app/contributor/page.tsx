@@ -4,7 +4,10 @@ import ProjectCard from "@/components/features/ProjectCard";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { IProject, ProjectFilters } from "../../types/project";
+import {
+  IAggregatedProject,
+  ProjectFilters,
+} from "../../types/project";
 import { SectionTabs } from "@/components/features/SectionTabs";
 import { useDebounce } from "@/hook/useDebounce";
 import Pagination from "@/components/features/Pagination";
@@ -20,7 +23,7 @@ const tabs = [
 ];
 
 export default function ProjectList() {
-  const [projects, setProjects] = useState<IProject[]>([]);
+  const [projects, setProjects] = useState<IAggregatedProject[]>([]);
   const [filters, setFilters] = useState<ProjectFilters>({
     budgetOrder: "asc",
   });
@@ -117,7 +120,12 @@ export default function ProjectList() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {projects.length > 0 ? (
           projects.map((p) => (
-            <ProjectCard key={p.id} {...p} isContributor={true} />
+            <ProjectCard
+              key={p.id}
+              {...p}
+              onFavoriteToggle={() => fetchProjects()}
+              isContributor={true}
+            />
           ))
         ) : (
           <p>No project found</p>

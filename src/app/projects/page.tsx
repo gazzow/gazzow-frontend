@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
-  IProject,
+  IAggregatedProject,
   ProjectExperience,
   ProjectFilters,
 } from "../../types/project";
@@ -24,7 +24,7 @@ const tabs = [
 ];
 
 export default function ProjectList() {
-  const [projects, setProjects] = useState<IProject[]>([]);
+  const [projects, setProjects] = useState<IAggregatedProject[]>([]);
   const [filters, setFilters] = useState<ProjectFilters>({
     experience: "",
     budgetOrder: "asc",
@@ -69,6 +69,10 @@ export default function ProjectList() {
       }
     }
   }, [debouncedSearch, filters, setTotal, skip, limit]);
+
+  const onFavoriteToggle = () => {
+    fetchProjects();
+  };
 
   useEffect(() => {
     fetchProjects();
@@ -179,7 +183,13 @@ export default function ProjectList() {
       {/* Project Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {projects.length > 0 ? (
-          projects.map((p) => <ProjectCard key={p.id} {...p} />)
+          projects.map((p) => (
+            <ProjectCard
+              key={p.id}
+              {...p}
+              onFavoriteToggle={onFavoriteToggle}
+            />
+          ))
         ) : (
           <p>No project found</p>
         )}

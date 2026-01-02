@@ -62,6 +62,10 @@ export enum Role {
   CONTRIBUTOR = "contributor",
 }
 
+export interface IAggregatedProject extends IProject {
+  isFavorite: boolean;
+}
+
 export interface IPopulatedContributor {
   id: string;
   userId: string;

@@ -1,13 +1,14 @@
 "use client";
 
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
-import { Calendar, DollarSign } from "lucide-react";
+import { Calendar, DollarSign, Star } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import ApplyModal from "./ApplyModal";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { userService } from "@/services/user/user-service";
+import { favoriteService } from "@/services/user/favorite.service";
 
 interface ProjectCardProps {
   id: string;
@@ -23,6 +24,8 @@ interface ProjectCardProps {
   rating?: number;
   applicants?: number;
   isContributor?: boolean;
+  isFavorite: boolean;
+  onFavoriteToggle: () => void;
 }
 
 export default function ProjectCard({
@@ -36,6 +39,8 @@ export default function ProjectCard({
   durationMax,
   durationUnit,
   isContributor,
+  isFavorite,
+  onFavoriteToggle,
 }: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -56,11 +61,63 @@ export default function ProjectCard({
     }
   };
 
+  const markAsFavorite = async (projectId: string) => {
+    if (isFavorite) {
+      // Remove From Favorites
+      console.log("removing from favorite");
+      try {
+        const res = await favoriteService.removeFromFavorite(projectId);
+        if (res.success) {
+          toast.success(res.message);
+          onFavoriteToggle();
+        } else {
+          toast.warn(res.message);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log("error while remove from favorite: ", error);
+          toast.error(
+            error.response?.data.message ||
+              "Remove from favorite Failed. Try again"
+          );
+        }
+      }
+    } else {
+      // Add From Favorites
+      console.log("Add As favorite");
+      try {
+        const res = await favoriteService.markAsFavorite(projectId);
+        if (res.success) {
+          toast.success(res.message);
+          onFavoriteToggle();
+        } else {
+          toast.warn(res.message);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log("error while marking as favorite: ", error);
+          toast.error(
+            error.response?.data.message || "Mark As favorite Failed. Try again"
+          );
+        }
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col space-y-3 bg-secondary/30 p-4 rounded-md border border-gray-800 hover:border-gray-600 transition-all">
-      <h3 className="flex-1 text-white text-lg font-semibold">
-        {title.replace(/\b\w/g, (c) => c.toUpperCase())}
-      </h3>
+      <div className="flex justify-between">
+        <h3 className="flex-1 text-white text-lg font-semibold">
+          {title.replace(/\b\w/g, (c) => c.toUpperCase())}
+        </h3>
+        <button className="cursor-pointer" onClick={() => markAsFavorite(id)}>
+          {isFavorite ? (
+            <Star size={18} color="yellow" fill="yellow" />
+          ) : (
+            <Star size={18} />
+          )}
+        </button>
+      </div>
       <p className="text-gray-400 text-sm line-clamp-1">{description}</p>
 
       <div className="flex flex-wrap gap-2">
