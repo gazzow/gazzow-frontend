@@ -44,8 +44,7 @@ const sections = [
     title: "Project Management",
     items: [
       { label: "Projects", icon: FolderKanban, href: ADMIN_ROUTES.PROJECTS },
-      { label: "Meetings", icon: CalendarClock, href: "" },
-      { label: "Reviews", icon: Star, href: "" },
+      // { label: "Reviews", icon: Star, href: "" },
     ],
   },
   {
@@ -91,7 +90,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
+    <aside className="min-h-screen mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
       {sections.map((section) => (
         <div key={section.title} className="mb-4">
           <h4 className="hidden md:flex text-xs uppercase tracking-wide text-gray-500 mb-2">

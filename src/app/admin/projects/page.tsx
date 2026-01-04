@@ -78,7 +78,7 @@ export default function ProjectManagement() {
   }, [debouncedSearch, filterStatus, sortOption, goToPage]);
 
   return (
-    <div className="p-8">
+    <div className="p-8 ">
       {/* Header */}
       <div className="flex flex-col gap-4  p-4 border border-border-primary rounded-lg mb-6">
         <div className="flex flex-col">
