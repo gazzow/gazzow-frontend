@@ -225,7 +225,7 @@ export default function ProjectChat() {
                     <p className="text-sm leading-relaxed">{msg.content}</p>
 
                     <p className="text-[10px] text-gray-400 mt-1 text-right">
-                      {new Date(msg.createdAt).toLocaleTimeString().slice(0, 5)}
+                      {new Date(msg.createdAt).toLocaleTimeString().slice(0, 4)}
                     </p>
                   </div>
                 </div>
