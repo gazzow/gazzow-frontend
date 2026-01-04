@@ -56,7 +56,7 @@ const sections = [
         icon: CreditCard,
         href: ADMIN_ROUTES.SUBSCRIPTIONS,
       },
-      { label: "Payments", icon: Wallet, href: "" },
+      { label: "Payments", icon: Wallet, href:  ADMIN_ROUTES.PAYMENTS},
     ],
   },
   // {
