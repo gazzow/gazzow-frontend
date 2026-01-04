@@ -86,9 +86,7 @@ export default function ProjectManagement() {
             <h1 className="text-2xl font-bold text-white">
               Projects Management
             </h1>
-            <button className="px-2 py-1 bg-gray-200 text-black text-md font-semibold rounded-md transition cursor-pointer">
-              Export
-            </button>
+            
           </div>
           <p className="text-text-muted text-sm">
             Manage and monitor all projects posted by creators.

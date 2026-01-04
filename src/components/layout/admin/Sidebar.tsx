@@ -60,14 +60,14 @@ const sections = [
       { label: "Payments", icon: Wallet, href: "" },
     ],
   },
-  {
-    title: "Platform",
-    items: [
-      { label: "Notifications", icon: Bell, href: "" },
-      { label: "Reports", icon: ShieldAlert, href: "" },
-      { label: "Profile", icon: User, href: ADMIN_ROUTES.PROFILE },
-    ],
-  },
+  // {
+  //   title: "Platform",
+  //   items: [
+  //     { label: "Notifications", icon: Bell, href: "" },
+  //     { label: "Reports", icon: ShieldAlert, href: "" },
+  //     { label: "Profile", icon: User, href: ADMIN_ROUTES.PROFILE },
+  //   ],
+  // },
 ];
 
 export default function Sidebar() {
