@@ -2,10 +2,12 @@
 
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
+import api from "@/lib/axios/api";
 import { subscriptionManagementService } from "@/services/admin/subscription-management.service";
 import { ISubscription } from "@/types/subscription";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function SubscriptionManagement() {
   const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
@@ -41,6 +43,22 @@ export default function SubscriptionManagement() {
   useEffect(() => {
     goToPage(1);
   }, [goToPage]);
+
+  const cancelSubscription = async (subscriptionId: string) => {
+    try {
+      const result = await api.put(`/admin/subscriptions/${subscriptionId}`);
+      const res = result.data;
+
+      if (res.success) {
+        // toast(res.message);
+        fetchSubscriptions();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Subscription cancel error: ", error);
+      }
+    }
+  };
 
   return (
     <div className="p-8">
@@ -160,7 +178,7 @@ export default function SubscriptionManagement() {
                       <button
                         className="px-3 py-1 rounded-md bg-red-500 text-white text-xs font-medium hover:bg-red-600 transition"
                         onClick={() => {
-                          // cancelSubscription(subscription.id)
+                          cancelSubscription(subscription.id);
                         }}
                       >
                         Cancel
