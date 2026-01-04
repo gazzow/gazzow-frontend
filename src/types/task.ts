@@ -22,7 +22,7 @@ export enum TaskPriority {
   HIGH = "high",
 }
 
-export enum PaymentStatus {
+export enum TaskPaymentStatus {
   PENDING = "pending",
   PAID = "paid",
   ESCROW_HELD = "escrow_held",
@@ -73,7 +73,7 @@ export interface ITask {
   priority: TaskPriority;
   documents: IProjectFile[];
   submissionLinks: SubmissionLink[];
-  paymentStatus?: PaymentStatus;
+  paymentStatus?: TaskPaymentStatus;
   cancellationReason?: string; // for creator/admin cancellation
   revisionCount?: number; // track how many revisions were requested
   expiredAt?: Date; // record when task expired
