@@ -1,7 +1,12 @@
 "use client";
 
 import api from "@/lib/axios/api";
-import { IDashboardStats } from "@/types/dashboard";
+import {
+  IChartPoint,
+  IDashboardStats,
+  IMonthlyRevenue,
+  ISubscriptionDistribution,
+} from "@/types/dashboard";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -17,27 +22,18 @@ import {
   Cell,
 } from "recharts";
 
-const revenueData = [
-  { name: "Jan", value: 2400 },
-  { name: "Feb", value: 3000 },
-  { name: "Mar", value: 4200 },
-  { name: "Apr", value: 3800 },
-  { name: "May", value: 3200 },
-  { name: "Jun", value: 4500 },
-];
-
-const plans = [
-  { name: "Free", value: 3 },
-  { name: "Premium", value: 2 },
-  { name: "Diamond", value: 1 },
-];
-
 const COLORS = ["#8b5cf6", "#22c55e", "#ec4899"];
 
 export default function Dashboard() {
   const [dashboardStats, setDashboardStats] = useState<IDashboardStats | null>(
     null
   );
+  const [monthlyRevenue, setMonthlyRevenue] = useState<IChartPoint[] | null>(
+    null
+  );
+  const [subscriptionDistribution, setSubscriptionDistribution] = useState<
+    IChartPoint[] | null
+  >(null);
 
   const fetchDashboardStats = useCallback(async () => {
     try {
@@ -58,6 +54,70 @@ export default function Dashboard() {
   useEffect(() => {
     fetchDashboardStats();
   }, [fetchDashboardStats]);
+
+  const fetchMonthlyRevenue = useCallback(async () => {
+    const MONTHS = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    try {
+      const res = await api.get("/admin/dashboard/monthly-revenue");
+      console.log("response Monthly Revenue data", res.data);
+
+      const response = res.data;
+      if (res.data.success) {
+        const chartData = response.data.map((x: IMonthlyRevenue) => ({
+          name: MONTHS[x.month - 1],
+          value: x.revenue,
+        }));
+
+        setMonthlyRevenue(chartData);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMonthlyRevenue();
+  }, [fetchMonthlyRevenue]);
+
+  const fetchSubscriptionDistribution = useCallback(async () => {
+    try {
+      const res = await api.get("/admin/dashboard/subscription-distribution");
+      console.log("response Subscription Distribution data", res.data);
+
+      const response = res.data;
+      if (response.success) {
+        const raw = response.data;
+        setSubscriptionDistribution(raw);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSubscriptionDistribution();
+  }, [fetchSubscriptionDistribution]);
+
+  useEffect(() => {
+    console.log("sub: ", subscriptionDistribution);
+  }, [subscriptionDistribution]);
 
   return (
     <div className="p-8">
@@ -118,37 +178,46 @@ export default function Dashboard() {
           {/* Monthly Revenue */}
           <div className="bg-secondary/20 p-5 rounded-xl">
             <h3 className="mb-4 font-semibold">Monthly Revenue</h3>
-            <div className="h-52">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={revenueData}>
-                  <XAxis dataKey="name" stroke="#aaa" />
-                  <YAxis stroke="#aaa" />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {monthlyRevenue && monthlyRevenue.length > 0 && (
+              <div className="h-52">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={monthlyRevenue}>
+                    <XAxis dataKey="name" stroke="#aaa" />
+                    <YAxis stroke="#aaa" />
+                    <Tooltip />
+                    <Bar dataKey="value" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </div>
 
           {/* Subscription */}
           <div className="bg-secondary/20 p-5 rounded-xl">
             <h3 className="mb-4 font-semibold">Subscription Distribution</h3>
-            <div className="h-52">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={plans}
-                    innerRadius={50}
-                    outerRadius={80}
-                    dataKey="value"
-                  >
-                    {plans.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i]} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            {subscriptionDistribution &&
+              subscriptionDistribution.length > 0 && (
+                <div className="h-52">
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie
+                        data={subscriptionDistribution}
+                        dataKey="value"
+                        nameKey="name"
+                        innerRadius={50}
+                        outerRadius={80}
+                        label={({ name }) =>
+                          `${name?.toUpperCase()}`
+                        }
+                      >
+                        {subscriptionDistribution.map((_, i) => (
+                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
           </div>
         </div>
 
