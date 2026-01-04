@@ -42,15 +42,15 @@ export const requestNotificationPermission = async (): Promise<
   try {
     // Check if the browser supports notifications
     if (!("Notification" in window)) {
-      console.log("This browser does not support notifications");
+      // console.log("This browser does not support notifications");
       return null;
     }
 
     // Check if permission is already granted
     if (Notification.permission === "granted") {
-      console.log("permission already granted");
+      // console.log("permission already granted");
       const token = await getFCMToken();
-      console.log("Fetched token: ", token);
+      // console.log("Fetched token: ", token);
       return token;
     }
 
@@ -58,12 +58,12 @@ export const requestNotificationPermission = async (): Promise<
     const permission = await Notification.requestPermission();
 
     if (permission === "granted") {
-      console.log("Notification permission granted");
+      // console.log("Notification permission granted");
       const token = await getFCMToken();
-      console.log("Fetched token: ", token);
+      // console.log("Fetched token: ", token);
       return token;
     } else {
-      console.log("Notification permission denied");
+      // console.log("Notification permission denied");
       return null;
     }
   } catch (error) {
@@ -87,12 +87,12 @@ const registerServiceWorker =
         "/firebase-messaging-sw.js"
       );
 
-      console.log("Service Worker registered:", registration);
+      // console.log("Service Worker registered:", registration);
 
       // Wait for the service worker to be ready
       await navigator.serviceWorker.ready;
 
-      console.log("Service Worker is ready");
+      // console.log("Service Worker is ready");
 
       return registration;
     } catch (error) {
@@ -119,7 +119,7 @@ export const getFCMToken = async (): Promise<string | null> => {
 
     // Additional check: ensure service worker is active
     if (!swRegistration.active) {
-      console.log("Waiting for service worker to activate...");
+      // console.log("Waiting for service worker to activate...");
       await new Promise((resolve) => {
         if (swRegistration.installing) {
           swRegistration.installing.addEventListener("statechange", (e) => {
@@ -139,7 +139,7 @@ export const getFCMToken = async (): Promise<string | null> => {
       });
     }
 
-     console.log("Service Worker is active, getting token...");
+    //  console.log("Service Worker is active, getting token...");
 
 
     const token = await getToken(messaging, {
@@ -148,7 +148,7 @@ export const getFCMToken = async (): Promise<string | null> => {
     });
 
     if (token) {
-      console.log("FCM Token:", token);
+      // console.log("FCM Token:", token);
       return token;
     } else {
       console.log("No registration token available");
@@ -164,15 +164,15 @@ export const getFCMToken = async (): Promise<string | null> => {
 export const onMessageListener = () =>
   new Promise((resolve) => {
     if (!messaging) {
-      console.error("Messaging not initialized");
+      // console.error("Messaging not initialized");
       return;
     }
 
     onMessage(messaging, (payload) => {
-      console.log(
-        "Message received in foreground [onMessageListener]:",
-        payload
-      );
+      // console.log(
+      //   "Message received in foreground [onMessageListener]:",
+      //   payload
+      // );
       resolve(payload);
     });
   });

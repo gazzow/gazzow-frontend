@@ -1,10 +1,7 @@
-// hooks/useNotification.ts
 import { useEffect, useRef, useState } from "react";
 import { MessagePayload, onMessage } from "firebase/messaging";
 import {
   messaging,
-  onMessageListener,
-  //   onMessageListener,
   requestNotificationPermission,
 } from "@/lib/notification/firebase.config";
 import { NotificationPermissionStatus } from "@/types/fcm.types";
@@ -63,7 +60,7 @@ export const useNotification = (): UseNotificationReturn => {
         setFcmToken(token);
         setPermissionStatus("granted");
         console.log("storing token in local storage");
-        localStorage.setItem("fcmToken", token);
+        // localStorage.setItem("fcmToken", token);
         return token;
       }
       setPermissionStatus("denied");

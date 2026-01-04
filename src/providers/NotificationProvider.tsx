@@ -20,11 +20,11 @@ export function NotificationProvider({
   useEffect(() => {
     if (!notification) return;
 
-    console.log("=== NOTIFICATION RECEIVED IN PROVIDER ===");
-    console.log("Full payload:", JSON.stringify(notification, null, 2));
-    console.log("===========================================");
+    // console.log("=== NOTIFICATION RECEIVED IN PROVIDER ===");
+    // console.log("Full payload:", JSON.stringify(notification, null, 2));
+    // console.log("===========================================");
 
-    console.log("Global notification received:", notification);
+    // console.log("Global notification received:", notification);
 
     const title = notification.notification?.title || notification.data?.title;
     const body = notification.notification?.body || notification.data?.body;
