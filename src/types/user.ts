@@ -32,3 +32,11 @@ export enum Provider {
   GOOGLE = "google",
 }
 
+export type UserDashboardStats = {
+  projectsPosted: number;
+  activeContracts: number;
+  completedJobs: number;
+  totalEarnings: number;
+};
+
+
