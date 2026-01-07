@@ -33,11 +33,11 @@ const sections = [
     href: CONTRIBUTOR_ROUTES.ACTIVE,
     matchPaths: Object.values(CONTRIBUTOR_ROUTES),
   },
-  // { label: "Messages", icon: MessageSquare, href: "#" },
+  { label: "Messages", icon: MessageSquare, href: "#" },
   { label: "Pricing", icon: CreditCard, href: USER_ROUTES.PRICING },
   { label: "Notifications", icon: Bell, href: USER_ROUTES.NOTIFICATIONS },
   { label: "Favorites", icon: Star, href: USER_ROUTES.FAVORITES },
-  // { label: "Wallet", icon: Wallet, href: "#" },
+  { label: "Transactions", icon: Wallet, href: USER_ROUTES.TRANSACTIONS },
   {
     label: "Profile",
     icon: User,

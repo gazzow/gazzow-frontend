@@ -3,7 +3,7 @@ import api from "@/lib/axios/api";
 import { ITaskComment } from "@/types/task-comment";
 
 export const taskCommentService = {
-  async createTask(data: Partial<ITaskComment>) {
+  async createComment(data: Partial<ITaskComment>) {
     const res = await api.post(TASK_COMMENT_API.CREATE, data);
     console.log("create task Comment response: ", res);
     return res.data;
