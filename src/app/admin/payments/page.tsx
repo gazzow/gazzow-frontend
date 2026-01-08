@@ -89,9 +89,10 @@ export default function PaymentManagement() {
               <th className="p-3">Type</th>
               <th className="p-3">Amount</th>
               <th className="p-3">Platform Fee</th>
-              <th className="p-3">Net</th>
+              <th className="p-3">Net Amount</th>
               <th className="p-3">Status</th>
               <th className="p-3">Created</th>
+              <th className="p-3">Reference Id</th>
             </tr>
           </thead>
 
@@ -166,6 +167,13 @@ export default function PaymentManagement() {
                     month: "short",
                     year: "2-digit",
                   })}
+                </td>
+
+                {/* Reference */}
+                <td className="p-3 text-white">
+                  {payment.stripeTransferId ||
+                    payment.stripePaymentIntentId ||
+                    "N/A"}
                 </td>
               </tr>
             ))}

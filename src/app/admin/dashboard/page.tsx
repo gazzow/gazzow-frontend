@@ -5,9 +5,9 @@ import {
   IChartPoint,
   IDashboardStats,
   IMonthlyRevenue,
-  ISubscriptionDistribution,
 } from "@/types/dashboard";
 import axios from "axios";
+import { FolderKanban, SquareCheckBig, User, Wallet } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -139,35 +139,47 @@ export default function Dashboard() {
           {dashboardStats && (
             <>
               {/* Total Users Stats */}
-              <div className="bg-secondary/20 border border-border-primary p-5 rounded-xl">
-                <p className="text-gray-400 text-sm">Total Users</p>
-                <h2 className="text-2xl font-bold">
-                  {dashboardStats.totalUsers}
-                </h2>
-              </div>
-
-              {/* Total Active Projects */}
-              <div className="bg-secondary/20 border border-border-primary p-5 rounded-xl">
-                <p className="text-gray-400 text-sm">Active Projects</p>
-                <h2 className="text-2xl font-bold">
-                  {dashboardStats.activeProjects}
-                </h2>
-              </div>
-
-              {/* Completed Tasks */}
-              <div className="bg-secondary/20 border border-border-primary p-5 rounded-xl">
-                <p className="text-gray-400 text-sm">Completed Tasks</p>
-                <h2 className="text-2xl font-bold">
-                  {dashboardStats.completedTasks}
-                </h2>
+              <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
+                <div>
+                  <p className="text-gray-400 text-sm">Total Users</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    {dashboardStats.totalUsers}
+                  </h2>
+                </div>
+                <User />
               </div>
 
               {/* Revenue */}
-              <div className="bg-secondary/20 border border-border-primary p-5 rounded-xl">
-                <p className="text-gray-400 text-sm">Revenue</p>
-                <h2 className="text-2xl font-bold">
-                  {dashboardStats.totalRevenue}
-                </h2>
+              <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
+                <div>
+                  <p className="text-gray-400 text-sm">Total Revenue</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    {dashboardStats.totalRevenue}
+                  </h2>
+                </div>
+                <Wallet />
+              </div>
+
+              {/* Total Projects */}
+              <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
+                <div>
+                  <p className="text-gray-400 text-sm">Total Projects</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    {dashboardStats.totalProjects}
+                  </h2>
+                </div>
+                <FolderKanban />
+              </div>
+
+              {/* Completed Tasks */}
+              <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
+                <div>
+                  <p className="text-gray-400 text-sm">Completed Tasks</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    {dashboardStats.completedTasks}
+                  </h2>
+                </div>
+                <SquareCheckBig />
               </div>
             </>
           )}
@@ -206,9 +218,7 @@ export default function Dashboard() {
                         nameKey="name"
                         innerRadius={50}
                         outerRadius={80}
-                        label={({ name }) =>
-                          `${name?.toUpperCase()}`
-                        }
+                        label={({ name }) => `${name?.toUpperCase()}`}
                       >
                         {subscriptionDistribution.map((_, i) => (
                           <Cell key={i} fill={COLORS[i % COLORS.length]} />

@@ -2,6 +2,12 @@
 
 import api from "@/lib/axios/api";
 import axios from "axios";
+import {
+  ClipboardClock,
+  FolderKanban,
+  SquareCheckBig,
+  Wallet,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -17,6 +23,16 @@ import {
 } from "recharts";
 
 const COLORS = ["#8b5cf6", "#22c55e", "#ec4899"];
+
+interface IMonthlyRevenue {
+  month: number;
+  year: number;
+  revenue: number;
+}
+interface ITaskStatistics {
+  name: string;
+  value: number;
+}
 
 type UserDashboardStats = {
   projectsPosted: number;
@@ -41,7 +57,28 @@ export default function Dashboard() {
 
       const response = res.data;
       if (response.success) {
-        setStats(response.data);
+        const { monthlyEarnings, taskStatistics, ...restData } = response.data;
+
+        // Set main stats
+        setStats(restData);
+
+        // 🟣 Map Monthly Revenue → Bar chart
+        const mappedMonthly = monthlyEarnings.map((m: IMonthlyRevenue) => ({
+          name: new Date(m.year, m.month - 1).toLocaleString("default", {
+            month: "short",
+          }), // Jan, Feb, Mar
+          value: m.revenue,
+        }));
+
+        setMonthlyEarnings(mappedMonthly);
+
+        // 🟣 Map Task Stats → Pie chart
+        const mappedTasks = taskStatistics.map((t: ITaskStatistics) => ({
+          name: t.name.toUpperCase(),
+          value: t.value,
+        }));
+
+        setWorkSplit(mappedTasks);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -54,39 +91,13 @@ export default function Dashboard() {
     fetchDashboardStats();
   }, [fetchDashboardStats]);
 
-  useEffect(() => {
-    setStats({
-      projectsPosted: 12,
-      pendingJobs: 6,
-      completedJobs: 34,
-      totalEarnings: 2340,
-    });
-
-    // Mock Monthly Earnings
-    setMonthlyEarnings([
-      { name: "Jan", value: 400 },
-      { name: "Feb", value: 650 },
-      { name: "Mar", value: 300 },
-      { name: "Apr", value: 900 },
-      { name: "May", value: 1200 },
-      { name: "Jun", value: 780 },
-    ]);
-
-    // Mock Project Status DistributionF
-    setWorkSplit([
-      { name: "Active", value: 6 },
-      { name: "In Review", value: 3 },
-      { name: "Completed", value: 12 },
-    ]);
-  }, []);
-
   return (
     <div className="p-8 mt-16">
       {/* Header */}
       <div className="flex flex-col gap-4 p-4 border border-border-primary rounded-lg mb-6">
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
         <p className="text-text-muted text-sm">
-          {`  Welcome back! Here's your freelance performance overview.`}
+          {`Welcome back! Here's your freelance performance overview.`}
         </p>
       </div>
 
@@ -94,10 +105,26 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         {stats && (
           <>
-            <Stat title="Projects Posted" value={stats.projectsPosted} />
-            <Stat title="Current Jobs" value={stats.pendingJobs} />
-            <Stat title="Completed Jobs" value={stats.completedJobs} />
-            <Stat title="Total Earnings" value={stats.totalEarnings} />
+            <Stat
+              title="Total Earnings"
+              value={stats.totalEarnings}
+              icon={<Wallet />}
+            />
+            <Stat
+              title="Projects Posted"
+              value={stats.projectsPosted}
+              icon={<FolderKanban />}
+            />
+            <Stat
+              title="Pending Tasks"
+              value={stats.pendingJobs}
+              icon={<ClipboardClock />}
+            />
+            <Stat
+              title="Completed Tasks"
+              value={stats.completedJobs}
+              icon={<SquareCheckBig />}
+            />
           </>
         )}
       </div>
@@ -121,9 +148,7 @@ export default function Dashboard() {
 
         {/* Work Category */}
         <div className="bg-secondary/20 p-5 rounded-xl">
-          <h3 className="mb-4 font-semibold text-white">
-          Overall Jobs Overview
-          </h3>
+          <h3 className="mb-4 font-semibold text-white">Task Overview</h3>
           <div className="h-54">
             <ResponsiveContainer>
               <PieChart>
@@ -148,11 +173,22 @@ export default function Dashboard() {
   );
 }
 
-function Stat({ title, value }: { title: string; value: number }) {
+function Stat({
+  title,
+  value,
+  icon,
+}: {
+  title: string;
+  value: number;
+  icon: React.ReactElement;
+}) {
   return (
-    <div className="bg-secondary/20 border border-border-primary p-5 rounded-xl">
-      <p className="text-gray-400 text-sm">{title}</p>
-      <h2 className="text-2xl font-bold text-white">{value}</h2>
+    <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
+      <div>
+        <p className="text-gray-400 text-sm">{title}</p>
+        <h2 className="text-2xl font-bold text-white">{value}</h2>
+      </div>
+      {icon}
     </div>
   );
 }

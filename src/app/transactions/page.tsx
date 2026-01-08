@@ -88,6 +88,7 @@ export default function TransactionPage() {
               <th className="p-3">Amount</th>
               <th className="p-3">Status</th>
               <th className="p-3">Date</th>
+              <th className="p-3">Reference Id</th>
             </tr>
           </thead>
 
@@ -128,7 +129,7 @@ export default function TransactionPage() {
                     </div>
                   </td>
                 )}
-                
+
                 {/* Net Amount */}
                 {payment.netAmount && (
                   <td>
@@ -158,6 +159,8 @@ export default function TransactionPage() {
                     year: "2-digit",
                   })}
                 </td>
+                {/* Reference */}
+                <td className="p-3 text-white">{payment.stripeTransferId || payment.stripePaymentIntentId  || "N/A"}</td>
               </tr>
             ))}
           </tbody>

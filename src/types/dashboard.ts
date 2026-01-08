@@ -1,6 +1,6 @@
 export interface IDashboardStats {
   totalUsers: number;
-  activeProjects: number;
+  totalProjects: number;
   completedTasks: number;
   totalRevenue: number;
 }
