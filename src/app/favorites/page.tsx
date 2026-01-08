@@ -24,7 +24,7 @@ export default function FavoritesPage() {
     nextPage,
     prevPage,
     setTotal,
-  } = usePagination({ limit: 1 });
+  } = usePagination({ limit: 6 });
 
   const fetchFavorites = useCallback(async () => {
     try {
