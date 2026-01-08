@@ -5,6 +5,7 @@ import { usePagination } from "@/hook/usePaginationOptions";
 import { paymentService } from "@/services/user/payment-service";
 import { IPayment, PaymentStatus, PaymentType } from "@/types/payment";
 import axios from "axios";
+import { DollarSign } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 export default function TransactionPage() {
@@ -104,11 +105,8 @@ export default function TransactionPage() {
                 key={payment.id}
                 className="border border-border-primary hover:bg-secondary/30 transition"
               >
-
                 {/* Transaction Id */}
-                <td className="p-3 text-white">
-                  {payment.id}
-                </td>
+                <td className="p-3 text-white">{payment.id}</td>
 
                 {/* Type */}
                 <td className="p-3">
@@ -121,16 +119,23 @@ export default function TransactionPage() {
                   </span>
                 </td>
 
-                {/* Gross Amount & Net Amount */}
+                {/* Gross Amount */}
                 {payment.totalAmount && (
-                  <td className="p-3 text-white">
-                    ₹{payment.totalAmount.toLocaleString()}
+                  <td>
+                    <div className="p-3 text-white flex items-center">
+                      <DollarSign size={14} />
+                      <span>{payment.totalAmount?.toLocaleString() || 0}</span>
+                    </div>
                   </td>
                 )}
-
+                
+                {/* Net Amount */}
                 {payment.netAmount && (
-                  <td className="p-3 text-white">
-                    ₹{payment.netAmount.toLocaleString()}
+                  <td>
+                    <div className="p-3 text-white flex items-center">
+                      <DollarSign size={14} />
+                      <span>{payment.netAmount?.toLocaleString() || 0}</span>
+                    </div>
                   </td>
                 )}
 

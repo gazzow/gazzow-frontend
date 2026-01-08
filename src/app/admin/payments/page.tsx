@@ -5,6 +5,7 @@ import { usePagination } from "@/hook/usePaginationOptions";
 import { adminPaymentService } from "@/services/admin/admin-payment.service";
 import { IPayment, PaymentStatus, PaymentType } from "@/types/payment";
 import axios from "axios";
+import { DollarSign } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 export default function PaymentManagement() {
@@ -125,20 +126,28 @@ export default function PaymentManagement() {
                 </td>
 
                 {/* Gross */}
-                <td className="p-3 text-white">
-                  ₹{payment.totalAmount?.toLocaleString()}
+                <td>
+                  <div className="p-3 text-white flex items-center">
+                    <DollarSign size={14} />
+                    <span>{payment.totalAmount?.toLocaleString() || 0}</span>
+                  </div>
                 </td>
 
                 {/* Platform Fee */}
-                <td className="p-3 text-white">
-                  ₹{payment.platformFee?.toLocaleString() || 0}
+                <td>
+                  <div className="p-3 text-white flex items-center">
+                    <DollarSign size={14} />
+                    <span>{payment.platformFee?.toLocaleString() || 0}</span>
+                  </div>
                 </td>
 
                 {/* Net */}
-                <td className="p-3 text-white">
-                  ₹{payment.netAmount?.toLocaleString() || 0}
+                <td>
+                  <div className="p-3 text-white flex items-center">
+                    <DollarSign size={14} />
+                    <span>{payment.netAmount?.toLocaleString() || 0}</span>
+                  </div>
                 </td>
-
                 {/* Status */}
                 <td className="p-3">
                   <span
