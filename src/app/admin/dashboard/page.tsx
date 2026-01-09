@@ -201,7 +201,7 @@ export default function Dashboard() {
           <div className="bg-secondary/20 p-5 rounded-xl">
             <h3 className="mb-4 font-semibold">Monthly Revenue</h3>
             {monthlyRevenue && monthlyRevenue.length > 0 ? (
-              <div className="h-52">
+              <div className="h-60">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyRevenue}>
                     <XAxis dataKey="name" stroke="#aaa" />
@@ -223,7 +223,7 @@ export default function Dashboard() {
           <div className="bg-secondary/20 p-5 rounded-xl">
             <h3 className="mb-4 font-semibold">Subscription Distribution</h3>
             {subscriptionDistribution && subscriptionDistribution.length > 0 ? (
-              <div className="h-52">
+              <div className="h-60">
                 <ResponsiveContainer>
                   <PieChart>
                     <Pie
