@@ -3,6 +3,8 @@
 import api from "@/lib/axios/api";
 import axios from "axios";
 import {
+  ChartColumnBig,
+  ChartPie,
   ClipboardClock,
   FolderKanban,
   SquareCheckBig,
@@ -135,37 +137,51 @@ export default function Dashboard() {
         <div className="bg-secondary/20 p-5 rounded-xl">
           <h3 className="mb-4 font-semibold text-white">Monthly Earnings</h3>
           <div className="h-52">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyEarnings}>
-                <XAxis dataKey="name" stroke="#aaa" />
-                <YAxis stroke="#aaa" />
-                <Tooltip />
-                <Bar dataKey="value" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            {monthlyEarnings.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyEarnings}>
+                  <XAxis dataKey="name" stroke="#aaa" />
+                  <YAxis stroke="#aaa" />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyChart
+                message="No earnings recorded yet"
+                icon={<ChartColumnBig size={38}/>}
+              />
+            )}
           </div>
         </div>
 
-        {/* Work Category */}
+        {/* Task Overview */}
         <div className="bg-secondary/20 p-5 rounded-xl">
           <h3 className="mb-4 font-semibold text-white">Task Overview</h3>
           <div className="h-54">
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={workSplit}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={50}
-                  outerRadius={80}
-                  label={({ name }) => `${name?.toUpperCase()}`}
-                >
-                  {workSplit.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
+            {workSplit.length > 0 ? (
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={workSplit}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={50}
+                    outerRadius={80}
+                    label={({ name }) => name?.toUpperCase()}
+                  >
+                    {workSplit.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyChart
+                message="No tasks to visualize yet"
+                icon={<ChartPie size={38}/>}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -192,3 +208,16 @@ function Stat({
     </div>
   );
 }
+
+const EmptyChart = ({
+  message,
+  icon,
+}: {
+  message: string;
+  icon: React.ReactElement;
+}) => (
+  <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+    {icon}
+    <p className="text-sm mt-4">{message}</p>
+  </div>
+);
