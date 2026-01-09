@@ -232,7 +232,7 @@ export default function Dashboard() {
                       nameKey="name"
                       innerRadius={50}
                       outerRadius={80}
-                      label={({ name }) => `${name?.toUpperCase()}`}
+                     label={({ name, value }) => `${name?.toUpperCase()}: ${value} `}
                     >
                       {subscriptionDistribution.map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
