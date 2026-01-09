@@ -1,5 +1,6 @@
 "use client";
 
+import EmptyChart from "@/components/ui/EmptyChart";
 import api from "@/lib/axios/api";
 import axios from "axios";
 import {
@@ -209,15 +210,3 @@ function Stat({
   );
 }
 
-const EmptyChart = ({
-  message,
-  icon,
-}: {
-  message: string;
-  icon: React.ReactElement;
-}) => (
-  <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-    {icon}
-    <p className="text-sm mt-4">{message}</p>
-  </div>
-);

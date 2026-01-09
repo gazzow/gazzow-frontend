@@ -1,5 +1,7 @@
 "use client";
 
+import EmptyChart from "@/components/ui/EmptyChart";
+import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
 import api from "@/lib/axios/api";
 import {
   IChartPoint,
@@ -7,7 +9,15 @@ import {
   IMonthlyRevenue,
 } from "@/types/dashboard";
 import axios from "axios";
-import { FolderKanban, SquareCheckBig, User, Wallet } from "lucide-react";
+import {
+  ChartColumnBig,
+  ChartPie,
+  FolderKanban,
+  SquareCheckBig,
+  User,
+  Wallet,
+} from "lucide-react";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -190,7 +200,7 @@ export default function Dashboard() {
           {/* Monthly Revenue */}
           <div className="bg-secondary/20 p-5 rounded-xl">
             <h3 className="mb-4 font-semibold">Monthly Revenue</h3>
-            {monthlyRevenue && monthlyRevenue.length > 0 && (
+            {monthlyRevenue && monthlyRevenue.length > 0 ? (
               <div className="h-52">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyRevenue}>
@@ -201,50 +211,65 @@ export default function Dashboard() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
+            ) : (
+              <EmptyChart
+                message="No earnings recorded yet"
+                icon={<ChartColumnBig size={38} />}
+              />
             )}
           </div>
 
           {/* Subscription */}
           <div className="bg-secondary/20 p-5 rounded-xl">
             <h3 className="mb-4 font-semibold">Subscription Distribution</h3>
-            {subscriptionDistribution &&
-              subscriptionDistribution.length > 0 && (
-                <div className="h-52">
-                  <ResponsiveContainer>
-                    <PieChart>
-                      <Pie
-                        data={subscriptionDistribution}
-                        dataKey="value"
-                        nameKey="name"
-                        innerRadius={50}
-                        outerRadius={80}
-                        label={({ name }) => `${name?.toUpperCase()}`}
-                      >
-                        {subscriptionDistribution.map((_, i) => (
-                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
+            {subscriptionDistribution && subscriptionDistribution.length > 0 ? (
+              <div className="h-52">
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie
+                      data={subscriptionDistribution}
+                      dataKey="value"
+                      nameKey="name"
+                      innerRadius={50}
+                      outerRadius={80}
+                      label={({ name }) => `${name?.toUpperCase()}`}
+                    >
+                      {subscriptionDistribution.map((_, i) => (
+                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <EmptyChart
+                message="No tasks to visualize yet"
+                icon={<ChartPie size={38} />}
+              />
+            )}
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-secondary/20 p-5 rounded-xl text-center">
-          <div className="flex ">
+        <div className="flex gap-4 flex-col bg-secondary/20 p-5 rounded-xl text-center">
+          <div className="flex items-start">
             <h1>Quick Actions</h1>
           </div>
 
-          <div className=" grid grid-cols-4">
-            {["Users", "Projects", "Payments", "Subscriptions"].map((x) => (
-              <button
-                key={x}
-                className="hover:bg-[#131a30] py-4 rounded-lg transition"
+          <div className=" grid grid-cols-4 gap-2">
+            {[
+              { label: "Users", url: ADMIN_ROUTES.USER_MANAGEMENT },
+              { label: "Projects", url: ADMIN_ROUTES.PROJECTS },
+              { label: "Transactions", url: ADMIN_ROUTES.TRANSACTIONS },
+              { label: "Subscriptions", url: ADMIN_ROUTES.SUBSCRIPTIONS },
+            ].map((nav) => (
+              <Link
+                href={nav.url}
+                key={nav.label}
+                className="hover:bg-secondary/30 border border-border-primary/70 hover:border-border-primary py-4 rounded-lg transition"
               >
-                {x}
-              </button>
+                {nav.label}
+              </Link>
             ))}
           </div>
         </div>

@@ -7,5 +7,5 @@ export const ADMIN_ROUTES = {
   PROFILE: "",
   PLANS: "/admin/plans",
   SUBSCRIPTIONS: "/admin/subscriptions",
-  PAYMENTS: "/admin/payments",
+  TRANSACTIONS: "/admin/transactions",
 };

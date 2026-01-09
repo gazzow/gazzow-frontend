@@ -8,7 +8,7 @@ import axios from "axios";
 import { DollarSign } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-export default function PaymentManagement() {
+export default function TransactionManagement() {
   const [payments, setPayments] = useState<IPayment[]>([]);
 
   const {

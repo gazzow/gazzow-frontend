@@ -6,14 +6,9 @@ import {
   LayoutDashboard,
   Users,
   FolderKanban,
-  CalendarClock,
-  Star,
   CreditCard,
   Package,
   Wallet,
-  Bell,
-  ShieldAlert,
-  User,
   LogOut,
 } from "lucide-react";
 import { authService } from "@/services/auth/auth-service";
@@ -56,7 +51,7 @@ const sections = [
         icon: CreditCard,
         href: ADMIN_ROUTES.SUBSCRIPTIONS,
       },
-      { label: "Payments", icon: Wallet, href:  ADMIN_ROUTES.PAYMENTS},
+      { label: "transaction", icon: Wallet, href:  ADMIN_ROUTES.TRANSACTIONS},
     ],
   },
   // {
