@@ -149,7 +149,7 @@ export default function Dashboard() {
             ) : (
               <EmptyChart
                 message="No earnings recorded yet"
-                icon={<ChartColumnBig size={38}/>}
+                icon={<ChartColumnBig size={38} />}
               />
             )}
           </div>
@@ -179,7 +179,7 @@ export default function Dashboard() {
             ) : (
               <EmptyChart
                 message="No tasks to visualize yet"
-                icon={<ChartPie size={38}/>}
+                icon={<ChartPie size={38} />}
               />
             )}
           </div>
