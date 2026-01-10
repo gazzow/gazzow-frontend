@@ -106,7 +106,6 @@ export const useNotification = (): UseNotificationReturn => {
 
         const notificationOptions: NotificationOptions = {
           body: notificationBody,
-          image: payload.notification?.image,
           data: payload.data,
           tag: payload.data?.tag || "default-notification",
           requireInteraction: false,
