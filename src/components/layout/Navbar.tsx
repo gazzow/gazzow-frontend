@@ -24,9 +24,9 @@ export default function Navbar() {
         {/* Right Side */}
         <div className="flex justify-center items-center text-center gap-3">
           {/* Message Button */}
-          <button className="p-2 bg-secondary/70 rounded-xl cursor-pointer hover:bg-secondary transition ease-in-out duration-200 text-text-secondary ">
+          {/* <button className="p-2 bg-secondary/70 rounded-xl cursor-pointer hover:bg-secondary transition ease-in-out duration-200 text-text-secondary ">
             <MessageSquare size={24} />
-          </button>
+          </button> */}
 
           {/* Notification Bell */}
           <NotificationBellIcon />
