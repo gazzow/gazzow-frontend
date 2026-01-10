@@ -1,6 +1,8 @@
 "use client";
 
+import Pagination from "@/components/features/Pagination";
 import ProjectCard from "@/components/features/ProjectCard";
+import { usePagination } from "@/hook/usePaginationOptions";
 import { favoriteService } from "@/services/user/favorite.service";
 import { IPopulatedFavorite } from "@/types/favorite";
 import { ProjectExperience } from "@/types/project";
@@ -12,12 +14,25 @@ export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<IPopulatedFavorite[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const {
+    skip,
+    limit,
+    page,
+    totalPages,
+    hasPrevPage,
+    hasNextPage,
+    nextPage,
+    prevPage,
+    setTotal,
+  } = usePagination({ limit: 6 });
+
   const fetchFavorites = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await favoriteService.listFavorites();
+      const res = await favoriteService.listFavorites(skip, limit);
       if (res.success) {
         setFavorites(res.data);
+        setTotal(res.meta.total);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -28,7 +43,7 @@ export default function FavoritesPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setTotal, limit, skip]);
 
   useEffect(() => {
     fetchFavorites();
@@ -105,6 +120,15 @@ export default function FavoritesPage() {
           <p className="text-gray-400">No favorites yet</p>
         )}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        hasPrevPage={hasPrevPage}
+        hasNextPage={hasNextPage}
+        nextPage={nextPage}
+        prevPage={prevPage}
+      />
     </div>
   );
 }

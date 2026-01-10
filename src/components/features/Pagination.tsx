@@ -26,14 +26,18 @@ export default function Pagination({
         <button
           disabled={!hasPrevPage}
           onClick={prevPage}
-          className="px-2 py-1 border border-border-primary rounded-md text-white hover:bg-secondary"
+          className={`px-2 py-1 border border-border-primary rounded-md text-white ${
+            hasPrevPage ? " hover:bg-secondary" : "cursor-not-allowed"
+          }`}
         >
           Previous
         </button>
         <button
           disabled={!hasNextPage}
           onClick={nextPage}
-          className="px-2 py-1 border border-border-primary rounded-md text-white hover:bg-secondary"
+          className={`px-2 py-1 border border-border-primary rounded-md text-white  ${
+            hasNextPage ? " hover:bg-secondary" : "cursor-not-allowed"
+          }`}
         >
           Next
         </button>

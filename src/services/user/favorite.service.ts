@@ -2,8 +2,8 @@ import { FAVORITE_API } from "@/constants/apis/favorite-api";
 import api from "@/lib/axios/api";
 
 export const favoriteService = {
-  async listFavorites() {
-    const res = await api.get(FAVORITE_API.LIST_FAVORITES);
+  async listFavorites(skip: number, limit: number) {
+    const res = await api.get(FAVORITE_API.LIST_FAVORITES(skip, limit));
     console.log("list favorites response: ", res);
     return res.data;
   },

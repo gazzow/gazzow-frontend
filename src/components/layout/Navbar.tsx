@@ -2,8 +2,10 @@
 
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { useTheme } from "@/hook/useTheme";
-import { Moon, Sun } from "lucide-react";
+import { MessageSquare, Moon, Sun } from "lucide-react";
 import Link from "next/link";
+import UserProfileMenu from "../ui/UserProfileMenu";
+import { NotificationBellIcon } from "../ui/NotificationBellIcon";
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
@@ -20,26 +22,28 @@ export default function Navbar() {
         </Link>
 
         {/* Right Side */}
-        <div className="flex justify-center items-center text-center gap-4">
+        <div className="flex justify-center items-center text-center gap-3">
+          {/* Message Button */}
+          {/* <button className="p-2 bg-secondary/70 rounded-xl cursor-pointer hover:bg-secondary transition ease-in-out duration-200 text-text-secondary ">
+            <MessageSquare size={24} />
+          </button> */}
+
+          {/* Notification Bell */}
+          <NotificationBellIcon />
+
           {/* Toggle Theme */}
-          <button onClick={toggleTheme} >
+          <button
+            onClick={toggleTheme}
+            className="p-2 bg-secondary/70 rounded-xl cursor-pointer hover:bg-secondary transition ease-in-out duration-200 text-text-secondary "
+          >
             {theme === "light" ? (
-              <Moon size={18} className="cursor-pointer text-secondary"></Moon>
+              <Sun size={24} color="orange"></Sun>
             ) : (
-              <Sun
-                size={18}
-                className="cursor-pointer dark:text-yellow-400"
-              ></Sun>
+              <Moon size={24}></Moon>
             )}
           </button>
 
-          
-          <Link
-            href={USER_ROUTES.PROFILE}
-            className="text-black dark:text-text-primary dark:hover:text-text-secondary "
-          >
-            Profile
-          </Link>
+          <UserProfileMenu />
         </div>
       </div>
     </nav>

@@ -2,7 +2,12 @@
 
 import { paymentService } from "@/services/user/payment-service";
 import { taskService } from "@/services/user/task-service";
-import { ITask, PaymentStatus, RefundStatus, TaskStatus } from "@/types/task";
+import {
+  ITask,
+  TaskPaymentStatus,
+  RefundStatus,
+  TaskStatus,
+} from "@/types/task";
 import { formatTaskStatus } from "@/utils/format-task-status";
 import axios from "axios";
 import { useParams } from "next/navigation";
@@ -59,10 +64,13 @@ export default function TaskDetailsModal({
     fetchTask();
   }, [fetchTask]);
 
-  const startWork = async (taskId: string, paymentStatus?: PaymentStatus) => {
+  const startWork = async (
+    taskId: string,
+    paymentStatus?: TaskPaymentStatus
+  ) => {
     console.log("Starting work on task:", taskId);
 
-    if (!paymentStatus || paymentStatus === PaymentStatus.PENDING) {
+    if (!paymentStatus || paymentStatus === TaskPaymentStatus.PENDING) {
       toast.error("Payment is pending. Unable to start work on this task.");
       return;
     }
@@ -190,7 +198,7 @@ export default function TaskDetailsModal({
           task &&
           task.submittedAt &&
           task.status === TaskStatus.SUBMITTED &&
-          task.paymentStatus === PaymentStatus.ESCROW_HELD,
+          task.paymentStatus === TaskPaymentStatus.ESCROW_HELD,
         onSubmit: completeTask,
       },
     ],
@@ -346,7 +354,7 @@ export default function TaskDetailsModal({
                   {/* Status Message */}
                   {role === "creator" && (
                     <div className="text-sm mt-2">
-                      {task.paymentStatus === PaymentStatus.PENDING &&
+                      {task.paymentStatus === TaskPaymentStatus.PENDING &&
                         task.balance > 0 && (
                           <p className="text-yellow-400">
                             ⚠️ Please pay ${task.balance} to continue this task.
@@ -360,7 +368,7 @@ export default function TaskDetailsModal({
                         </p>
                       )}
 
-                      {task.paymentStatus === PaymentStatus.ESCROW_HELD && (
+                      {task.paymentStatus === TaskPaymentStatus.ESCROW_HELD && (
                         <p className="text-green-400">
                           ✅ Payment completed and securely held in escrow.
                         </p>
@@ -397,11 +405,10 @@ export default function TaskDetailsModal({
                     </ul>
                   </div>
                 )}
-
               </div>
 
               {/* Activity  & Comment Section */}
-              <TaskDiscussionPanel task={task}/>
+              <TaskDiscussionPanel task={task} />
             </div>
 
             {/* Footer */}
@@ -414,7 +421,7 @@ export default function TaskDetailsModal({
               </button>
               {role === "creator" &&
                 task.assignee &&
-                task.paymentStatus === PaymentStatus.PENDING && (
+                task.paymentStatus === TaskPaymentStatus.PENDING && (
                   <button
                     className="px-2 py-1 bg-green-600 hover:bg-green-700 rounded-md text-white text-sm"
                     onClick={() => handlePayment(task.id)}

@@ -178,10 +178,6 @@ export default function UserManagement() {
         <div className="flex flex-col">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold text-white">User Management</h1>
-            <button className="px-4 py-2 bg-gray-200 text-black text-md font-semibold rounded-md transition">
-              {" "}
-              Export Data{" "}
-            </button>
           </div>
           <p className="text-text-muted text-sm">
             Manage and monitor all registered users on the platform.

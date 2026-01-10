@@ -41,7 +41,7 @@ export function TaskDiscussionPanel({ task }: TaskDiscussionPanelProp) {
         content,
       };
 
-      const res = await taskCommentService.createTask(payload);
+      const res = await taskCommentService.createComment(payload);
       if (res.success) {
         toast.success(res.message);
         fetchComments();

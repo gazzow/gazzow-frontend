@@ -1,7 +1,10 @@
 "use client";
 
+import { useSocket } from "@/context/SocketProvider";
 import { notificationService } from "@/services/user/notification.service";
+import { useAppSelector } from "@/store/store";
 import { INotification } from "@/types/notification";
+import { SOCKET_EVENTS } from "@/types/socket-event";
 import axios from "axios";
 import { Check, CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -11,6 +14,8 @@ export default function NotificationPage() {
   const [tab, setTab] = useState<"all" | "unread">("all");
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const hasFetched = useRef(false);
+  const socket = useSocket();
+  const id = useAppSelector((state) => state.user.id);
 
   const fetchNotifications = useCallback(async () => {
     try {
@@ -18,7 +23,7 @@ export default function NotificationPage() {
       console.log("notification data: ", res.data);
       if (res.success) {
         setNotifications(res.data);
-        toast.success(res.message);
+        // toast.success(res.message);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -33,6 +38,7 @@ export default function NotificationPage() {
       console.log("mark as read data: ", res.data);
       if (res.success) {
         toast.success(res.message);
+        socket?.emit(SOCKET_EVENTS.UPDATE_NOTIFICATION_COUNT, { userId: id });
         fetchNotifications();
       }
     } catch (error) {

@@ -24,4 +24,9 @@ export const paymentService = {
     console.log("Pay for task response: ", res);
     return res.data;
   },
+  async listPayments() {
+    const res = await api.get("/payments");
+    console.log("List payments response ", res);
+    return res.data;
+  },
 };

@@ -83,7 +83,7 @@ export default function PlanManagement() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 min-h-screen">
       {/* Header */}
       <div className="flex flex-col gap-4  p-4 border border-border-primary rounded-lg mb-6">
         <div className="flex flex-col">

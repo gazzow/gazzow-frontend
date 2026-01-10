@@ -6,5 +6,7 @@ export const USER_ROUTES = {
   EDIT_PROFILE: "/profile/edit",
   PRICING: "/pricing",
   NOTIFICATIONS: "/notifications",
-  FAVORITES: "/favorites"
+  FAVORITES: "/favorites",
+  TRANSACTIONS: "/transactions",
+
 };

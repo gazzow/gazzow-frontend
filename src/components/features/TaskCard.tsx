@@ -1,4 +1,4 @@
-import { ITask, TaskPriority } from "@/types/task";
+import { ITask, TaskPriority, TaskStatus } from "@/types/task";
 import {
   Calendar,
   Edit,
@@ -65,7 +65,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         </div>
 
         {/* 3 dots menu */}
-        {task.creator.id == user.id && (
+        {task.creator.id == user.id && task.status !== TaskStatus.COMPLETED && (
           <div className="relative">
             <button
               onClick={(e) => {
