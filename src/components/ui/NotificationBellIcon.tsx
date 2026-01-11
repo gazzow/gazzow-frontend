@@ -34,10 +34,6 @@ export function NotificationBellIcon() {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error(
-          "Error fetching unread notification count: ",
-          error.response?.data
-        );
         toast.error(
           error.response?.data?.message ||
             "Failed to fetch unread notification count"
