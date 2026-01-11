@@ -50,8 +50,8 @@ export default function ProjectCard({
       if (res.success && res.data.stripeAccountId) {
         setIsOpen(true);
       } else {
-        toast.info(
-          "Please complete your Stripe setup in Settings before applying for jobs. You need to be able to receive payments to work on paid projects."
+        toast.warn(
+          "Please complete your Stripe setup in Settings before applying for jobs."
         );
       }
     } catch (e) {

@@ -17,7 +17,7 @@ import { useDebounce } from "@/hook/useDebounce";
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { useRouter } from "next/navigation";
-import { userService } from "@/services/user/user-service";
+import { paymentService } from "@/services/user/payment-service";
 
 const tabs = [
   { name: "Browse Projects", href: PROJECT_ROUTES.BROWSE },
@@ -78,11 +78,11 @@ export default function ProjectList() {
 
   const handlePostProjectClick = async () => {
     try {
-      const res = await userService.getUser();
-      if (res.success && res.data.stripeAccountId) {
+      const res = await paymentService.checkOnboardingStatus();
+      if (res.success && res.data.isOnboarded) {
         router.push(PROJECT_ROUTES.CREATE);
       } else {
-        toast.info(
+        toast.warn(
           "Please complete your Stripe setup before posting projects."
         );
       }
