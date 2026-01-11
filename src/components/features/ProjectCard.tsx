@@ -24,7 +24,7 @@ interface ProjectCardProps {
   rating?: number;
   applicants?: number;
   isContributor?: boolean;
-  isFavorite: boolean;
+  isFavorite?: boolean;
   onFavoriteToggle: () => void;
 }
 
@@ -110,13 +110,15 @@ export default function ProjectCard({
         <h3 className="flex-1 text-white text-lg font-semibold">
           {title.replace(/\b\w/g, (c) => c.toUpperCase())}
         </h3>
-        <button className="cursor-pointer" onClick={() => markAsFavorite(id)}>
-          {isFavorite ? (
-            <Star size={18} color="yellow" fill="yellow" />
-          ) : (
-            <Star size={18} />
-          )}
-        </button>
+        {isFavorite !== undefined && (
+          <button className="cursor-pointer" onClick={() => markAsFavorite(id)}>
+            {isFavorite ? (
+              <Star size={18} color="yellow" fill="yellow" />
+            ) : (
+              <Star size={18} />
+            )}
+          </button>
+        )}
       </div>
       <p className="text-gray-400 text-sm line-clamp-1">{description}</p>
 
@@ -152,10 +154,10 @@ export default function ProjectCard({
       <div className="flex items-center justify-between mt-3">
         <div className="flex items-center gap-2 text-gray-300 text-sm">
           <div className="bg-gray-700 rounded-full w-8 h-8 flex items-center justify-center text-white font-semibold">
-            S
+            M
           </div>
           <div>
-            <div className="text-sm">Sarah Chen</div>
+            <div className="text-sm">Muhammed Abbas</div>
           </div>
         </div>
 

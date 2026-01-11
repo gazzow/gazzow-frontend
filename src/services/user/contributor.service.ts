@@ -27,5 +27,11 @@ export const contributorService = {
     return res.data;
   },
 
-  
+  async listCompletedContributions(params: { userId: string }) {
+    const res = await api.get(CONTRIBUTOR_API.LIST_COMPLETED_CONTRIBUTIONS, {
+      params,
+    });
+    console.log("List Completed Projects response: ", res);
+    return res.data;
+  },
 };
