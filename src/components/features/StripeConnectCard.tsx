@@ -1,26 +1,17 @@
 import { paymentService } from "@/services/user/payment-service";
-import { userService } from "@/services/user/user-service";
 import { IUser } from "@/types/user";
 import axios from "axios";
 import { CreditCard } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export default function StripeConnectCard() {
-  const [user, setUser] = useState<IUser | null>(null);
+type IStripeConnectCardProps = {
+  user: IUser | null;
+};
+
+export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
   const [isOnboarded, setIsOnboarded] = useState<boolean>(false);
   console.log("Onboarded status: ", isOnboarded);
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await userService.getUser();
-        setUser(res.data);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.log("profile page error: ", error);
-        }
-      }
-    };
-    fetchUser();
     checkOnboardingStatus();
   }, []);
 
@@ -78,7 +69,7 @@ export default function StripeConnectCard() {
             contributions
           </p>
         </div>
-        {user?.stripeAccountId && isOnboarded ? (
+        {user && user.stripeAccountId && isOnboarded ? (
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500" />
             <span className="text-xs font-medium text-green-300 bg-green-500/10 px-2 py-1 rounded-full">
