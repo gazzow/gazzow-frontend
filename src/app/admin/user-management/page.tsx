@@ -279,10 +279,13 @@ export default function UserManagement() {
                     {user.status[0].toUpperCase() + user.status.slice(1)}
                   </span>
                 </td>
-
-                <td className="p-3 text-white">
-                  {new Date(user.createdAt).toISOString().slice(0, 10)}
-                </td>
+                {user.createdAt ? (
+                  <td className="p-3 text-white">
+                    {new Date(user.createdAt).toISOString().slice(0, 10)}
+                  </td>
+                ) : (
+                  <td className="p-3 text-white">N/A</td>
+                )}
                 <td className="p-3">
                   <button
                     onClick={() => handleToggleClick(user.id, user.status)}
