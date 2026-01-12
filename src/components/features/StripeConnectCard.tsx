@@ -37,7 +37,6 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
       if (res.success) {
         const { isOnboarded } = res.data;
         setIsOnboarded(isOnboarded || false);
-        toast(res.message)
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
