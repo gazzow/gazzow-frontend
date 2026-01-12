@@ -3,7 +3,6 @@ import { IUser } from "@/types/user";
 import axios from "axios";
 import { CreditCard } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 type IStripeConnectCardProps = {
   user: IUser | null;
