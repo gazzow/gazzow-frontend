@@ -4,7 +4,6 @@ import ProjectCard from "@/components/features/ProjectCard";
 import { projectService } from "@/services/user/project-service";
 import axios from "axios";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -17,6 +16,8 @@ import { SectionTabs } from "@/components/features/SectionTabs";
 import { useDebounce } from "@/hook/useDebounce";
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
+import { useRouter } from "next/navigation";
+import { paymentService } from "@/services/user/payment-service";
 
 const tabs = [
   { name: "Browse Projects", href: PROJECT_ROUTES.BROWSE },
@@ -29,6 +30,7 @@ export default function ProjectList() {
     experience: "",
     budgetOrder: "asc",
   });
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
   const {
@@ -74,6 +76,23 @@ export default function ProjectList() {
     fetchProjects();
   };
 
+  const handlePostProjectClick = async () => {
+    try {
+      const res = await paymentService.checkOnboardingStatus();
+      if (res.success && res.data.isOnboarded) {
+        router.push(PROJECT_ROUTES.CREATE);
+      } else {
+        toast.warn(
+          "Please complete your Stripe setup before posting projects."
+        );
+      }
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        console.log("Error fetching user data: ", e.response?.data);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects, debouncedSearch, filters]);
@@ -90,12 +109,13 @@ export default function ProjectList() {
           </p>
         </div>
         <div>
-          <Link href={PROJECT_ROUTES.CREATE}>
-            <button className="flex items-center gap-2 bg-btn-primary py-1 px-2 rounded cursor-pointer">
-              <Plus size={18} />
-              <span>Post Project</span>
-            </button>
-          </Link>
+          <button
+            onClick={handlePostProjectClick}
+            className="flex items-center gap-2 bg-btn-primary py-1 px-2 rounded cursor-pointer"
+          >
+            <Plus size={18} />
+            <span>Post Project</span>
+          </button>
         </div>
       </div>
 

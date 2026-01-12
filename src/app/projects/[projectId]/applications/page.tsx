@@ -21,7 +21,7 @@ const tabRoutes = [
   { name: "Contributors", path: "/contributors" },
   { name: "Tasks", path: "/tasks" },
   { name: "Team Chat", path: "/chat" },
-  { name: "Payments", path: "/payments" },
+  // { name: "Payments", path: "/payments" },
 ];
 
 export default function ApplicationsList() {

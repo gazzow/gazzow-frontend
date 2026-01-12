@@ -13,7 +13,8 @@ import { loginSchema, LoginInput } from "@/validators/auth-login";
 import z from "zod";
 import { adminAuthService } from "@/services/admin/auth-login";
 import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
-
+import Link from "next/link";
+import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 
 const fields = [
   {
@@ -47,10 +48,10 @@ export default function AdminLoginPage() {
   const handleLoginSubmit = async (formData: Record<string, string>) => {
     console.log("form data:, ", formData);
     try {
-      const response = await adminAuthService.login(formData)
+      const response = await adminAuthService.login(formData);
       console.log("Login response data: ", response.data);
       if (response.success) {
-        dispatch(setAdmin(response.data))
+        dispatch(setAdmin(response.data));
         router.replace(ADMIN_ROUTES.DASHBOARD);
       }
     } catch (error) {
@@ -62,7 +63,7 @@ export default function AdminLoginPage() {
         if (issues && Array.isArray(issues)) {
           const formErrors: Record<string, string> = {};
           issues.forEach((issue: z.core.$ZodIssue) => {
-            const field = issue.path[0]?.toString(); 
+            const field = issue.path[0]?.toString();
             formErrors[field] = issue.message;
           });
 
@@ -94,6 +95,13 @@ export default function AdminLoginPage() {
       errors={errors}
       register={register}
       handleSubmit={handleSubmit}
+      footer={
+        <div className="text-center text-gray-300 text-sm">
+          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
+            &larr; Back to User login
+          </Link>
+        </div>
+      }
     />
   );
 }

@@ -3,6 +3,7 @@
 import StripeConnectCard from "@/components/features/StripeConnectCard";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { userService } from "@/services/user/user-service";
+import { IUser } from "@/types/user";
 import axios from "axios";
 import { Pen, User } from "lucide-react";
 import Image from "next/image";
@@ -21,27 +22,12 @@ const ProfilePage = () => {
     }
   }, []);
 
-  
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
 
-  type User = {
-    id: string;
-    name: string;
-    email: string;
-    role: "user" | "admin";
-    status: "active" | "blocked";
-    bio: string;
-    techStacks: string[];
-    learningGoals: string[];
-    experience: string;
-    developerRole: string;
-    imageUrl: string;
-    createdAt: string;
-  };
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
 
   return (
     <div className="min-h-screen mt-16 bg-primary text-white p-6 flex justify-center">
@@ -49,7 +35,7 @@ const ProfilePage = () => {
         {/* Header */}
         <div className="flex items-center gap-6">
           <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-600">
-            {user?.imageUrl ? (
+            {user && user.imageUrl ? (
               <Image
                 src={user.imageUrl}
                 alt={user.name}
@@ -120,7 +106,7 @@ const ProfilePage = () => {
           </div>
         )}
 
-        <StripeConnectCard />
+        <StripeConnectCard user={user} />
       </div>
     </div>
   );

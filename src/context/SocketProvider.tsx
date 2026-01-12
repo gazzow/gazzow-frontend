@@ -3,6 +3,7 @@
 import { NotificationToast } from "@/components/ui/NotificationToast";
 import { useAppSelector } from "@/store/store";
 import { SOCKET_EVENTS } from "@/types/socket-event";
+import { UserRole } from "@/types/user";
 import {
   ReactNode,
   createContext,
@@ -19,7 +20,7 @@ const SocketContext = createContext<Socket | null>(null);
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
-  const userId = useAppSelector((state) => state.user.id);
+  const { id, role } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (!socketRef.current) {
@@ -36,7 +37,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       setConnected(true);
     });
 
-    socket.emit(SOCKET_EVENTS.USER_ONLINE, { userId });
+    if (role === UserRole.USER) socket.emit(SOCKET_EVENTS.USER_ONLINE, { id });
 
     // Notification
     socket.on(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION, (data) => {
@@ -52,7 +53,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.off(SOCKET_EVENTS.USER_ONLINE);
       socket.off(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION);
     };
-  }, [userId]);
+  }, [id]);
 
   return (
     <SocketContext.Provider value={socketRef.current}>

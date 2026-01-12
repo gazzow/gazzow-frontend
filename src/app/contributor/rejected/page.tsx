@@ -7,7 +7,7 @@ import { SectionTabs } from "@/components/features/SectionTabs";
 import { useDebounce } from "@/hook/useDebounce";
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
-import { contributorService } from "@/services/user/contributor-service";
+import { contributorService } from "@/services/user/contributor.service";
 import { CONTRIBUTOR_ROUTES } from "@/constants/routes/contributor-routes";
 import {
   ApplicationStatus,
