@@ -2,6 +2,7 @@
 
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { authService } from "@/services/auth/auth-service";
+import { notificationService } from "@/services/user/notification.service";
 import { clearUser } from "@/store/slices/userSlice";
 import { persistor, useAppDispatch } from "@/store/store";
 import axios from "axios";
@@ -14,7 +15,9 @@ export function useLogout() {
 
   const handleLogout = async () => {
     try {
+      await notificationService.deleteToken();
       await authService.logout();
+      localStorage.clear()
 
       toast.success("Logged out successfully");
       // clear user store
@@ -22,7 +25,7 @@ export function useLogout() {
       // clear persisted state
       persistor.purge();
 
-      router.push(AUTH_ROUTES.LOGIN); 
+      router.push(AUTH_ROUTES.LOGIN);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || "Logout failed");

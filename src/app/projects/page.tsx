@@ -1,0 +1,229 @@
+"use client";
+
+import ProjectCard from "@/components/features/ProjectCard";
+import { projectService } from "@/services/user/project-service";
+import axios from "axios";
+import { Plus } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import {
+  IAggregatedProject,
+  ProjectExperience,
+  ProjectFilters,
+} from "../../types/project";
+import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
+import { SectionTabs } from "@/components/features/SectionTabs";
+import { useDebounce } from "@/hook/useDebounce";
+import Pagination from "@/components/features/Pagination";
+import { usePagination } from "@/hook/usePaginationOptions";
+import { useRouter } from "next/navigation";
+import { paymentService } from "@/services/user/payment-service";
+
+const tabs = [
+  { name: "Browse Projects", href: PROJECT_ROUTES.BROWSE },
+  { name: "My Projects", href: PROJECT_ROUTES.MY_PROJECTS },
+];
+
+export default function ProjectList() {
+  const [projects, setProjects] = useState<IAggregatedProject[]>([]);
+  const [filters, setFilters] = useState<ProjectFilters>({
+    experience: "",
+    budgetOrder: "asc",
+  });
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
+  const {
+    skip,
+    limit,
+    page,
+    totalPages,
+    setTotal,
+    hasNextPage,
+    hasPrevPage,
+    prevPage,
+    nextPage,
+  } = usePagination({
+    limit: 6,
+  });
+
+  const updateFilter = (key: keyof ProjectFilters, value: unknown) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const fetchProjects = useCallback(async () => {
+    try {
+      const res = await projectService.listProjects({
+        search: debouncedSearch,
+        ...filters,
+        skip,
+        limit,
+      });
+      if (res.success) {
+        console.log("res data: ", res.data);
+        console.log("res meta: ", res.meta);
+        setProjects(res.data);
+        setTotal(res.meta.total);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  }, [debouncedSearch, filters, setTotal, skip, limit]);
+
+  const onFavoriteToggle = () => {
+    fetchProjects();
+  };
+
+  const handlePostProjectClick = async () => {
+    try {
+      const res = await paymentService.checkOnboardingStatus();
+      if (res.success && res.data.isOnboarded) {
+        router.push(PROJECT_ROUTES.CREATE);
+      } else {
+        toast.warn(
+          "Please complete your Stripe setup before posting projects."
+        );
+      }
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        console.log("Error fetching user data: ", e.response?.data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects, debouncedSearch, filters]);
+
+  return (
+    <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
+      <div className="flex justify-between">
+        <div>
+          <h1 className="text-primary dark:text-white font-semibold text-2xl">
+            Projects
+          </h1>
+          <p className="text-primary dark:text-text-secondary">
+            Discover and manage projects that match your expertise
+          </p>
+        </div>
+        <div>
+          <button
+            onClick={handlePostProjectClick}
+            className="flex items-center gap-2 bg-btn-primary py-1 px-2 rounded cursor-pointer"
+          >
+            <Plus size={18} />
+            <span>Post Project</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Project Tab */}
+      <SectionTabs tabs={tabs} />
+
+      {/* Search & Filter */}
+      <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
+        {/* 🔍 Search */}
+        <input
+          type="text"
+          placeholder="Search by title or description"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="md:min-w-80 px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        />
+
+        {/* 🧠 Experience Filter */}
+        <select
+          value={filters.experience}
+          onChange={(e) => updateFilter("experience", e.target.value)}
+          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option className="bg-secondary" value="">
+            Experience Level
+          </option>
+          {Object.values(ProjectExperience).map((exp) => (
+            <option key={exp} value={exp} className="bg-secondary">
+              {exp.replace(/\b\w/, (c) => c.toUpperCase())}
+            </option>
+          ))}
+        </select>
+
+        {/* 🧩 Skills Multi-Select */}
+
+        {/* 💰 Budget Sorting */}
+        <select
+          value={filters.budgetOrder}
+          onChange={(e) => updateFilter("budgetOrder", e.target.value)}
+          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option className="bg-secondary">Budget Sort</option>
+          <option value="asc" className="bg-secondary">
+            Low → High
+          </option>
+          <option value="desc" className="bg-secondary">
+            High → Low
+          </option>
+        </select>
+
+        {/* ⏳ Duration Sorting */}
+        {/* <select
+          value={filters.durationSort}
+          onChange={(e) => updateFilter("durationSort", e.target.value)}
+          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option value="" className="bg-secondary">
+            Duration
+          </option>
+          <option value="short" className="bg-secondary">
+            Shortest First
+          </option>
+          <option value="long" className="bg-secondary">
+            Longest First
+          </option>
+        </select> */}
+
+        {/* 🕓 Duration Unit */}
+        {/* <select
+          value={filters.durationUnit}
+          onChange={(e) => updateFilter("durationUnit", e.target.value)}
+          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option value="" className="bg-secondary">
+            Duration Unit
+          </option>
+          {Object.values(ProjectDurationUnit).map((unit) => (
+            <option key={unit} value={unit} className="bg-secondary">
+              {unit.replace(/\b\w/, (c) => c.toUpperCase())}
+            </option>
+          ))}
+        </select> */}
+      </div>
+
+      {/* Project Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {projects.length > 0 ? (
+          projects.map((p) => (
+            <ProjectCard
+              key={p.id}
+              {...p}
+              onFavoriteToggle={onFavoriteToggle}
+            />
+          ))
+        ) : (
+          <p>No project found</p>
+        )}
+      </div>
+
+      {/* Pagination */}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPrevPage={hasPrevPage}
+        prevPage={prevPage}
+        nextPage={nextPage}
+      />
+    </div>
+  );
+}

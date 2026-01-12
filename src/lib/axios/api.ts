@@ -1,4 +1,7 @@
 import { AUTH_API } from "@/constants/apis/auth-api";
+import { ErrorCode } from "@/constants/error-codes";
+import { ERROR_MESSAGES } from "@/constants/messages";
+import { HttpStatusCode } from "@/constants/status-codes";
 import { clearAdmin } from "@/store/slices/adminSlice";
 import { clearUser } from "@/store/slices/userSlice";
 import { store } from "@/store/store";
@@ -6,19 +9,28 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 });
 
 const refreshApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
+}
+
+export interface ApiResponse<T = unknown, M = unknown, E = unknown> {
+  success: boolean;
+  message: string;
+  data?: T | null;
+  errors?: E[] | null;
+  meta?: M | null;
+  code?: ErrorCode;
+  timestamp: string;
 }
 
 let isRefreshing = false;
@@ -44,7 +56,8 @@ api.interceptors.response.use(
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
     if (error.response) {
-      const { status } = error.response;
+      const status = error.response.status;
+      const data = error.response.data as ApiResponse;
 
       if (status === 401 && !originalRequest._retry) {
         if (isRefreshing) {
@@ -73,7 +86,7 @@ api.interceptors.response.use(
           // 🔑 Add logout logic here
           store.dispatch(clearUser());
           store.dispatch(clearAdmin());
-          toast.error("Session expired. Please login again.");
+          toast.error(ERROR_MESSAGES.SESSION_EXPIRED);
 
           window.location.href = "/login";
           return Promise.reject(err);
@@ -82,16 +95,21 @@ api.interceptors.response.use(
         }
       }
 
-      if (status === 403) {
-        toast.error("You don’t have permission for this action.");
+      if (status === HttpStatusCode.FORBIDDEN) {
+        toast.error(ERROR_MESSAGES.FORBIDDEN);
+        console.log("Forbidden error: ", data);
+        if (data.code === ErrorCode.USER_BLOCKED) {
+          store.dispatch(clearUser());
+        }
       }
 
-      if (status === 404) {
-        toast.error("The requested resource was not found.");
+      if (status === HttpStatusCode.NOT_FOUND) {
+        toast.error(ERROR_MESSAGES.NOT_FOUND);
       }
 
-      if (status >= 500) {
-        toast.error("Server error. Please try again later.");
+      if (status >= HttpStatusCode.INTERNAL_SERVER_ERROR) {
+        // window.location.href = "/InternalServerError";
+        toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
       }
     } else {
       // No response (network error, CORS issue, etc.)

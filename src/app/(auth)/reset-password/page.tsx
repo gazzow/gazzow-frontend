@@ -1,7 +1,6 @@
 "use client";
 
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
-import api from "@/lib/axios/api";
 import { authService } from "@/services/auth/auth-service";
 import { useAppSelector } from "@/store/store";
 import axios from "axios";

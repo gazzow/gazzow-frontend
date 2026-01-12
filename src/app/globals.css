@@ -4,21 +4,20 @@
 
 @theme {
   /* Background & UI colors */
-  --color-primary: #0E1217;
-  --color-secondary: #1E293B;
-  --color-btn-primary: #9333EA;
+  --color-primary: #0e1217;
+  --color-secondary: #1e293b;
+  --color-btn-primary: #9333ea;
   /* --color-btn-primary: #7C3AED; */
-  --color-btn-premium: #39E58C;
+  --color-btn-premium: #39e58c;
   --color-border-primary: #374151;
-  --color-btn-primary-hover: #7C3AED;
-  --color-btn-premium-hover: #22C55E;
+  --color-btn-primary-hover: #7c3aed;
+  --color-btn-premium-hover: #22c55e;
 
   /* Typography colors */
-  --color-text-primary: #F9FAFB;   /* near white */
-  --color-text-secondary: #CBD5E1; /* slate-like */
-  --color-text-muted: #94A3B8;     /* lighter slate */
+  --color-text-primary: #f9fafb; /* near white */
+  --color-text-secondary: #cbd5e1; /* slate-like */
+  --color-text-muted: #94a3b8; /* lighter slate */
 }
-
 
 /*
 | **Your Token**      | **Hex**   | **Closest Tailwind Utility**         |
@@ -32,6 +31,107 @@
 | `border-primary`    | `#374151` | `slate-700` (`border-slate-700`)     |
 */
 
+/* Internal serve error image animation */
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
 
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease forwards;
+}
+
+/* Internal serve error image animation */
+
+
+/* Task Modal Opening animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+
+/* Menu Icon flip animation */
+@keyframes flipIn {
+  from {
+    opacity: 0;
+    transform: perspective(500px) rotateX(-90deg);
+    transform-origin: top;
+  }
+  to {
+    opacity: 1;
+    transform: perspective(500px) rotateX(0deg);
+    transform-origin: top;
+  }
+}
+
+.animate-flip-in {
+  animation: flipIn 0.3s ease-out;
+}
+
+@keyframes flipUp {
+  from {
+    opacity: 0;
+    transform: perspective(500px) rotateX(90deg);
+    transform-origin: bottom;
+  }
+  to {
+    opacity: 1;
+    transform: perspective(500px) rotateX(0deg);
+    transform-origin: bottom;
+  }
+}
+.animate-flip-up {
+  animation: flipUp 0.3s ease-out;
+}
+
+@keyframes flipSide {
+  from {
+    opacity: 0;
+    transform: perspective(500px) rotateY(90deg);
+    transform-origin: right;
+  }
+  to {
+    opacity: 1;
+    transform: perspective(500px) rotateY(0deg);
+    transform-origin: right;
+  }
+}
+
+.animate-flip-side {
+  animation: flipSide 0.3s ease-out;
+}
 
 

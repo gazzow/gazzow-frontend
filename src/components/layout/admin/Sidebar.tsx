@@ -6,15 +6,9 @@ import {
   LayoutDashboard,
   Users,
   FolderKanban,
-  CheckSquare,
-  CalendarClock,
-  Star,
   CreditCard,
   Package,
   Wallet,
-  Bell,
-  ShieldAlert,
-  User,
   LogOut,
 } from "lucide-react";
 import { authService } from "@/services/auth/auth-service";
@@ -37,33 +31,37 @@ const sections = [
   },
   {
     title: "User Management",
-    items: [{ label: "Users", icon: Users, href: ADMIN_ROUTES.USER_MANAGEMENT }],
+    items: [
+      { label: "Users", icon: Users, href: ADMIN_ROUTES.USER_MANAGEMENT },
+    ],
   },
   {
-    title: "Project & Tasks",
+    title: "Project Management",
     items: [
-      { label: "Projects", icon: FolderKanban, href: "" },
-      { label: "Tasks", icon: CheckSquare, href: "" },
-      { label: "Meetings", icon: CalendarClock, href: "" },
-      { label: "Reviews", icon: Star, href: "" },
+      { label: "Projects", icon: FolderKanban, href: ADMIN_ROUTES.PROJECTS },
+      // { label: "Reviews", icon: Star, href: "" },
     ],
   },
   {
     title: "Business",
     items: [
-      { label: "Subscriptions", icon: CreditCard, href: "" },
-      { label: "Plans", icon: Package, href: "" },
-      { label: "Payments", icon: Wallet, href: "" },
+      { label: "Plans", icon: Package, href: ADMIN_ROUTES.PLANS },
+      {
+        label: "Subscriptions",
+        icon: CreditCard,
+        href: ADMIN_ROUTES.SUBSCRIPTIONS,
+      },
+      { label: "transaction", icon: Wallet, href:  ADMIN_ROUTES.TRANSACTIONS},
     ],
   },
-  {
-    title: "Platform",
-    items: [
-      { label: "Notifications", icon: Bell, href: "" },
-      { label: "Reports", icon: ShieldAlert, href: "" },
-      { label: "Profile", icon: User, href: ADMIN_ROUTES.PROFILE },
-    ],
-  },
+  // {
+  //   title: "Platform",
+  //   items: [
+  //     { label: "Notifications", icon: Bell, href: "" },
+  //     { label: "Reports", icon: ShieldAlert, href: "" },
+  //     { label: "Profile", icon: User, href: ADMIN_ROUTES.PROFILE },
+  //   ],
+  // },
 ];
 
 export default function Sidebar() {
@@ -87,7 +85,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="h-full mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
+    <aside className="min-h-screen mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
       {sections.map((section) => (
         <div key={section.title} className="mb-4">
           <h4 className="hidden md:flex text-xs uppercase tracking-wide text-gray-500 mb-2">

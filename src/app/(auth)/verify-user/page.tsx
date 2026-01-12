@@ -18,7 +18,7 @@ export default function VerifyOtp() {
 
   const [otp, setOtp] = useState("");
   const [expiryTimer, setExpiryTimer] = useState(299); // 5 min in seconds
-  const [reSendTimer, setReSendTimer] = useState(59); // 3 min in seconds
+  const [reSendTimer, setReSendTimer] = useState(59); // 1 min in seconds
 
   const dispatch = useAppDispatch();
   const email = useAppSelector((state) => state.auth.user?.email);
@@ -38,6 +38,19 @@ export default function VerifyOtp() {
       router.replace(AUTH_ROUTES.SIGNUP);
     }
   }, [expiryTimer, router]);
+
+  const handleResendOtp = async () => {
+    try {
+      const res = await authService.resendOtp(email!, "register");
+      setReSendTimer(59);
+      toast.success(res.message);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("resend otp error: ", error);
+        toast.error(error.response?.data.message || "Internal server error");
+      }
+    }
+  };
 
   const handleSubmit = async () => {
     console.log("Email:", email, "OTP:", otp);
@@ -107,7 +120,10 @@ export default function VerifyOtp() {
         <div className="flex  flex-col mt-4 text-center text-gray-300 text-sm">
           <p>Code expires in {formatTime(expiryTimer)}</p>
           {reSendTimer === 0 ? (
-            <button className="mb-6 text-red-400 cursor-pointer underline">
+            <button
+              onClick={handleResendOtp}
+              className="mb-6 text-red-400 cursor-pointer underline"
+            >
               Resend Otp
             </button>
           ) : (

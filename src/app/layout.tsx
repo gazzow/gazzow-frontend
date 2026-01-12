@@ -3,6 +3,8 @@ import { ThemeProvider } from "@/context/ThemeProvider";
 import "./globals.css";
 import ToastProvider from "@/providers/ToastProvider";
 import ReduxProvider from "@/providers/ReduxProvider";
+import { NotificationProvider } from "@/providers/NotificationProvider";
+import { SocketProvider } from "@/context/SocketProvider";
 
 export const metadata: Metadata = {
   title: "Gazzow",
@@ -19,7 +21,11 @@ export default function RootLayout({
       <body className="bg-white dark:bg-primary font-sans transition ease-in-out">
         <ThemeProvider>
           <ReduxProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <NotificationProvider>
+              <SocketProvider>
+                <ToastProvider>{children}</ToastProvider>
+              </SocketProvider>
+            </NotificationProvider>
           </ReduxProvider>
         </ThemeProvider>
       </body>

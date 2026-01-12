@@ -1,8 +1,7 @@
 "use client";
 
-import UserProfileModal from "@/components/features/user-profile-modal";
+import UserProfileModal from "@/components/features/UserProfileModal";
 import { userManagementService } from "@/services/admin/user-management";
-import { UserStatus } from "@/types/user";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -32,7 +31,7 @@ export default function UserManagement() {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<{
     id: string;
-    status: UserStatus;
+    status: string;
   } | null>(null);
 
   const getSortParams = (sortOption: string) => {
@@ -92,7 +91,7 @@ export default function UserManagement() {
     };
   }, [search]);
 
-  const handleToggleClick = (id: string, status: UserStatus) => {
+  const handleToggleClick = (id: string, status: string) => {
     setSelectedUser({ id, status });
     setConfirmModalOpen(true);
   };
@@ -149,7 +148,7 @@ export default function UserManagement() {
       )}
 
       {confirmModalOpen && (
-        <div className="fixed inset-0 bg-primary/6  flex justify-center items-center">
+        <div className="fixed inset-0 bg-primary/60  flex justify-center items-center">
           <div className="bg-white dark:bg-secondary p-4 rounded shadow flex flex-col">
             <p className="font-bold text-black dark:text-white">
               {selectedUser?.status === "active"
@@ -179,10 +178,6 @@ export default function UserManagement() {
         <div className="flex flex-col">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold text-white">User Management</h1>
-            <button className="px-4 py-2 bg-gray-200 text-black text-md font-semibold rounded-md transition">
-              {" "}
-              Export Data{" "}
-            </button>
           </div>
           <p className="text-text-muted text-sm">
             Manage and monitor all registered users on the platform.
@@ -284,10 +279,13 @@ export default function UserManagement() {
                     {user.status[0].toUpperCase() + user.status.slice(1)}
                   </span>
                 </td>
-
-                <td className="p-3 text-white">
-                  {new Date(user.createdAt).toISOString().slice(0, 10)}
-                </td>
+                {user.createdAt ? (
+                  <td className="p-3 text-white">
+                    {new Date(user.createdAt).toISOString().slice(0, 10)}
+                  </td>
+                ) : (
+                  <td className="p-3 text-white">N/A</td>
+                )}
                 <td className="p-3">
                   <button
                     onClick={() => handleToggleClick(user.id, user.status)}

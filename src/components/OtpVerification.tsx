@@ -26,8 +26,8 @@ interface OtpVerificationProps {
 
 export default function OtpVerification({ email, mode }: OtpVerificationProps) {
   const [otp, setOtp] = useState("");
-  const [expiryTimer, setExpiryTimer] = useState(300); // 5 min in seconds
-  const [reSendTimer, setReSendTimer] = useState(180); // 3 min in seconds
+  const [expiryTimer, setExpiryTimer] = useState(299); // 5 min in seconds
+  const [reSendTimer, setReSendTimer] = useState(59); // 1 min in seconds
 
   const router = useRouter();
 
@@ -50,11 +50,24 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
 
   const endpoint: string = getEndPoint[mode];
 
+  const handleResendOtp = async () => {
+    try {
+      const res = await authService.resendOtp(email, "reset");
+      setReSendTimer(59);
+      toast.success(res.message);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("resend otp error: ", error);
+        toast.error(error.response?.data.message || "Internal server error");
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     console.log("Email:", email, "OTP:", otp);
 
     try {
-      console.log(`verify otp endpoint check: ${endpoint}`)
+      console.log(`verify otp endpoint check: ${endpoint}`);
       const res = await authService.verifyOtp(endpoint, email, otp);
       toast.success(res.message);
       if (mode === "register") {
@@ -102,10 +115,13 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
           </button>
         </div>
 
-        <div className="mt-4 text-center text-gray-300 text-sm">
+        <div className="flex  flex-col mt-4 text-center text-gray-300 text-sm">
           <p>Code expires in {formatTime(expiryTimer)}</p>
           {reSendTimer === 0 ? (
-            <button className="mb-6 text-red-400 cursor-pointer underline">
+            <button
+              onClick={handleResendOtp}
+              className="mb-6 text-red-400 cursor-pointer underline"
+            >
               Resend Otp
             </button>
           ) : (

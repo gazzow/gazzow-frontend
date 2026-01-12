@@ -4,4 +4,9 @@ export const USER_ROUTES = {
   GLOBAL_PROFILE: "/PROFILE",
   PROFILE: "/profile/me",
   EDIT_PROFILE: "/profile/edit",
+  PRICING: "/pricing",
+  NOTIFICATIONS: "/notifications",
+  FAVORITES: "/favorites",
+  TRANSACTIONS: "/transactions",
+
 };
