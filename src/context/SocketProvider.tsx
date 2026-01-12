@@ -53,7 +53,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.off(SOCKET_EVENTS.USER_ONLINE);
       socket.off(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION);
     };
-  }, [id]);
+  }, [id, role]);
 
   return (
     <SocketContext.Provider value={socketRef.current}>
