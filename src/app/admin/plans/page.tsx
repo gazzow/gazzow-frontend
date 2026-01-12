@@ -16,14 +16,11 @@ export default function PlanManagement() {
 
   const {
     page,
-    skip,
-    limit,
     totalPages,
     hasNextPage,
     hasPrevPage,
     nextPage,
     prevPage,
-    setTotal,
     goToPage,
   } = usePagination({ limit: 6 });
 
@@ -169,12 +166,12 @@ export default function PlanManagement() {
 
                 {/* Actions */}
                 <td className="p-3 flex gap-2">
-                  <button
+                  {/* <button
                     className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 transition"
                     onClick={() => {}}
                   >
                     Edit
-                  </button>
+                  </button> */}
 
                   <button
                     className={`px-3 py-1 rounded-md text-xs font-medium transition ${

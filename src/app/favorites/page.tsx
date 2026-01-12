@@ -121,14 +121,16 @@ export default function FavoritesPage() {
         )}
       </div>
 
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        hasPrevPage={hasPrevPage}
-        hasNextPage={hasNextPage}
-        nextPage={nextPage}
-        prevPage={prevPage}
-      />
+      {favorites.length > 0 && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          hasPrevPage={hasPrevPage}
+          hasNextPage={hasNextPage}
+          nextPage={nextPage}
+          prevPage={prevPage}
+        />
+      )}
     </div>
   );
 }

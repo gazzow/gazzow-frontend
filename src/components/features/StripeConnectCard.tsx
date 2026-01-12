@@ -3,7 +3,6 @@ import { IUser } from "@/types/user";
 import axios from "axios";
 import { CreditCard } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 type IStripeConnectCardProps = {
   user: IUser | null;
@@ -37,7 +36,6 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
       if (res.success) {
         const { isOnboarded } = res.data;
         setIsOnboarded(isOnboarded || false);
-        toast(res.message)
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
