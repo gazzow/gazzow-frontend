@@ -35,19 +35,29 @@ export default function UserProfileMenu() {
   return (
     <div
       ref={ref}
-      className="relative bg-secondary/70 rounded-xl hover:bg-secondary transition ease-in-out duration-200 "
+      className="
+    relative rounded-xl
+    bg-slate-100 hover:bg-slate-200
+    dark:bg-slate-800 dark:hover:bg-slate-700
+    transition-all duration-200
+  "
     >
       {/* Avatar Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 pl-3 pr-1 py-1 rounded-full hover:bg-muted transition cursor-pointer"
+        className="
+      flex items-center gap-2 pl-3 pr-1 py-1 rounded-full
+      transition cursor-pointer
+      hover:bg-slate-200 dark:hover:bg-slate-700
+    "
       >
-        <span className="text-sm text-white font-medium hidden md:block  ">
+        <span className="text-sm font-medium hidden md:block text-slate-700 dark:text-slate-200">
           {name && name.split(" ").length > 2
             ? name?.split(" ").slice(0, 2).join(" ")
             : name || "Guest"}
         </span>
-        <div className="relative w-8 h-8 rounded-xl overflow-hidden shrink-0">
+
+        <div className="relative w-8 h-8 rounded-xl overflow-hidden shrink-0 ring-2 ring-white dark:ring-slate-900">
           <Image
             src={imageUrl || "/avatar.png"}
             alt={name || "User"}
@@ -60,46 +70,66 @@ export default function UserProfileMenu() {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-3 w-72 rounded-xl bg-primary dark:bg-background border border-border-primary shadow-xl z-50 overflow-hidden p-2 ">
+        <div
+          className="
+        absolute right-0 mt-3 w-72 z-50 overflow-hidden p-3
+        rounded-xl border shadow-xl
+
+        bg-white border-slate-200
+        dark:bg-slate-900 dark:border-slate-700
+      "
+        >
           {/* User Info */}
-          <div className="flex gap-3 items-center">
-            <div className="relative w-10 h-10 rounded-xl overflow-hidden shrink-0">
+          <div className="flex gap-3 items-center pb-3 border-b border-slate-200 dark:border-slate-700">
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden shrink-0 ring-2 ring-white dark:ring-slate-800">
               <Image
                 src={imageUrl || "/avatar.png"}
                 alt={name || "User"}
                 fill
-                className="object-cover "
+                className="object-cover"
                 sizes="36px"
               />
             </div>
-            <div className="flex flex-col items-start justify-center text-white">
-              <p className="text-md font-bold">{name}</p>
-              <p className="text-xs text-muted-foreground">{email}</p>
+
+            <div className="flex flex-col text-slate-800 dark:text-slate-200">
+              <p className="text-md font-semibold">{name}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {email}
+              </p>
             </div>
           </div>
 
           {/* Premium Button */}
-          <div className="py-3 border-b border-b-gray-600">
-            {/* Pricing Button  */}
+          <div className="py-3 border-b border-slate-200 dark:border-slate-700">
             <PricingButton />
           </div>
 
           {/* Menu */}
-          <div className="p-2 space-y-1">
+          <div className="pt-2 space-y-1">
             <button
               onClick={handleOnProfileClick}
-              className="w-full flex items-center gap-2 px-2 py-1 rounded-md text-md text-text-secondary hover:bg-secondary/70 hover:text-text-primary cursor-pointer transition"
+              className="
+            w-full flex items-center gap-2 px-3 py-2 rounded-md
+            text-slate-700 dark:text-slate-200
+            hover:bg-slate-100 dark:hover:bg-slate-800
+            transition
+          "
             >
-              <User size={18}></User>
+              <User size={18} />
               <span>Your Profile</span>
             </button>
 
             {/* Logout Button */}
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-2 px-2 py-1 rounded-md text-md text-text-secondary hover:bg-red-500/40 hover:text-text-primary cursor-pointer transition"
+              className="
+            w-full flex items-center gap-2 px-3 py-2 rounded-md
+            text-red-600 dark:text-red-400
+            hover:bg-red-50 dark:hover:bg-red-900/30
+            transition
+          "
             >
-              <LogOut size={18}></LogOut>
+              <LogOut size={18} />
               <span>Log out</span>
             </button>
           </div>

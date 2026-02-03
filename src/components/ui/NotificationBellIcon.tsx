@@ -36,7 +36,7 @@ export function NotificationBellIcon() {
       if (axios.isAxiosError(error)) {
         toast.error(
           error.response?.data?.message ||
-            "Failed to fetch unread notification count"
+            "Failed to fetch unread notification count",
         );
       }
     }
@@ -52,11 +52,32 @@ export function NotificationBellIcon() {
   return (
     <button
       onClick={onNotificationClick}
-      className="relative p-2 bg-secondary/70 rounded-xl cursor-pointer hover:bg-secondary transition ease-in-out duration-200 text-text-secondary "
+      className="
+    relative p-2 rounded-xl cursor-pointer
+    transition-all duration-200 ease-in-out
+
+    bg-slate-100 hover:bg-slate-200
+    dark:bg-slate-800 dark:hover:bg-slate-700
+
+    text-slate-700 dark:text-slate-200
+    shadow-sm hover:shadow-md
+  "
     >
-      <Bell size={24} />
+      <Bell size={22} />
+
       {notificationCount > 0 && (
-        <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
+        <span
+          className="
+        absolute -top-1 -right-1
+        min-w-[18px] h-[18px]
+        px-1.5 flex items-center justify-center
+        text-[10px] font-semibold
+        text-white
+        bg-red-500
+        rounded-full
+        ring-2 ring-white dark:ring-slate-900
+      "
+        >
           {notificationCount}
         </span>
       )}
