@@ -4,7 +4,7 @@ import { SectionTabs } from "@/components/features/SectionTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
-import { useSocket } from "@/context/SocketProvider";
+import { useSocket } from "@/providers/SocketProvider";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
 import { useAppSelector } from "@/store/store";

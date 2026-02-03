@@ -1,10 +1,10 @@
 import { Metadata } from "next";
-import { ThemeProvider } from "@/context/ThemeProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import "./globals.css";
 import ToastProvider from "@/providers/ToastProvider";
 import ReduxProvider from "@/providers/ReduxProvider";
 import { NotificationProvider } from "@/providers/NotificationProvider";
-import { SocketProvider } from "@/context/SocketProvider";
+import { SocketProvider } from "@/providers/SocketProvider";
 
 export const metadata: Metadata = {
   title: "Gazzow",
