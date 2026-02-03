@@ -23,6 +23,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const { id, role } = useAppSelector((state) => state.user);
 
   useEffect(() => {
+    if (id === null) return;
+
     if (!socketRef.current) {
       socketRef.current = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
         withCredentials: true,
@@ -33,7 +35,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const socket = socketRef.current;
 
     socket.on(SOCKET_EVENTS.CONNECT, () => {
-      console.log("Socket connected 🚀", socket.id);
+      console.log(
+        `Socket connected 🚀[status: ${connected}] - [id: ${socket.id}]`,
+      );
       setConnected(true);
     });
 

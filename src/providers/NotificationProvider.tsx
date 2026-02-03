@@ -1,6 +1,7 @@
 "use client";
 
 import { useNotification } from "@/hook/useNotification";
+import { useAppSelector } from "@/store/store";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -10,11 +11,14 @@ export function NotificationProvider({
   children: React.ReactNode;
 }) {
   const { notification, requestPermission } = useNotification();
+  const user = useAppSelector((state) => state.user);
 
   // Request Permission
   useEffect(() => {
+    if (user.id === null) return;
+    console.log("requesting permission auth user: ", user.id);
     requestPermission();
-  }, [requestPermission]);
+  }, [requestPermission, user]);
 
   // Global notification handler
   useEffect(() => {
@@ -47,7 +51,7 @@ export function NotificationProvider({
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      }
+      },
     );
 
     // if (Notification.permission === "granted" ) {
@@ -62,7 +66,6 @@ export function NotificationProvider({
     //     browserNotification.close();
     //   };
     // }
-
   }, [notification]);
 
   return <>{children}</>;

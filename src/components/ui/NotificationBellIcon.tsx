@@ -1,7 +1,7 @@
 "use client";
 
 import { USER_ROUTES } from "@/constants/routes/user-routes";
-import { useSocket } from "@/context/SocketProvider";
+import { useSocket } from "@/providers/SocketProvider";
 import api from "@/lib/axios/api";
 import { SOCKET_EVENTS } from "@/types/socket-event";
 import axios from "axios";
