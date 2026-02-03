@@ -5,6 +5,7 @@ import {
   requestNotificationPermission,
 } from "@/lib/notification/firebase.config";
 import { NotificationPermissionStatus } from "@/types/fcm.types";
+import { useAppSelector } from "@/store/store";
 
 interface NotificationData {
   [key: string]: string;
@@ -38,6 +39,7 @@ export const useNotification = (): UseNotificationReturn => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [permissionStatus, setPermissionStatus] =
     useState<NotificationPermissionStatus>("default");
+  const user = useAppSelector((state) => state.user);
 
   // Prevent multiple listener registrations
   const listenerRegistered = useRef(false);
@@ -46,7 +48,7 @@ export const useNotification = (): UseNotificationReturn => {
   useEffect(() => {
     if ("Notification" in window) {
       setPermissionStatus(
-        Notification.permission as NotificationPermissionStatus
+        Notification.permission as NotificationPermissionStatus,
       );
     }
   }, []);
@@ -54,6 +56,8 @@ export const useNotification = (): UseNotificationReturn => {
   // Request notification permission and get token
   const requestPermission = async (): Promise<string | null> => {
     setIsLoading(true);
+    // if (user.id === null) return null;
+    console.log("Requesting Permission in hook: ", user);
     try {
       const token = await requestNotificationPermission();
       if (token) {
@@ -113,7 +117,7 @@ export const useNotification = (): UseNotificationReturn => {
 
         const browserNotification = new Notification(
           notificationTitle,
-          notificationOptions
+          notificationOptions,
         );
 
         browserNotification.onclick = (event) => {

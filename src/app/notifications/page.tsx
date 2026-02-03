@@ -1,6 +1,6 @@
 "use client";
 
-import { useSocket } from "@/context/SocketProvider";
+import { useSocket } from "@/providers/SocketProvider";
 import { notificationService } from "@/services/user/notification.service";
 import { useAppSelector } from "@/store/store";
 import { INotification } from "@/types/notification";

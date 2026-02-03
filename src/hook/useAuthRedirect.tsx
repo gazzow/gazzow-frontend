@@ -17,7 +17,7 @@ export const useAuthRedirect = (isAuth: boolean) => {
       } else {
         router.replace(USER_ROUTES.HOME);
       }
-    }
+    } 
   }, [user, isAuth, router]);
 
   return user;

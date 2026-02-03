@@ -42,7 +42,7 @@ export const requestNotificationPermission = async (): Promise<
   try {
     // Check if the browser supports notifications
     if (!("Notification" in window)) {
-      // console.log("This browser does not support notifications");
+      console.log("This browser does not support notifications");
       return null;
     }
 
