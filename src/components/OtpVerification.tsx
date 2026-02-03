@@ -4,7 +4,6 @@ import { AUTH_API } from "@/constants/apis/auth-api";
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { authService } from "@/services/auth/auth-service";
-import { formatTime } from "@/utils/auth/formatTime";
 import axios from "axios";
 import { Shield } from "lucide-react";
 import Link from "next/link";
@@ -22,38 +21,50 @@ type Mode = keyof IGetEndPoint;
 interface OtpVerificationProps {
   email: string;
   mode: Mode;
+  
 }
+
+const getEndPoint: IGetEndPoint = {
+  register: AUTH_API.VERIFY_USER,
+  forgotPassword: AUTH_API.VERIFY_OTP,
+};
 
 export default function OtpVerification({ email, mode }: OtpVerificationProps) {
   const [otp, setOtp] = useState("");
-  const [expiryTimer, setExpiryTimer] = useState(299); // 5 min in seconds
-  const [reSendTimer, setReSendTimer] = useState(59); // 1 min in seconds
+  const [timer, setTimer] = useState(0);
+  const [expiry, setExpiry] = useState<number | null>(null);
 
   const router = useRouter();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (expiryTimer >= 0) {
-        setExpiryTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      }
-      if (reSendTimer >= 0) {
-        setReSendTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [expiryTimer, reSendTimer]);
+    const stored = Number(localStorage.getItem("otp-expiry"));
+    if (stored) setExpiry(stored);
+  }, []);
 
-  const getEndPoint: IGetEndPoint = {
-    register: AUTH_API.VERIFY_USER,
-    forgotPassword: AUTH_API.VERIFY_OTP,
-  };
+  useEffect(() => {
+    if (!expiry) return;
+    const interval = setInterval(() => {
+      const remaining = Math.max(0, Math.floor((expiry - Date.now()) / 1000));
+      setTimer(remaining);
+
+      if (remaining <= 0) clearInterval(interval);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [expiry]);
 
   const endpoint: string = getEndPoint[mode];
 
   const handleResendOtp = async () => {
     try {
       const res = await authService.resendOtp(email, "reset");
-      setReSendTimer(59);
+      if (res.success) {
+        const newExpiry: number = res.data.otpExpiresAt;
+        localStorage.setItem("otp-expiry", newExpiry.toString());
+        setExpiry(newExpiry);
+      }
       toast.success(res.message);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -64,15 +75,17 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
   };
 
   const handleSubmit = async () => {
-    console.log("Email:", email, "OTP:", otp);
-
     try {
       console.log(`verify otp endpoint check: ${endpoint}`);
       const res = await authService.verifyOtp(endpoint, email, otp);
+
+      if (res.success) {
+        localStorage.removeItem("otp-expiry");
+        setExpiry(null);
+      }
+
       toast.success(res.message);
       if (mode === "register") {
-        // re-routing
-        toast.info("sign in! re-routing to home");
         router.replace(USER_ROUTES.HOME);
       } else {
         router.replace(AUTH_ROUTES.RESET_PASSWORD);
@@ -116,18 +129,18 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
         </div>
 
         <div className="flex  flex-col mt-4 text-center text-gray-300 text-sm">
-          <p>Code expires in {formatTime(expiryTimer)}</p>
-          {reSendTimer === 0 ? (
+          <p>
+            {" "}
+            Code expires in {Math.floor(timer / 60)}:
+            {(timer % 60).toString().padStart(2, "0")}
+          </p>
+          {timer <= 0 && (
             <button
               onClick={handleResendOtp}
               className="mb-6 text-red-400 cursor-pointer underline"
             >
               Resend Otp
             </button>
-          ) : (
-            <p className="mb-6">
-              Resend available in {formatTime(reSendTimer)}
-            </p>
           )}
           <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
             &larr; Back to login

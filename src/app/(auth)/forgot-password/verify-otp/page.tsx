@@ -1,4 +1,4 @@
-  "use client"
+"use client";
 
 import OtpVerification from "@/components/OtpVerification";
 import { useAppSelector } from "@/store/store";
