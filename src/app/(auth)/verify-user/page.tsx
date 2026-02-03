@@ -129,7 +129,7 @@ export default function VerifyOtp() {
               onClick={handleResendOtp}
               className="mb-6 text-red-400 cursor-pointer underline"
             >
-              Resend Otp
+              Resend OTP
             </button>
           )}
           <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>

@@ -21,7 +21,7 @@ type Mode = keyof IGetEndPoint;
 interface OtpVerificationProps {
   email: string;
   mode: Mode;
-  
+
 }
 
 const getEndPoint: IGetEndPoint = {
@@ -139,7 +139,7 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
               onClick={handleResendOtp}
               className="mb-6 text-red-400 cursor-pointer underline"
             >
-              Resend Otp
+              Resend OTP
             </button>
           )}
           <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
