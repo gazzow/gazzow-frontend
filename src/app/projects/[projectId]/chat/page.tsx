@@ -8,7 +8,6 @@ import { useSocket } from "@/providers/SocketProvider";
 import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
 import { useAppSelector } from "@/store/store";
-import { IMessage } from "@/types/message";
 import { IProject } from "@/types/project";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -18,8 +17,14 @@ import axios from "axios";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { toast } from "react-toastify";
 import { teamChatService } from "@/services/user/team-chat.service";
-import Image from "next/image";
 import { SOCKET_EVENTS } from "@/types/socket-event";
+import { MessageCard } from "@/components/features/Chat/MessageCard";
+import { HttpStatusCode } from "@/constants/status-codes";
+import {
+  DeletedMessageSocketPayload,
+  IMessage,
+  MessageDeleteType,
+} from "@/types/message";
 
 const tabRoutes = [
   { name: "Overview", path: "" },
@@ -31,13 +36,22 @@ const tabRoutes = [
 ];
 
 export default function ProjectChat() {
-  const { projectId } = useParams<{ projectId: string }>();
-  const router = useRouter();
   const [project, setProject] = useState<IProject | null>(null);
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [text, setText] = useState<string>("");
+  const [activeMenuMessageId, setActiveMenuMessageId] = useState<string | null>(
+    null,
+  );
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
+  const { projectId } = useParams<{ projectId: string }>();
+  const userId = useAppSelector((state) => state.user.id)!;
+
+  const router = useRouter();
   const currentRole = useRole(project);
 
-  const userId = useAppSelector((state) => state.user.id);
+  const socket = useSocket();
 
   const visibleTabs = useMemo(() => {
     if (!projectId) return [];
@@ -74,16 +88,9 @@ export default function ProjectChat() {
     router.replace(PROJECT_ROUTES.MY_PROJECTS);
   };
 
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const [text, setText] = useState("");
-  const bottomRef = useRef<HTMLDivElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
   // useEffect(() => {
   //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   // }, [messages]);
-
-  const socket = useSocket();
 
   const fetchTeamMessages = useCallback(async () => {
     console.log("fetching team messages");
@@ -112,8 +119,29 @@ export default function ProjectChat() {
     console.log("team chat joined✅");
 
     socket.on(SOCKET_EVENTS.TEAM_MESSAGE, (msg) => {
+      console.log("New message from team chat to be updated");
       setMessages((prev) => [...prev, msg]);
     });
+
+    socket.on(
+      SOCKET_EVENTS.TEAM_MESSAGE_DELETED,
+      (data: DeletedMessageSocketPayload) => {
+        setMessages((prev) =>
+          prev.map((m) => {
+            if (m.id !== data.messageId) return m;
+           
+            if (data.type === "FOR_EVERYONE" && userId !== m.senderId) {
+
+              return {
+                ...m,
+                isDeletedForEveryone: true,
+              };
+            }
+            return m;
+          }),
+        );
+      },
+    );
 
     return () => {
       socket.off(SOCKET_EVENTS.JOIN_PROJECT);
@@ -124,7 +152,6 @@ export default function ProjectChat() {
   const sendMessage = () => {
     if (!text.trim()) return;
 
-    console.log("Sending message to backend");
     socket?.emit(SOCKET_EVENTS.SEND_MESSAGE, {
       userId,
       projectId,
@@ -132,6 +159,50 @@ export default function ProjectChat() {
     });
 
     setText("");
+  };
+
+  const handleDelete = async (messageId: string, type: MessageDeleteType) => {
+    setMessages((prev) =>
+      prev.map((m) => {
+        if (m.id !== messageId) return m;
+
+        if (type === "FOR_EVERYONE" && userId && userId === m.senderId) {
+
+          return {
+            ...m,
+            isDeletedForEveryone: true,
+          };
+        } else if (type === "FOR_EVERYONE" && userId && userId !== m.senderId) {
+          return m;
+        }
+
+        return {
+          ...m,
+          deletedFor: m.deletedFor.includes(userId)
+            ? m.deletedFor
+            : [...m.deletedFor, userId],
+        };
+      }),
+    );
+
+    try {
+      const res = await teamChatService.deleteMessage(messageId, type);
+      toast.success(res.message);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === HttpStatusCode.CONFLICT) {
+          toast.info(
+            error.response?.data.message ||
+              "Having some issues. Please try later",
+          );
+          return;
+        }
+        toast.error(
+          error.response?.data.message ||
+            "Internal Server Error. Please try again",
+        );
+      }
+    }
   };
 
   if (!projectId) return <LoadingSpinner />;
@@ -190,66 +261,25 @@ export default function ProjectChat() {
           {messages.map((msg, i) => {
             const isMine = msg.senderId === userId;
             const prev = messages[i - 1];
-            const showAvatar = !prev || prev.senderId !== msg.senderId;
+            const showAvatar =
+              !prev ||
+              prev.senderId !== msg.senderId ||
+              prev.deletedFor.includes(userId);
+
+            // Render nothing when message is deleted for user
+            if (msg.deletedFor.includes(userId)) return null;
 
             return (
-              <div
-                key={msg.id}
-                className={`flex ${isMine ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`flex gap-3 max-w-[75%] ${
-                    isMine ? "flex-row-reverse" : ""
-                  }`}
-                >
-                  {/* Avatar (only when sender changes) */}
-                  {showAvatar ? (
-                    <Image
-                      width={36}
-                      height={36}
-                      src={msg.senderImageUrl}
-                      alt={msg.senderName}
-                      className="w-9 h-9 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-9" />
-                  )}
-
-                  {/* Bubble */}
-                  <div
-                    className={`rounded-2xl px-4 py-2 shadow-sm ${
-                      isMine
-                        ? "bg-primary text-white rounded-tr-sm"
-                        : "bg-white text-black rounded-tl-sm"
-                    }`}
-                  >
-                    {/* Name row */}
-                    {showAvatar && (
-                      <div className="flex items-center gap-2 text-xs font-medium mb-1 opacity-80">
-                        <span>{msg.senderName}</span>
-                        {msg.isCreator && (
-                          <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-full text-[10px]">
-                            Creator
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    <p className="text-sm leading-relaxed break-words">
-                      {msg.content}
-                    </p>
-
-                    <div className="flex justify-end mt-1">
-                      <span className="text-xs opacity-60">
-                        {new Date(msg.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <MessageCard
+                isMine={isMine}
+                showAvatar={showAvatar}
+                isMenuOpen={activeMenuMessageId === msg.id}
+                onOpenMenu={() => setActiveMenuMessageId(msg.id)}
+                onCloseMenu={() => setActiveMenuMessageId(null)}
+                message={msg}
+                key={i}
+                onDelete={handleDelete}
+              ></MessageCard>
             );
           })}
 

@@ -36,7 +36,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     socket.on(SOCKET_EVENTS.CONNECT, () => {
       console.log(
-        `Socket connected 🚀[status: ${connected}] - [id: ${socket.id}]`,
+        `Socket connected 🚀 - [id: ${socket.id}]`,
       );
       setConnected(true);
     });
@@ -57,7 +57,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.off(SOCKET_EVENTS.USER_ONLINE);
       socket.off(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION);
     };
-  }, [id, role]);
+  }, [id, role, connected]);
 
   return (
     <SocketContext.Provider value={socketRef.current}>
