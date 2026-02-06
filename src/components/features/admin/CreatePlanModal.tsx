@@ -39,7 +39,7 @@ export default function CreatePlanModal({
 
   return (
     <div className="fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center bg-black/50 ">
-      <div className="w-full max-w-md rounded-lg bg-secondary p-6 shadow-lg">
+      <div className="w-full max-w-md rounded-lg bg-primary p-6 shadow-lg">
         <h2 className="mb-4 text-lg font-semibold text-white">
           Create Subscription Plan
         </h2>
@@ -53,11 +53,11 @@ export default function CreatePlanModal({
             <input
               type="text"
               {...register("name")}
-              className="w-full border border-border-primary rounded-md bg-secondary p-2 text-white"
+              className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-white"
               placeholder="eg: Base Plan"
             />
-            {errors.type && (
-              <p className="text-xs text-red-500">{errors.name?.message}</p>
+            {errors.name && (
+              <p className="text-xs text-red-500 mt-1">{errors.name?.message}</p>
             )}
           </div>
 
@@ -68,16 +68,16 @@ export default function CreatePlanModal({
             </label>
             <select
               {...register("type")}
-              className="w-full border border-border-primary rounded-md bg-secondary p-2 text-white"
+                className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-gray-300"
             >
               {Object.values(PlanType).map((type) => (
-                <option key={type} value={type}>
+                <option key={type} value={type} className="bg-secondary">
                   {type.toUpperCase()}
                 </option>
               ))}
             </select>
             {errors.type && (
-              <p className="text-xs text-red-500">{errors.type.message}</p>
+              <p className="text-xs text-red-500 mt-1">{errors.type.message}</p>
             )}
           </div>
 
@@ -86,16 +86,16 @@ export default function CreatePlanModal({
             <label className="block text-sm text-gray-300 mb-1">Duration</label>
             <select
               {...register("duration")}
-              className="w-full border border-border-primary rounded-md bg-secondary p-2 text-white"
+               className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-gray-300"
             >
               {Object.values(PlanDuration).map((duration) => (
-                <option key={duration} value={duration}>
+                <option key={duration} value={duration} className="bg-secondary">
                   {duration.toUpperCase()}
                 </option>
               ))}
             </select>
             {errors.duration && (
-              <p className="text-xs text-red-500">{errors.duration.message}</p>
+              <p className="text-xs text-red-500 mt-1">{errors.duration.message}</p>
             )}
           </div>
 
@@ -105,11 +105,11 @@ export default function CreatePlanModal({
             <input
               type="number"
               {...register("price", { valueAsNumber: true })}
-              className="w-full border border-border-primary rounded-md bg-secondary p-2 text-white"
+               className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-white"
               placeholder="e.g. 999"
             />
             {errors.price && (
-              <p className="text-xs text-red-500">{errors.price.message}</p>
+              <p className="text-xs text-red-500 mt-1">{errors.price.message}</p>
             )}
           </div>
 
@@ -123,11 +123,11 @@ export default function CreatePlanModal({
               {...register("commissionRate", {
                 valueAsNumber: true,
               })}
-              className="w-full border border-border-primary rounded-md bg-secondary p-2 text-white"
+               className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-white"
               placeholder="e.g. 10"
             />
             {errors.commissionRate && (
-              <p className="text-xs text-red-500">
+              <p className="text-xs text-red-500 mt-1">
                 {errors.commissionRate.message}
               </p>
             )}

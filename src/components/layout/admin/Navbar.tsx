@@ -29,13 +29,6 @@ export default function Navbar() {
               <Sun size={18} className="dark:text-yellow-400"></Sun>
             )}
           </button>
-
-          <Link
-            href={ADMIN_ROUTES.PROFILE}
-            className="text-black dark:text-text-primary dark:hover:text-text-secondary "
-          >
-            Profile
-          </Link>
         </div>
       </div>
     </nav>
