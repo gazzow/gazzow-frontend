@@ -38,6 +38,7 @@ export default function ForgotPassword() {
 
       if (res.success) {
         router.replace(AUTH_ROUTES.VERIFY_OTP);
+        localStorage.setItem("otp-expiry", res.data.otpExpiresAt.toString());
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

@@ -14,35 +14,42 @@ import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 export default function VerifyOtp() {
-  const router = useRouter();
-
   const [otp, setOtp] = useState("");
-  const [expiryTimer, setExpiryTimer] = useState(299); // 5 min in seconds
-  const [reSendTimer, setReSendTimer] = useState(59); // 1 min in seconds
+  const [timer, setTimer] = useState(0);
+  const [expiry, setExpiry] = useState<number | null>(null);
+
+  const router = useRouter();
 
   const dispatch = useAppDispatch();
   const email = useAppSelector((state) => state.auth.user?.email);
 
-  // Countdown timer
   useEffect(() => {
-    const interval = setInterval(() => {
-      setExpiryTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      setReSendTimer((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-
-    return () => clearInterval(interval);
+    const stored = Number(localStorage.getItem("otp-expiry"));
+    if (stored) setExpiry(stored);
   }, []);
 
   useEffect(() => {
-    if (expiryTimer === 0) {
-      router.replace(AUTH_ROUTES.SIGNUP);
-    }
-  }, [expiryTimer, router]);
+    if (!expiry) return;
+    const interval = setInterval(() => {
+      const remaining = Math.max(0, Math.floor((expiry - Date.now()) / 1000));
+      setTimer(remaining);
+
+      if (remaining <= 0) clearInterval(interval);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [expiry]);
 
   const handleResendOtp = async () => {
     try {
       const res = await authService.resendOtp(email!, "register");
-      setReSendTimer(59);
+      if (res.success) {
+        const newExpiry: number = res.data.otpExpiresAt;
+        localStorage.setItem("otp-expiry", newExpiry.toString());
+        setExpiry(newExpiry);
+      }
       toast.success(res.message);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -61,17 +68,17 @@ export default function VerifyOtp() {
         return;
       }
       const res = await authService.verifyUser(email, otp);
+
+      if (res.success) {
+        localStorage.removeItem("otp-expiry");
+        setExpiry(null);
+      }
       toast.success(res.data.message);
-      console.log("res data: ", res.data);
 
       dispatch(setUser(res.data));
       dispatch(setOnboardingStatus(true));
       dispatch(clearAuthEmail());
 
-      // re-routing
-      toast.info(
-        "User registered! Re-routing to onboarding to finish profile setup"
-      );
       router.replace(USER_ROUTES.ONBOARDING);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -79,12 +86,6 @@ export default function VerifyOtp() {
         toast.error(error.response?.data.message || "something went wrong");
       }
     }
-  };
-
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s < 10 ? "0" : ""}${s}`;
   };
 
   return (
@@ -118,18 +119,18 @@ export default function VerifyOtp() {
         </div>
 
         <div className="flex  flex-col mt-4 text-center text-gray-300 text-sm">
-          <p>Code expires in {formatTime(expiryTimer)}</p>
-          {reSendTimer === 0 ? (
+          <p>
+            {" "}
+            Code expires in {Math.floor(timer / 60)}:
+            {(timer % 60).toString().padStart(2, "0")}
+          </p>
+          {timer <= 0 && (
             <button
               onClick={handleResendOtp}
               className="mb-6 text-red-400 cursor-pointer underline"
             >
-              Resend Otp
+              Resend OTP
             </button>
-          ) : (
-            <p className="mb-6">
-              Resend available in {formatTime(reSendTimer)}
-            </p>
           )}
           <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
             &larr; Back to login

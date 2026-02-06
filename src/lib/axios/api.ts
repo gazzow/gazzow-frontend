@@ -96,15 +96,9 @@ api.interceptors.response.use(
       }
 
       if (status === HttpStatusCode.FORBIDDEN) {
-        toast.error(ERROR_MESSAGES.FORBIDDEN);
-        console.log("Forbidden error: ", data);
         if (data.code === ErrorCode.USER_BLOCKED) {
           store.dispatch(clearUser());
         }
-      }
-
-      if (status === HttpStatusCode.NOT_FOUND) {
-        toast.error(ERROR_MESSAGES.NOT_FOUND);
       }
 
       if (status >= HttpStatusCode.INTERNAL_SERVER_ERROR) {
@@ -117,7 +111,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

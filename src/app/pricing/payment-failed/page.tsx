@@ -1,6 +1,10 @@
 "use client";
 
+import { USER_ROUTES } from "@/constants/routes/user-routes";
+import { useRouter } from "next/navigation";
+
 export default function PaymentFailedPage() {
+  const router = useRouter();
   return (
     <div className="w-full text-neutral-100 flex items-center justify-center p-6">
       <div className="w-full max-w-md text-center space-y-6">
@@ -28,11 +32,17 @@ export default function PaymentFailedPage() {
 
         {/* Buttons */}
         <div className="space-y-3 mt-6">
-          <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-sm font-medium transition">
+          <button
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-sm font-medium transition"
+            onClick={() => router.replace(USER_ROUTES.PRICING)}
+          >
             Retry Payment
           </button>
 
-          <button className="w-full border border-neutral-600 hover:border-neutral-400 text-neutral-300 py-3 rounded-lg text-sm transition">
+          <button
+            className="w-full border border-neutral-600 hover:border-neutral-400 text-neutral-300 py-3 rounded-lg text-sm transition"
+            onClick={() => router.replace(USER_ROUTES.HOME)}
+          >
             Dashboard
           </button>
         </div>

@@ -14,7 +14,7 @@ export default function Pricing() {
   const [activeSubscription, setActiveSubscription] =
     useState<ISubscription | null>(null);
   const [planDuration, setPlanDuration] = useState<PlanDuration>(
-    PlanDuration.MONTHLY
+    PlanDuration.MONTHLY,
   );
 
   const handleMonthlyClick = () => {
@@ -133,7 +133,10 @@ export default function Pricing() {
     [PlanDuration.YEARLY]: 2,
   };
 
-  const getPlanLabel = (plan: IPlan, subscription: ISubscription | null) => {
+  const getPlanLabel = (
+    plan: IPlan,
+    subscription: ISubscription | null,
+  ): string | null => {
     if (!subscription) return `Subscribe to ${plan.name}`;
 
     const targetDurationLevel = DURATION_ORDER[plan.duration];
@@ -157,7 +160,7 @@ export default function Pricing() {
       return `Upgrade to ${plan.name}`;
     }
 
-    return `Downgrade to ${plan.name}`;
+    return null;
   };
 
   const handleSubscriptionCheckout = async (planId: string) => {
@@ -172,7 +175,7 @@ export default function Pricing() {
         console.log("Failed to initiate payment for task");
         toast.error(
           error.response?.data.message ||
-            "Failed to initiate subscription checkout"
+            "Failed to initiate subscription checkout",
         );
       }
     }
@@ -230,6 +233,8 @@ export default function Pricing() {
             activeSubscription !== null
               ? isCurrentPlan(plan, activeSubscription)
               : false;
+          const showButton = getPlanLabel(plan, activeSubscription);
+
           return (
             <div
               key={plan.id}
@@ -252,18 +257,21 @@ export default function Pricing() {
                 / {planDuration === PlanDuration.MONTHLY ? "monthly" : "yearly"}
               </p>
 
-              <button
-                disabled={isCurrent}
-                className={`w-full py-3 rounded-lg transition
+              {showButton !== null && (
+                <button
+                  disabled={isCurrent}
+                  className={`w-full py-3 rounded-lg transition
           ${
             isCurrent
               ? "bg-gray-700 text-gray-300 cursor-not-allowed"
               : "bg-purple-600 hover:bg-purple-700 text-white"
           }`}
-                onClick={() => handleSubscriptionCheckout(plan.id)}
-              >
-                {getPlanLabel(plan, activeSubscription)}
-              </button>
+                  onClick={() => handleSubscriptionCheckout(plan.id)}
+                >
+                  {getPlanLabel(plan, activeSubscription)}
+                </button>
+              )}
+
               <ul className="mt-8 space-y-3 text-sm text-gray-300">
                 <li>
                   ✔ {plan.features.commissionRate}% commission on earnings
