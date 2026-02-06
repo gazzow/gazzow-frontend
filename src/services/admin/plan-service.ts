@@ -4,7 +4,6 @@ import { IPlan } from "@/types/plan";
 
 export const planService = {
   async createPlan(data: Partial<IPlan>) {
-    console.log('create plan payload: ', data)
     const res = await api.post(PLAN_API.CREATE, data);
     console.log("create plan response: ", res);
     return res.data;
