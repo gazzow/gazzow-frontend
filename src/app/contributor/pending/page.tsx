@@ -77,64 +77,44 @@ export default function ListPendingProposalPage() {
   }, [fetchProposals]);
 
   return (
-    <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
-      <div className="flex justify-between">
-        <div>
-          <h1 className="text-primary dark:text-white font-semibold text-2xl">
-            Contributions
-          </h1>
-          <p className="text-primary dark:text-text-secondary">
-            Discover and manage projects that match your expertise
-          </p>
-        </div>
-      </div>
+    <div className="max-w-7xl w-full flex flex-col space-y-6
+                text-black dark:text-white transition-colors">
 
-      {/* Section Tab */}
-      <SectionTabs tabs={tabs} />
-
-      {/* Search & Filter */}
-      {/* <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
-        <input
-          type="text"
-          placeholder="Search by title or description"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="md:min-w-80 px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        />
-
-        <select
-          value={filters.budgetOrder}
-          onChange={(e) => updateFilter("budgetOrder", e.target.value)}
-          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option className="bg-secondary">Budget Sort</option>
-          <option value="asc" className="bg-secondary">
-            Low → High
-          </option>
-          <option value="desc" className="bg-secondary">
-            High → Low
-          </option>
-        </select>
-      </div> */}
-
-      {/* Proposal Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {applications.length > 0 ? (
-          applications.map((p, index) => <ProposalCard {...p} key={index} />)
-        ) : (
-          <p>No proposal found</p>
-        )}
-      </div>
-
-      {/* Pagination */}
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        hasNextPage={hasNextPage}
-        hasPrevPage={hasPrevPage}
-        prevPage={prevPage}
-        nextPage={nextPage}
-      />
+  <div className="flex justify-between">
+    <div>
+      <h1 className="text-2xl font-semibold text-black dark:text-white">
+        Contributions
+      </h1>
+      <p className="text-gray-600 dark:text-text-secondary">
+        Discover and manage projects that match your expertise
+      </p>
     </div>
+  </div>
+
+  {/* Section Tab */}
+  <SectionTabs tabs={tabs} />
+
+  {/* Proposal Cards */}
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    {applications.length > 0 ? (
+      applications.map((p, index) => (
+        <ProposalCard {...p} key={index} />
+      ))
+    ) : (
+      <p className="text-gray-600 dark:text-gray-400">No proposal found</p>
+    )}
+  </div>
+
+  {/* Pagination */}
+  <Pagination
+    page={page}
+    totalPages={totalPages}
+    hasNextPage={hasNextPage}
+    hasPrevPage={hasPrevPage}
+    prevPage={prevPage}
+    nextPage={nextPage}
+  />
+</div>
+
   );
 }

@@ -4,10 +4,7 @@ import ProjectCard from "@/components/features/ProjectCard";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import {
-  IAggregatedProject,
-  ProjectFilters,
-} from "../../types/project";
+import { IAggregatedProject, ProjectFilters } from "../../types/project";
 import { SectionTabs } from "@/components/features/SectionTabs";
 import { useDebounce } from "@/hook/useDebounce";
 import Pagination from "@/components/features/Pagination";
@@ -74,13 +71,16 @@ export default function ProjectList() {
   }, [fetchProjects]);
 
   return (
-    <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
+    <div
+      className="max-w-7xl w-full flex flex-col space-y-6
+                text-black dark:text-white transition-colors"
+    >
       <div className="flex justify-between">
         <div>
-          <h1 className="text-primary dark:text-white font-semibold text-2xl">
+          <h1 className="text-2xl font-semibold text-black dark:text-white">
             Contributions
           </h1>
-          <p className="text-primary dark:text-text-secondary">
+          <p className="text-gray-600 dark:text-text-secondary">
             Discover and manage projects that match your expertise
           </p>
         </div>
@@ -91,28 +91,32 @@ export default function ProjectList() {
 
       {/* Search & Filter */}
       <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
-        {/* 🔍 Search */}
+        {/* Search */}
         <input
           type="text"
           placeholder="Search by title or description"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="md:min-w-80 px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="md:min-w-80 px-3 py-2 rounded-lg border
+                 bg-gray-100 dark:bg-secondary
+                 text-black dark:text-white
+                 border-gray-300 dark:border-border-primary
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
 
-        {/* 💰 Budget Sorting */}
+        {/* Budget Sorting */}
         <select
           value={filters.budgetOrder}
           onChange={(e) => updateFilter("budgetOrder", e.target.value)}
-          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="px-3 py-2 rounded-lg border
+                 bg-gray-100 dark:bg-secondary
+                 text-black dark:text-white
+                 border-gray-300 dark:border-border-primary
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
-          <option className="bg-secondary">Budget Sort</option>
-          <option value="asc" className="bg-secondary">
-            Low → High
-          </option>
-          <option value="desc" className="bg-secondary">
-            High → Low
-          </option>
+          <option>Budget Sort</option>
+          <option value="asc">Low → High</option>
+          <option value="desc">High → Low</option>
         </select>
       </div>
 
@@ -128,7 +132,7 @@ export default function ProjectList() {
             />
           ))
         ) : (
-          <p>No project found</p>
+          <p className="text-gray-600 dark:text-gray-400">No project found</p>
         )}
       </div>
 

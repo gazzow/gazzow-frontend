@@ -56,37 +56,38 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
   };
 
   return (
-    <div className="w-full max-w-4xl bg-secondary border border-border-primary rounded-xl p-6 space-y-5">
+    <div className="w-full max-w-4xl bg-white dark:bg-secondary border border-gray-200 dark:border-border-primary rounded-xl p-6 space-y-5 transition-colors">
       {/* Header */}
       <div className="space-y-1 flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-black dark:text-white flex items-center gap-2">
             <CreditCard />
             Stripe Connect
           </h2>
-          <p className="text-sm text-neutral-400">
+          <p className="text-sm text-gray-600 dark:text-neutral-400">
             Connect your Stripe account to receive payments for your
             contributions
           </p>
         </div>
+
         {user && user.stripeAccountId && isOnboarded ? (
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-xs font-medium text-green-300 bg-green-500/10 px-2 py-1 rounded-full">
+            <span className="text-xs font-medium text-green-700 dark:text-green-300 bg-green-500/10 px-2 py-1 rounded-full">
               Connected
             </span>
           </div>
         ) : !isOnboarded && user?.stripeAccountId ? (
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-red-500" />
-            <span className="text-xs font-medium text-red-300 bg-red-500/10 px-2 py-1 rounded-full">
+            <span className="text-xs font-medium text-red-700 dark:text-red-300 bg-red-500/10 px-2 py-1 rounded-full">
               Onboarding Pending
             </span>
           </div>
         ) : (
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-red-500" />
-            <span className="text-xs font-medium text-red-300 bg-red-500/10 px-2 py-1 rounded-full">
+            <span className="text-xs font-medium text-red-700 dark:text-red-300 bg-red-500/10 px-2 py-1 rounded-full">
               Not Connected
             </span>
           </div>
@@ -96,20 +97,18 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
       {/* Content Row */}
       {!user?.stripeAccountId && (
         <div className="flex justify-between items-center gap-4">
-          {/* Status + Label */}
           <div className="space-y-1">
-            <h3 className="text-sm font-medium text-white">
+            <h3 className="text-sm font-medium text-black dark:text-white">
               Connect Stripe Account
             </h3>
-            <span className="text-xs text-neutral-500">
+            <span className="text-xs text-gray-500 dark:text-neutral-500">
               Connect your Stripe account to start receiving payments
             </span>
           </div>
 
-          {/* Button */}
           <div>
             <button
-              className="flex  gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
+              className="flex gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
               onClick={createConnectAccount}
             >
               <CreditCard className="w-5 h-5" />
@@ -121,19 +120,17 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
 
       {!isOnboarded && user?.stripeAccountId && (
         <div className="flex justify-between items-center gap-4">
-          {/* Status + Label */}
           <div className="space-y-1">
-            <h3 className="text-sm font-medium text-white">
+            <h3 className="text-sm font-medium text-black dark:text-white">
               Complete Stripe Onboarding
             </h3>
-            <span className="text-xs text-neutral-500">
+            <span className="text-xs text-gray-500 dark:text-neutral-500">
               Complete your Stripe onboarding to start receiving payments
             </span>
           </div>
 
-          {/* Button */}
           <button
-            className="flex  gap-2 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
+            className="flex gap-2 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
             onClick={completeOnboarding}
           >
             <CreditCard className="w-5 h-5" />
