@@ -108,7 +108,7 @@ export default function ProfileSetup() {
       setValue(
         "techStacks",
         current.filter((t) => t !== tech),
-        { shouldValidate: true }
+        { shouldValidate: true },
       );
     } else {
       setValue("techStacks", [...current, tech], { shouldValidate: true });
@@ -122,7 +122,7 @@ export default function ProfileSetup() {
       setValue(
         "learningGoals",
         current.filter((g) => g !== goal),
-        { shouldValidate: true }
+        { shouldValidate: true },
       );
     } else {
       setValue("learningGoals", [...current, goal], { shouldValidate: true });
@@ -151,13 +151,16 @@ export default function ProfileSetup() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="min-h-screen flex items-center justify-center py-8 px-4 bg-primary"
+      className="min-h-screen flex items-center justify-center py-8 px-4 bg-white dark:bg-primary transition-colors"
     >
-      <div className="w-full max-w-2xl rounded-2xl shadow-2xl border bg-secondary/30 border-gray-700 overflow-hidden bg-gray-850">
+      <div
+        className="w-full max-w-2xl rounded-2xl shadow-2xl border overflow-hidden
+                bg-white dark:bg-secondary/30 border-gray-200 dark:border-gray-700 transition-colors"
+      >
         {/* Header */}
         <div className="relative py-6 flex flex-col items-center">
           <div className="relative mb-4">
-            <div className="w-24 h-24 rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">
+            <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden flex items-center justify-center">
               {profileImage ? (
                 <Image
                   src={profileImage}
@@ -170,10 +173,11 @@ export default function ProfileSetup() {
                   src={imageUrl || "/images/default-profile.jpg"}
                   alt="profile default"
                   fill
-                  className="rounded-full object-fit"
+                  className="rounded-full object-cover"
                 />
               )}
             </div>
+
             <label
               htmlFor="profile-upload"
               className="absolute bottom-0 right-0 bg-black text-white p-2 rounded-full cursor-pointer transition-all shadow-lg"
@@ -192,10 +196,11 @@ export default function ProfileSetup() {
               />
             </label>
           </div>
-          <h2 className="text-2xl font-bold text-white">
+
+          <h2 className="text-2xl font-bold text-black dark:text-white">
             Welcome! Lets Setup Your Profile
           </h2>
-          <p className="text-sm text-gray-300 mt-1">
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
             Complete your profile to get started
           </p>
         </div>
@@ -203,20 +208,24 @@ export default function ProfileSetup() {
         <div className="p-8 space-y-6">
           {/* Full Name */}
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">
+            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Full Name
             </label>
             <input
               value={name || ""}
               disabled
-              className="text-white w-full p-3 bg-gray-800 border border-gray-700 rounded-lg disabled:opacity-60"
+              className="w-full p-3 rounded-lg border
+                   bg-gray-100 dark:bg-gray-800
+                   text-black dark:text-white
+                   border-gray-300 dark:border-gray-700
+                   disabled:opacity-60"
             />
           </div>
 
           {/* Bio */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-sm font-medium text-gray-300">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Short Bio
               </label>
               <span className="text-xs text-gray-500">
@@ -226,23 +235,29 @@ export default function ProfileSetup() {
             <textarea
               {...register("bio")}
               placeholder="Tell us about your coding journey..."
-              className="w-full text-white p-3 bg-gray-800 border border-gray-700 rounded-lg"
               rows={3}
               maxLength={200}
+              className="w-full p-3 rounded-lg border
+                   bg-gray-100 dark:bg-gray-800
+                   text-black dark:text-white
+                   border-gray-300 dark:border-gray-700"
             />
             {errors.bio && (
-              <p className="text-red-400 text-xs mt-1">{errors.bio.message}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.bio.message}</p>
             )}
           </div>
 
           {/* Role */}
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">
+            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Role
             </label>
             <select
               {...register("developerRole")}
-              className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700"
+              className="w-full p-3 rounded-lg border
+                   bg-gray-100 dark:bg-gray-800
+                   text-black dark:text-white
+                   border-gray-300 dark:border-gray-700"
             >
               <option value="">Select your role</option>
               {roles.map((r) => (
@@ -252,7 +267,7 @@ export default function ProfileSetup() {
               ))}
             </select>
             {errors.developerRole && (
-              <p className="text-red-400 text-xs mt-1">
+              <p className="text-red-500 text-xs mt-1">
                 {errors.developerRole.message}
               </p>
             )}
@@ -260,12 +275,15 @@ export default function ProfileSetup() {
 
           {/* Experience */}
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">
+            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Experience Level
             </label>
             <select
               {...register("experience")}
-              className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700"
+              className="w-full p-3 rounded-lg border
+                   bg-gray-100 dark:bg-gray-800
+                   text-black dark:text-white
+                   border-gray-300 dark:border-gray-700"
             >
               <option value="">Select your experience</option>
               {experiences.map((e) => (
@@ -275,7 +293,7 @@ export default function ProfileSetup() {
               ))}
             </select>
             {errors.experience && (
-              <p className="text-red-400 text-xs mt-1">
+              <p className="text-red-500 text-xs mt-1">
                 {errors.experience.message}
               </p>
             )}
@@ -283,7 +301,7 @@ export default function ProfileSetup() {
 
           {/* Tech stack */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Tech Stacks
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -292,10 +310,10 @@ export default function ProfileSetup() {
                   type="button"
                   key={tech}
                   onClick={() => handleTechToggle(tech)}
-                  className={`px-3 py-1.5 rounded-full text-sm ${
+                  className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
                     techStacks.includes(tech)
                       ? "bg-blue-600 text-white"
-                      : "bg-gray-800 text-gray-300"
+                      : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
                   }`}
                 >
                   {tech}
@@ -303,7 +321,7 @@ export default function ProfileSetup() {
               ))}
             </div>
             {errors.techStacks && (
-              <p className="text-red-400 text-xs">
+              <p className="text-red-500 text-xs">
                 {errors.techStacks.message}
               </p>
             )}
@@ -311,7 +329,7 @@ export default function ProfileSetup() {
 
           {/* Goals */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Learning Goals
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -320,10 +338,10 @@ export default function ProfileSetup() {
                   type="button"
                   key={goal}
                   onClick={() => handleGoalToggle(goal)}
-                  className={`px-3 py-1.5 rounded-full text-sm ${
+                  className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
                     goals.includes(goal)
                       ? "bg-purple-600 text-white"
-                      : "bg-gray-800 text-gray-300"
+                      : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
                   }`}
                 >
                   {goal}
@@ -331,7 +349,7 @@ export default function ProfileSetup() {
               ))}
             </div>
             {errors.learningGoals && (
-              <p role="alert" className="text-red-400 text-xs">
+              <p role="alert" className="text-red-500 text-xs">
                 {errors.learningGoals.message}
               </p>
             )}
