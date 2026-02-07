@@ -69,20 +69,32 @@ export default function TransactionPage() {
   };
 
   return (
-    <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
+    <div
+      className="max-w-7xl w-full flex flex-col shadow-lg space-y-6
+                text-black dark:text-white transition-colors"
+    >
       {/* Header */}
-      <div className="flex flex-col p-4 border border-border-primary rounded-lg mb-6">
-        <h1 className="text-2xl font-bold text-white">Transaction History</h1>
-        <p className="text-text-muted text-sm">
+      <div
+        className="flex flex-col p-4 border rounded-lg mb-6
+                  border-gray-300 dark:border-border-primary
+                  bg-white dark:bg-secondary/20 transition-colors"
+      >
+        <h1 className="text-2xl font-bold text-black dark:text-white">
+          Transaction History
+        </h1>
+        <p className="text-gray-600 dark:text-text-muted text-sm">
           Track all platform transactions, payouts, and refunds.
         </p>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto shadow rounded-lg border border-border-primary mb-4">
+      <div
+        className="overflow-x-auto shadow rounded-lg border
+                  border-gray-300 dark:border-border-primary mb-4"
+      >
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="text-left text-text-primary">
+            <tr className="text-left text-gray-700 dark:text-text-primary">
               <th className="p-3">Transaction Id</th>
               <th className="p-3">Type</th>
               <th className="p-3">Amount</th>
@@ -95,7 +107,7 @@ export default function TransactionPage() {
           <tbody>
             {payments.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center py-6 text-gray-400">
+                <td colSpan={7} className="text-center py-6 text-gray-500">
                   No payments found
                 </td>
               </tr>
@@ -104,63 +116,63 @@ export default function TransactionPage() {
             {payments.map((payment) => (
               <tr
                 key={payment.id}
-                className="border border-border-primary hover:bg-secondary/30 transition"
+                className="border-t border-gray-200 dark:border-border-primary
+                       hover:bg-gray-100 dark:hover:bg-secondary/30 transition"
               >
                 {/* Transaction Id */}
-                <td className="p-3 text-white">{payment.id}</td>
+                <td className="p-3">{payment.id}</td>
 
                 {/* Type */}
                 <td className="p-3">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${getTypeBadge(
-                      payment.type
+                      payment.type,
                     )}`}
                   >
                     {payment.type.replace("_", " ")}
                   </span>
                 </td>
 
-                {/* Gross Amount */}
-                {payment.totalAmount && (
-                  <td>
-                    <div className="p-3 text-white flex items-center">
-                      <DollarSign size={14} />
-                      <span>{payment.totalAmount?.toLocaleString() || 0}</span>
-                    </div>
-                  </td>
-                )}
-
-                {/* Net Amount */}
-                {payment.netAmount && (
-                  <td>
-                    <div className="p-3 text-white flex items-center">
-                      <DollarSign size={14} />
-                      <span>{payment.netAmount?.toLocaleString() || 0}</span>
-                    </div>
-                  </td>
-                )}
+                {/* Amount */}
+                <td className="p-3">
+                  <div className="flex items-center gap-1">
+                    <DollarSign size={14} />
+                    <span>
+                      {(
+                        payment.netAmount ||
+                        payment.totalAmount ||
+                        0
+                      ).toLocaleString()}
+                    </span>
+                  </div>
+                </td>
 
                 {/* Status */}
                 <td className="p-3">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${getStatusColor(
-                      payment.status
+                      payment.status,
                     )}`}
                   >
                     {payment.status}
                   </span>
                 </td>
 
-                {/* Created */}
-                <td className="p-3 text-white">
+                {/* Date */}
+                <td className="p-3">
                   {new Date(payment.createdAt).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "short",
                     year: "2-digit",
                   })}
                 </td>
+
                 {/* Reference */}
-                <td className="p-3 text-white">{payment.stripeTransferId || payment.stripePaymentIntentId  || "N/A"}</td>
+                <td className="p-3">
+                  {payment.stripeTransferId ||
+                    payment.stripePaymentIntentId ||
+                    "N/A"}
+                </td>
               </tr>
             ))}
           </tbody>
