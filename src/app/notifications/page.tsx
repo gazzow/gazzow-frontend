@@ -56,7 +56,7 @@ export default function NotificationPage() {
 
   const unreadCount = useMemo(
     () => notifications.filter((n) => !n.isRead).length,
-    [notifications]
+    [notifications],
   );
 
   const filtered = useMemo(() => {
@@ -67,12 +67,14 @@ export default function NotificationPage() {
   }, [tab, notifications]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto">
+    <div className="w-full max-w-7xl mx-auto text-black dark:text-white transition-colors">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Notifications</h1>
-          <p className="text-sm text-gray-400">
+          <h1 className="text-2xl font-bold text-black dark:text-white">
+            Notifications
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             Stay updated with your projects and activities
           </p>
         </div>
@@ -89,19 +91,17 @@ export default function NotificationPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-6 border-b border-neutral-800 mb-6">
-        {["all", "unread"].map((key) => (
+      <div className="flex gap-6 border-b border-gray-200 dark:border-neutral-800 mb-6">
+        {["all"].map((key) => (
           <button
             key={key}
             onClick={() => {}}
-            className={`
-              pb-3 text-sm capitalize
-              ${
-                tab === key
-                  ? "text-purple-400 border-b-2 border-purple-500"
-                  : "text-gray-400 hover:text-white"
-              }
-             `}
+            className={`pb-3 text-sm capitalize transition-colors
+          ${
+            tab === key
+              ? "text-purple-500 border-b-2 border-purple-500"
+              : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+          }`}
           >
             {key}
             {key === "unread" &&
@@ -122,22 +122,22 @@ export default function NotificationPage() {
           filtered.map((n) => (
             <div
               key={n.id}
-              className={` 
-              flex justify-between items-start p-4 rounded-xl border"
-              ${
-                n.isRead
-                  ? "bg-secondary/20 border-neutral-800"
-                  : "bg-secondary/60 border-purple-500/40"
-              }
-              `}
+              className={`flex justify-between items-start p-4 rounded-xl border transition-colors
+            ${
+              n.isRead
+                ? "bg-gray-100 dark:bg-secondary/20 border-gray-200 dark:border-neutral-800"
+                : "bg-purple-50 dark:bg-secondary/60 border-purple-300/40 dark:border-purple-500/40"
+            }`}
             >
               <div className="flex gap-3">
                 <div className="mt-1 h-2 w-2 rounded-full bg-purple-500 opacity-80" />
                 <div>
-                  <h3 className="text-sm font-semibold text-white">
+                  <h3 className="text-sm font-semibold text-black dark:text-white">
                     {n.title}
                   </h3>
-                  <p className="text-sm text-gray-400 mt-1">{n.body}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {n.body}
+                  </p>
                   <p className="text-xs text-gray-500 mt-2">
                     {new Date(n.createdAt).toLocaleString()}
                   </p>
@@ -147,9 +147,12 @@ export default function NotificationPage() {
               {!n.isRead && (
                 <button
                   onClick={() => onMarkAsRead(n.id)}
-                  className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 cursor-hover"
+                  className="p-2 rounded-lg bg-gray-200 dark:bg-secondary hover:bg-gray-300 dark:hover:bg-secondary/80 cursor-pointer"
                 >
-                  <Check size={16} className="text-gray-400" />
+                  <Check
+                    size={16}
+                    className="text-gray-600 dark:text-gray-400"
+                  />
                 </button>
               )}
             </div>

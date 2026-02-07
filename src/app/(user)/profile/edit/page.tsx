@@ -212,13 +212,19 @@ export default function EditProfile() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="min-h-screen flex items-center justify-center py-8 px-4 bg-primary"
+      className="min-h-screen flex items-center justify-center py-8 px-4 bg-white dark:bg-primary transition-colors"
     >
-      <div className="w-full max-w-2xl mt-10 rounded-2xl shadow-2xl border bg-secondary/30 border-gray-700 overflow-hidden">
+      <div
+        className="w-full max-w-2xl mt-10 rounded-2xl shadow-2xl border overflow-hidden
+                  bg-white dark:bg-secondary/30 border-gray-200 dark:border-gray-700 transition-colors"
+      >
         {/* Header */}
         <div className="relative py-6 flex flex-col items-center">
           <div className="relative mb-4">
-            <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center bg-gray-700">
+            <div
+              className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center
+                        bg-gray-200 dark:bg-gray-700"
+            >
               <Image
                 src={profileImage || "/image/default-profile.jpg"}
                 alt="Profile"
@@ -227,6 +233,7 @@ export default function EditProfile() {
                 className="w-full h-full object-cover"
               />
             </div>
+
             <label
               htmlFor="profile-upload"
               className="absolute bottom-0 right-0 bg-black text-white p-2 rounded-full cursor-pointer transition-all shadow-lg hover:bg-gray-800"
@@ -251,23 +258,27 @@ export default function EditProfile() {
         <div className="p-8 space-y-6">
           {/* Full Name */}
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">
+            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Full Name *
             </label>
             <input
               {...register("name")}
-              className="text-white w-full p-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter your full name"
+              className="w-full p-3 rounded-lg border
+                     bg-gray-100 dark:bg-gray-800
+                     text-black dark:text-white
+                     border-gray-300 dark:border-gray-700
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {errors.name && (
-              <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
             )}
           </div>
 
           {/* Bio */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-sm font-medium text-gray-300">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Short Bio
               </label>
               <span className="text-xs text-gray-500">
@@ -276,24 +287,32 @@ export default function EditProfile() {
             </div>
             <textarea
               {...register("bio")}
-              placeholder="Tell us about your coding journey..."
-              className="w-full text-white p-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               rows={3}
               maxLength={200}
+              placeholder="Tell us about your coding journey..."
+              className="w-full p-3 rounded-lg border resize-none
+                     bg-gray-100 dark:bg-gray-800
+                     text-black dark:text-white
+                     border-gray-300 dark:border-gray-700
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {errors.bio && (
-              <p className="text-red-400 text-xs mt-1">{errors.bio.message}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.bio.message}</p>
             )}
           </div>
 
           {/* Role */}
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">
+            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Role *
             </label>
             <select
               {...register("developerRole")}
-              className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-3 rounded-lg border
+                     bg-gray-100 dark:bg-gray-800
+                     text-black dark:text-white
+                     border-gray-300 dark:border-gray-700
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select your role</option>
               {roles.map((role) => (
@@ -303,7 +322,7 @@ export default function EditProfile() {
               ))}
             </select>
             {errors.developerRole && (
-              <p className="text-red-400 text-xs mt-1">
+              <p className="text-red-500 text-xs mt-1">
                 {errors.developerRole.message}
               </p>
             )}
@@ -311,12 +330,16 @@ export default function EditProfile() {
 
           {/* Experience */}
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">
+            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Experience Level *
             </label>
             <select
               {...register("experience")}
-              className="w-full text-white p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-3 rounded-lg border
+                     bg-gray-100 dark:bg-gray-800
+                     text-black dark:text-white
+                     border-gray-300 dark:border-gray-700
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select your experience</option>
               {experiences.map((exp) => (
@@ -326,7 +349,7 @@ export default function EditProfile() {
               ))}
             </select>
             {errors.experience && (
-              <p className="text-red-400 text-xs mt-1">
+              <p className="text-red-500 text-xs mt-1">
                 {errors.experience.message}
               </p>
             )}
@@ -334,7 +357,7 @@ export default function EditProfile() {
 
           {/* Tech stack */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Tech Stacks
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -346,7 +369,7 @@ export default function EditProfile() {
                   className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
                     techStacks.includes(tech)
                       ? "bg-blue-600 text-white"
-                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                      : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
                   }`}
                 >
                   {tech}
@@ -354,7 +377,7 @@ export default function EditProfile() {
               ))}
             </div>
             {errors.techStacks && (
-              <p className="text-red-400 text-xs">
+              <p className="text-red-500 text-xs">
                 {errors.techStacks.message}
               </p>
             )}
@@ -362,7 +385,7 @@ export default function EditProfile() {
 
           {/* Goals */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Learning Goals
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -374,7 +397,7 @@ export default function EditProfile() {
                   className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
                     goals.includes(goal)
                       ? "bg-purple-600 text-white"
-                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                      : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
                   }`}
                 >
                   {goal}
@@ -382,7 +405,7 @@ export default function EditProfile() {
               ))}
             </div>
             {errors.learningGoals && (
-              <p role="alert" className="text-red-400 text-xs">
+              <p role="alert" className="text-red-500 text-xs">
                 {errors.learningGoals.message}
               </p>
             )}
@@ -393,11 +416,12 @@ export default function EditProfile() {
             <Link href={USER_ROUTES.PROFILE}>
               <button
                 type="button"
-                className="py-2 px-4 border border-border-primary rounded-lg cursor-pointer"
+                className="py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer"
               >
                 Cancel
               </button>
             </Link>
+
             <button
               type="submit"
               disabled={isUploading || isSubmitting}

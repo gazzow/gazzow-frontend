@@ -91,19 +91,23 @@ export default function MyProject() {
   }, [fetchProjects]);
 
   return (
-    <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
+    <div
+      className="max-w-7xl w-full flex flex-col space-y-6
+                text-black dark:text-white transition-colors"
+    >
       <div className="flex justify-between">
         <div>
-          <h1 className="text-primary dark:text-white font-semibold text-2xl">
+          <h1 className="text-2xl font-semibold text-black dark:text-white">
             Projects
           </h1>
-          <p className="text-primary dark:text-text-secondary">
+          <p className="text-gray-600 dark:text-text-secondary">
             Discover and manage projects that match your expertise
           </p>
         </div>
+
         <div>
           <Link href={PROJECT_ROUTES.CREATE}>
-            <button className="flex items-center gap-2 text-white bg-btn-primary  py-1 px-2 rounded cursor-pointer">
+            <button className="flex items-center gap-2 text-white bg-btn-primary py-1 px-2 rounded cursor-pointer">
               <Plus size={18} />
               Post Project
             </button>
@@ -116,26 +120,32 @@ export default function MyProject() {
 
       {/* Search & Filter */}
       <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
-        {/* 🔍 Search */}
+        {/* Search */}
         <input
           type="text"
           placeholder="Search by title or description"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="md:min-w-80 px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="md:min-w-80 px-3 py-2 rounded-lg border
+                 bg-gray-100 dark:bg-secondary
+                 text-black dark:text-white
+                 border-gray-300 dark:border-border-primary
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
 
-        {/* 🧠 Status Filter */}
+        {/* Status Filter */}
         <select
           value={filters.status}
           onChange={(e) => updateFilter("status", e.target.value)}
-          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="px-3 py-2 rounded-lg border
+                 bg-gray-100 dark:bg-secondary
+                 text-black dark:text-white
+                 border-gray-300 dark:border-border-primary
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
-          <option className="bg-secondary" value="">
-            Status
-          </option>
+          <option value="">Status</option>
           {Object.values(ProjectStatus).map((status, index) => (
-            <option key={index} value={status} className="bg-secondary">
+            <option key={index} value={status}>
               {status
                 .replaceAll("_", " ")
                 .replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -143,23 +153,23 @@ export default function MyProject() {
           ))}
         </select>
 
-        {/* 💰 Budget Sorting */}
+        {/* Budget Sorting */}
         <select
           value={filters.budgetOrder}
           onChange={(e) => updateFilter("budgetOrder", e.target.value)}
-          className="px-3 py-2 rounded-lg border border-border-primary text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="px-3 py-2 rounded-lg border
+                 bg-gray-100 dark:bg-secondary
+                 text-black dark:text-white
+                 border-gray-300 dark:border-border-primary
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
-          <option className="bg-secondary" value="">
-            Latest
-          </option>
-          <option value="asc" className="bg-secondary">
-            Low → High
-          </option>
-          <option value="desc" className="bg-secondary">
-            High → Low
-          </option>
+          <option value="">Latest</option>
+          <option value="asc">Low → High</option>
+          <option value="desc">High → Low</option>
         </select>
       </div>
+
+      {/* Project Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {projects.length > 0 ? (
           projects.map((p) => (
@@ -179,7 +189,7 @@ export default function MyProject() {
             />
           ))
         ) : (
-          <p>No project found</p>
+          <p className="text-gray-600 dark:text-gray-400">No project found</p>
         )}
       </div>
 

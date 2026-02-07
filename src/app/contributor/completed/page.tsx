@@ -52,13 +52,16 @@ export default function ProjectList() {
   }, [fetchProjects]);
 
   return (
-    <div className="max-w-7xl w-full flex flex-col shadow-lg space-y-6">
+    <div
+      className="max-w-7xl w-full flex flex-col  space-y-6
+                text-black dark:text-white transition-colors"
+    >
       <div className="flex justify-between">
         <div>
-          <h1 className="text-primary dark:text-white font-semibold text-2xl">
+          <h1 className="text-2xl font-semibold text-black dark:text-white">
             Contributions
           </h1>
-          <p className="text-primary dark:text-text-secondary">
+          <p className="text-gray-600 dark:text-text-secondary">
             Discover and manage projects that match your expertise
           </p>
         </div>
@@ -79,7 +82,7 @@ export default function ProjectList() {
             />
           ))
         ) : (
-          <p>No project found</p>
+          <p className="text-gray-600 dark:text-gray-400">No project found</p>
         )}
       </div>
 

@@ -15,16 +15,20 @@ export function SectionTabs({ tabs }: ProjectTabsProp) {
   const pathname = usePathname();
 
   return (
-    <div className="w-full border-b border-gray-700">
+    <div className="w-full border-b border-gray-200 dark:border-gray-700 transition-colors">
       <div className="flex gap-6 relative">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;
+
           return (
             <Link key={tab.name} href={tab.href}>
               <button
-                className={`text-sm font-medium transition-colors cursor-pointer ${
-                  isActive ? "text-white" : "text-gray-400 hover:text-gray-200"
-                }`}
+                className={`text-sm font-medium transition-colors cursor-pointer
+              ${
+                isActive
+                  ? "text-black dark:text-white"
+                  : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-gray-200"
+              }`}
               >
                 {tab.name}
                 {isActive && (
