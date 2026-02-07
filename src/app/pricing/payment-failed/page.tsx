@@ -6,11 +6,14 @@ import { useRouter } from "next/navigation";
 export default function PaymentFailedPage() {
   const router = useRouter();
   return (
-    <div className="w-full text-neutral-100 flex items-center justify-center p-6">
+    <div
+      className="w-full flex items-center justify-center p-6
+                text-black dark:text-neutral-100 transition-colors"
+    >
       <div className="w-full max-w-md text-center space-y-6">
         {/* Failed Icon */}
         <div className="flex justify-center">
-          <div className="bg-red-600/10 text-red-500 rounded-full p-4">
+          <div className="bg-red-600/10 text-red-600 dark:text-red-500 rounded-full p-4">
             <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none">
               <path
                 stroke="currentColor"
@@ -25,7 +28,7 @@ export default function PaymentFailedPage() {
         <h1 className="text-2xl font-bold">Payment Failed</h1>
 
         {/* Description */}
-        <p className="text-neutral-400 text-sm leading-relaxed">
+        <p className="text-gray-600 dark:text-neutral-400 text-sm leading-relaxed">
           Something went wrong or payment was cancelled. You can try again
           anytime.
         </p>
@@ -40,7 +43,10 @@ export default function PaymentFailedPage() {
           </button>
 
           <button
-            className="w-full border border-neutral-600 hover:border-neutral-400 text-neutral-300 py-3 rounded-lg text-sm transition"
+            className="w-full border border-gray-300 dark:border-neutral-600
+                   hover:border-gray-400 dark:hover:border-neutral-400
+                   text-gray-700 dark:text-neutral-300
+                   py-3 rounded-lg text-sm transition"
             onClick={() => router.replace(USER_ROUTES.HOME)}
           >
             Dashboard
