@@ -35,25 +35,6 @@ interface SampleDataType extends DataRow {
   department: string;
 }
 
-const sampleData: SampleDataType[] = [
-  { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Developer', status: 'Active', department: 'Engineering' },
-  { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'Designer', status: 'Active', department: 'Design' },
-  { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Manager', status: 'Inactive', department: 'Sales' },
-  { id: 4, name: 'Alice Brown', email: 'alice@example.com', role: 'Developer', status: 'Active', department: 'Engineering' },
-  { id: 5, name: 'Charlie Wilson', email: 'charlie@example.com', role: 'Designer', status: 'Active', department: 'Design' },
-  { id: 6, name: 'Diana Lee', email: 'diana@example.com', role: 'Analyst', status: 'Inactive', department: 'Marketing' },
-  { id: 7, name: 'Edward Chen', email: 'edward@example.com', role: 'Developer', status: 'Active', department: 'Engineering' },
-  { id: 8, name: 'Fiona Martinez', email: 'fiona@example.com', role: 'Manager', status: 'Active', department: 'Sales' },
-];
-
-const defaultColumns: Column<SampleDataType>[] = [
-  { key: 'name', label: 'Name', sortable: true, filterable: true },
-  { key: 'email', label: 'Email', sortable: true, filterable: true },
-  { key: 'role', label: 'Role', sortable: true, filterable: true },
-  { key: 'status', label: 'Status', sortable: true, filterable: true },
-  { key: 'department', label: 'Department', sortable: true, filterable: true },
-];
-
 type SortableValue = string | number | boolean | Date;
 
 export default function AdvancedTable<T extends DataRow>({ 

@@ -12,11 +12,4 @@ export const notificationService = {
     console.log("Mark As Read response: ", res);
     return res.data;
   },
-  async deleteToken() {
-    const res = await api.post(NOTIFICATION_API.DELETE_TOKEN, {
-      deviceType: "web",
-    });
-    console.log("Mark As Read response: ", res);
-    return res.data;
-  },
 };
