@@ -7,12 +7,10 @@ import {
   Star,
   Folder,
   GitPullRequest,
-  MessageSquare,
   CreditCard,
   Bell,
   Wallet,
   User,
-  Settings,
 } from "lucide-react";
 import { LogoutButton } from "../ui/LogoutButton";
 import { USER_ROUTES } from "@/constants/routes/user-routes";

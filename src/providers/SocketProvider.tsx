@@ -3,7 +3,6 @@
 import { NotificationToast } from "@/components/ui/NotificationToast";
 import { useAppSelector } from "@/store/store";
 import { SOCKET_EVENTS } from "@/types/socket-event";
-import { UserRole } from "@/types/user";
 import {
   ReactNode,
   createContext,
@@ -35,17 +34,22 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const socket = socketRef.current;
 
     socket.on(SOCKET_EVENTS.CONNECT, () => {
-      console.log(
-        `Socket connected 🚀 - [id: ${socket.id}]`,
-      );
+      console.log(`Socket connected 🚀 - [id: ${socket.id}]`);
       setConnected(true);
     });
 
-    if (role === UserRole.USER) socket.emit(SOCKET_EVENTS.USER_ONLINE, { id });
+    if (connected) {
+      socket.emit(SOCKET_EVENTS.USER_ONLINE, { id });
+    }
 
     // Notification
     socket.on(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION, (data) => {
       console.log("team notification data: ", data);
+      toast(<NotificationToast {...data} />);
+    });
+
+    socket.on(SOCKET_EVENTS.PROJECT_MESSAGE, (data) => {
+      console.log("Project Message: ", data);
       toast(<NotificationToast {...data} />);
     });
 
@@ -56,6 +60,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.off(SOCKET_EVENTS.DISCONNECT);
       socket.off(SOCKET_EVENTS.USER_ONLINE);
       socket.off(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION);
+      socket.off(SOCKET_EVENTS.PROJECT_MESSAGE);
     };
   }, [id, role, connected]);
 

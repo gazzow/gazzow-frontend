@@ -16,19 +16,35 @@ export const NotificationToast = ({
   console.log("Notification Payload data: ", projectId);
   return (
     <Link
-      href={PROJECT_ROUTES.DETAILS(projectId)+"/chat"}
-      className="flex gap-3 items-start"
+      href={PROJECT_ROUTES.DETAILS(projectId)}
+      className="
+    group flex gap-3 items-start
+    transition-all duration-200 ease-in-out bg-white hover:shadow-md
+    dark:bg-primary focus:outline-none focus:ring-2 focus:ring-blue-500
+  "
     >
-      {/* {avatar && (
-        <img
-          src={avatar}
-          className="w-10 h-10 rounded-full object-cover"
-        />
-      )} */}
+      <div className="flex flex-col">
+        <p
+          className="
+        font-semibold text-base tracking-wide
+        text-gray-900
+        dark:text-gray-100
+        transition-colors
+      "
+        >
+          {title}
+        </p>
 
-      <div>
-        <p className="font-semibold text-lg text-white">{title}</p>
-        <p className="text-sm text-white mt-1">{message}</p>
+        <p
+          className="
+        text-sm mt-1
+        text-gray-600
+        dark:text-gray-400
+        line-clamp-2
+      "
+        >
+          {message}
+        </p>
       </div>
     </Link>
   );

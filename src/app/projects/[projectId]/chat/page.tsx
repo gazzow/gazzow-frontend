@@ -129,9 +129,8 @@ export default function ProjectChat() {
         setMessages((prev) =>
           prev.map((m) => {
             if (m.id !== data.messageId) return m;
-           
-            if (data.type === "FOR_EVERYONE" && userId !== m.senderId) {
 
+            if (data.type === "FOR_EVERYONE" && userId !== m.senderId) {
               return {
                 ...m,
                 isDeletedForEveryone: true,
@@ -167,7 +166,6 @@ export default function ProjectChat() {
         if (m.id !== messageId) return m;
 
         if (type === "FOR_EVERYONE" && userId && userId === m.senderId) {
-
           return {
             ...m,
             isDeletedForEveryone: true,
@@ -208,7 +206,7 @@ export default function ProjectChat() {
   if (!projectId) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-7xl w-full shadow-lg space-y-6 flex flex-col min-h-0">
+    <div className="max-w-7xl w-full space-y-6 flex flex-col min-h-0">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-2 w-full">
@@ -232,11 +230,32 @@ export default function ProjectChat() {
       <SectionTabs tabs={visibleTabs} />
 
       {/* Team Chat */}
-      <section className="flex flex-col flex-1 min-h-[450px] border border-border-primary rounded-xl bg-secondary/30 overflow-hidden">
+      <section
+        className="
+    flex flex-col flex-1 min-h-[450px]
+    rounded-2xl overflow-hidden shadow-sm
+
+    bg-secondary
+    border border-gray-200
+    dark:border-neutral-800
+  "
+      >
         {/* Header */}
-        <div className="p-4 border-b border-border-primary flex items-center justify-between">
-          <h2 className="font-semibold text-lg">Team Chat</h2>
-          <span className="text-xs text-muted-foreground">
+        <div
+          className="
+      px-5 py-4
+      flex items-center justify-between
+
+      bg-primary
+      border-b border-gray-200
+      dark:border-neutral-800
+    "
+        >
+          <h2 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
+            Team Chat
+          </h2>
+
+          <span className="text-xs text-gray-500 dark:text-gray-400">
             {messages.length} messages
           </span>
         </div>
@@ -244,14 +263,29 @@ export default function ProjectChat() {
         {/* Messages */}
         <div
           ref={containerRef}
-          className="flex-1 overflow-y-auto px-4 py-3 space-y-4 scrollbar-thin scrollbar-thumb-border-primary/50"
+          className="
+      flex-1 overflow-y-auto
+      px-5 py-4 space-y-4
+
+      bg-secondary
+      text-gray-800 dark:text-gray-200
+
+      scrollbar-thin
+      scrollbar-thumb-gray-300 dark:scrollbar-thumb-neutral-700
+    "
         >
           {/* Load more */}
           {messages.length > 15 && (
             <div className="flex justify-center">
               <button
                 onClick={loadMoreMessages}
-                className="text-xs text-muted-foreground hover:text-white border border-border-primary px-3 py-1 rounded-full"
+                className="
+            cursor-pointer text-xs
+            px-3 py-1 rounded-full border transition
+
+            border-gray-300 text-gray-600 hover:bg-gray-100
+            dark:border-neutral-700 dark:text-gray-400 dark:hover:bg-neutral-800
+          "
               >
                 Load older messages
               </button>
@@ -266,39 +300,64 @@ export default function ProjectChat() {
               prev.senderId !== msg.senderId ||
               prev.deletedFor.includes(userId);
 
-            // Render nothing when message is deleted for user
             if (msg.deletedFor.includes(userId)) return null;
 
             return (
               <MessageCard
+                key={i}
                 isMine={isMine}
                 showAvatar={showAvatar}
                 isMenuOpen={activeMenuMessageId === msg.id}
                 onOpenMenu={() => setActiveMenuMessageId(msg.id)}
                 onCloseMenu={() => setActiveMenuMessageId(null)}
                 message={msg}
-                key={i}
                 onDelete={handleDelete}
-              ></MessageCard>
+              />
             );
           })}
 
           <div ref={bottomRef} />
         </div>
 
-        {/* Input */}
-        <div className="p-3 border-t border-border-primary flex gap-2 bg-secondary/40">
+        {/* Input Dock */}
+        <div
+          className="
+      px-4 py-3
+      flex gap-3
+
+      bg-primary
+      border-t border-gray-200
+      dark:border-neutral-800
+    "
+        >
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Type a message…"
-            className="flex-1 bg-background border border-border-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+            className="
+        flex-1 rounded-lg px-4 py-2 border transition
+
+        bg-secondary
+        border-gray-300
+        text-gray-800 placeholder-gray-400
+
+        focus:outline-none focus:ring-2 focus:ring-blue-500
+
+        dark:border-neutral-700
+        dark:text-gray-200
+        dark:placeholder-gray-500
+      "
           />
 
           <button
             onClick={sendMessage}
             disabled={!text.trim()}
-            className="bg-btn-primary text-white px-5 rounded-lg hover:bg-btn-primary-hover disabled:opacity-50"
+            className="
+        cursor-pointer
+        px-5 rounded-lg font-medium text-white transition
+        bg-blue-600 hover:bg-blue-700
+        disabled:opacity-50 disabled:cursor-not-allowed
+      "
           >
             Send
           </button>
