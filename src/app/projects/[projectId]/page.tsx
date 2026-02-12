@@ -108,6 +108,20 @@ export default function ProjectDetails() {
     setConfirmModal(true);
   };
 
+  const handleDeleteProject = async (id: string) => {
+    try {
+      const res = await projectService.deleteProject(id);
+      if (res.success) {
+        toast.success("Project deleted successfully");
+        router.push(PROJECT_ROUTES.MY_PROJECTS);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message || "Failed to delete project");
+      }
+    }
+  };
+
   const handleApplyClick = async () => {
     try {
       const res = await userService.getUser();
@@ -239,7 +253,6 @@ export default function ProjectDetails() {
         {/* RIGHT SECTION */}
         <div className="space-y-6 lg:sticky lg:top-6 h-fit">
           <div className="bg-white border border-gray-200 dark:bg-secondary/30 dark:border-border-primary p-6 rounded-2xl shadow-sm space-y-5">
-
             {/* Budget */}
             <InfoRow
               icon={<DollarSign className="w-4 h-4 text-green-500" />}
@@ -329,7 +342,14 @@ export default function ProjectDetails() {
                 Cancel
               </button>
 
-              <button className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer">
+              <button
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                onClick={() => {
+                  console.log("Deleting project with id: ", projectId);
+                  handleDeleteProject(projectId);
+                  setConfirmModal(false);
+                }}
+              >
                 Delete
               </button>
             </div>
