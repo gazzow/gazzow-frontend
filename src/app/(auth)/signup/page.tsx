@@ -89,7 +89,7 @@ export default function SignupPage() {
     <AuthForm
       title="Create Account"
       subTitle="Join the community of passionate developers"
-      submitButtonLabel="signup"
+      submitButtonLabel="Signup"
       fields={fields}
       onSubmit={handleRegisterSubmit}
       divider={
@@ -100,19 +100,30 @@ export default function SignupPage() {
         </div>
       }
       OAuthButtons={
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-4">
           <GoogleAuthButton />
           <GithubAuthButton />
         </div>
       }
       footer={
-        <p className="text-sm text-center text-text-secondary mt-6">
+        <p
+          className="
+  mt-6 text-center
+  text-sm sm:text-base
+  text-gray-600 dark:text-gray-400
+"
+        >
           Already have an account?
           <Link
             href="/login"
-            className="text-text-primary hover:underline ml-2"
+            className="
+      ml-2 font-medium
+      text-indigo-600 dark:text-indigo-400
+      hover:text-indigo-700 dark:hover:text-indigo-300
+      transition-colors duration-200
+    "
           >
-            Login
+            Log in
           </Link>
         </p>
       }
