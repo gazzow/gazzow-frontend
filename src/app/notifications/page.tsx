@@ -95,10 +95,6 @@ export default function NotificationPage() {
           }`}
           >
             {key}
-            {key === "unread" &&
-              unreadCount &&
-              unreadCount > 0 &&
-              ` (${unreadCount})`}
           </button>
         ))}
       </div>
