@@ -3,8 +3,8 @@
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { useAppSelector } from "@/store/store";
 import Link from "next/link";
-import { LogoutButton } from "../ui/LogoutButton";
 import { ThemeToggle } from "../ui/ThemeToggle";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 export default function AuthNavbar() {
   const userId = useAppSelector((state) => state.user.id);
@@ -48,16 +48,19 @@ export default function AuthNavbar() {
           <ThemeToggle />
 
           {userId === null ? (
-            <>
-              <Link
-                href={AUTH_ROUTES.LOGIN}
-                className="px-4 py-2 bg-btn-primary hover:bg-btn-primary-hover text-text-primary rounded-lg"
-              >
-                Sign In
-              </Link>
-            </>
+            <Link
+              href={AUTH_ROUTES.LOGIN}
+              className="px-4 py-2 bg-btn-primary hover:bg-btn-primary-hover text-text-primary rounded-lg"
+            >
+              Sign In
+            </Link>
           ) : (
-            <LogoutButton></LogoutButton>
+            <Link
+              href={USER_ROUTES.HOME}
+              className="px-4 py-2 bg-btn-primary hover:bg-btn-primary-hover text-text-primary rounded-lg"
+            >
+              Dashboard
+            </Link>
           )}
         </div>
       </div>
