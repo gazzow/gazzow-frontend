@@ -60,7 +60,7 @@ export default function MyProject() {
     prevPage,
     nextPage,
   } = usePagination({
-    limit: 6,
+    limit: 12,
   });
 
   const updateFilter = (key: keyof ProjectFilters, value: unknown) => {
@@ -127,10 +127,10 @@ export default function MyProject() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="md:min-w-80 px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
+                 bg-gray-100 dark:bg-secondary/30
                  text-black dark:text-white
                  border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500 "
         />
 
         {/* Status Filter */}
@@ -138,14 +138,14 @@ export default function MyProject() {
           value={filters.status}
           onChange={(e) => updateFilter("status", e.target.value)}
           className="px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
+                 bg-gray-100 dark:bg-secondary/30
                  text-black dark:text-white
                  border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500  cursor-pointer"
         >
           <option value="">Status</option>
           {Object.values(ProjectStatus).map((status, index) => (
-            <option key={index} value={status}>
+            <option className="dark:bg-secondary" key={index} value={status}>
               {status
                 .replaceAll("_", " ")
                 .replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -158,14 +158,20 @@ export default function MyProject() {
           value={filters.budgetOrder}
           onChange={(e) => updateFilter("budgetOrder", e.target.value)}
           className="px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
+                 bg-gray-100 dark:bg-secondary/30
                  text-black dark:text-white
                  border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500  cursor-pointer"
         >
-          <option value="">Latest</option>
-          <option value="asc">Low → High</option>
-          <option value="desc">High → Low</option>
+          <option className="dark:bg-secondary" value="">
+            Latest
+          </option>
+          <option className="dark:bg-secondary" value="asc">
+            Low → High
+          </option>
+          <option className="dark:bg-secondary" value="desc">
+            High → Low
+          </option>
         </select>
       </div>
 

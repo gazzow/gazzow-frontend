@@ -138,7 +138,7 @@ export default function ProjectList() {
                  bg-gray-100 dark:bg-secondary/30
                  text-black dark:text-white
                  border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
 
         {/* Experience Filter */}
