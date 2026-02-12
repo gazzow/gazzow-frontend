@@ -202,7 +202,12 @@ export default function Dashboard() {
             ) : (
               <EmptyChart
                 message="No tasks to visualize yet"
-                icon={<ChartPie size={38} />}
+                icon={
+                  <ChartPie
+                    size={38}
+                    color={`${theme === "dark" ? "white" : "black"}`}
+                  />
+                }
               />
             )}
           </div>

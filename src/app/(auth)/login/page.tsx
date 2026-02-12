@@ -74,40 +74,84 @@ export default function LoginPage() {
       onSubmit={handleLoginSubmit}
       submitButtonLabel="Login"
       divider={
-        <div className="mb-4">
-          <div className="my-4 flex justify-between">
-            <div className="flex gap-2">
-              <input type="checkbox" />
-              <p className="text-text-secondary text-md">Remember me</p>
-            </div>
+        <div className="mb-6">
+          {/* Remember + Forgot */}
+          <div className="flex items-center justify-between mb-5">
+            {/* Remember Me */}
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <input
+                type="checkbox"
+                className="
+          w-4 h-4
+          rounded
+          border-gray-300 dark:border-gray-600
+          text-indigo-600
+          focus:ring-indigo-500
+          bg-white dark:bg-gray-800
+        "
+              />
+              <span
+                className="
+        text-sm sm:text-base
+        text-gray-600 dark:text-gray-400
+        group-hover:text-gray-800 dark:group-hover:text-gray-200
+        transition-colors
+      "
+              >
+                Remember me
+              </span>
+            </label>
+
+            {/* Forgot Password */}
             <Link
-              href={"/forgot-password"}
-              className="text-text-secondary text-md"
+              href="/forgot-password"
+              className="
+        text-sm sm:text-base
+        text-indigo-600 dark:text-indigo-400
+        hover:text-indigo-700 dark:hover:text-indigo-300
+        hover:underline
+        transition-colors
+      "
             >
-              Forgot password
+              Forgot password?
             </Link>
           </div>
-          <div className="flex items-center">
-            <div className="flex-grow h-px bg-gray-600" />
-            <span className="px-3 text-gray-400 text-sm">OR</span>
-            <div className="flex-grow h-px bg-gray-600" />
+
+          {/* Divider */}
+          <div className="flex items-center gap-3">
+            <div className="flex-grow h-px bg-gray-300 dark:bg-gray-700" />
+            <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+              OR
+            </span>
+            <div className="flex-grow h-px bg-gray-300 dark:bg-gray-700" />
           </div>
         </div>
       }
       OAuthButtons={
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-4">
           <GoogleAuthButton />
           <GithubAuthButton />
         </div>
       }
       footer={
-        <p className="text-sm text-center text-text-secondary mt-6">
-          Don&apos;t have an account&#x3F;
+        <p
+          className="
+  mt-6 text-center 
+  text-sm sm:text-base
+  text-gray-600 dark:text-gray-400
+"
+        >
+          Don&apos;t have an account?
           <Link
             href="/signup"
-            className="text-text-primary hover:underline ml-2"
+            className="
+      ml-2 font-medium
+      text-indigo-600 dark:text-indigo-400
+      hover:text-indigo-700 dark:hover:text-indigo-300
+      transition-colors duration-200
+    "
           >
-            Signup
+            Sign up
           </Link>
         </p>
       }

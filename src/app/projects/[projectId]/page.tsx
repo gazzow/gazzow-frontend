@@ -2,6 +2,7 @@
 
 import ApplyModal from "@/components/features/ApplyModal";
 import EditProjectModal from "@/components/features/EditProjectModal";
+import { InfoRow } from "@/components/features/InfoRow";
 import { SectionTabs } from "@/components/features/SectionTabs";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
@@ -89,7 +90,7 @@ export default function ProjectDetails() {
   const handleViewFile = async (fileKey: string) => {
     try {
       const res = await projectService.generateSignedUrl(
-        encodeURIComponent(fileKey)
+        encodeURIComponent(fileKey),
       );
 
       if (res.success) {
@@ -107,6 +108,20 @@ export default function ProjectDetails() {
     setConfirmModal(true);
   };
 
+  const handleDeleteProject = async (id: string) => {
+    try {
+      const res = await projectService.deleteProject(id);
+      if (res.success) {
+        toast.success("Project deleted successfully");
+        router.push(PROJECT_ROUTES.MY_PROJECTS);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message || "Failed to delete project");
+      }
+    }
+  };
+
   const handleApplyClick = async () => {
     try {
       const res = await userService.getUser();
@@ -115,7 +130,7 @@ export default function ProjectDetails() {
       } else {
         toast.info(
           "Please complete your Stripe setup in Settings before applying for jobs. You need to be able to receive payments to work on paid projects.",
-          {}
+          {},
         );
       }
     } catch (e) {
@@ -136,22 +151,30 @@ export default function ProjectDetails() {
 
   if (!projectId) return <LoadingSpinner />;
 
+  const formattedStatus =
+    project?.status &&
+    project.status.slice(0, 1).toUpperCase() + project.status.slice(1);
+
   return (
-    <div className="max-w-7xl w-full shadow-lg space-y-6">
+    <div className="max-w-7xl w-full space-y-8 text-gray-900 dark:text-gray-100">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center gap-2 w-full">
-          <button onClick={onBackClick} className="cursor-pointer">
+        <div className="flex items-center gap-3 w-full">
+          <button
+            onClick={onBackClick}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 transition"
+          >
             <ArrowLeft />
           </button>
-          <div className="flex flex-col gap-2">
-            <h1 className="text-2xl md:text-3xl font-semibold ">
+
+          <div className="flex flex-col">
+            <h1 className="text-2xl md:text-3xl font-semibold tracking-wide">
               {project?.title}
             </h1>
+
             {project?.createdAt && (
-              <p className="text-sm text-gray-400">
-                Posted{" "}
-                {new Date(project?.createdAt).toLocaleDateString("en-GB")}
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Posted {new Date(project.createdAt).toLocaleDateString("en-GB")}
               </p>
             )}
           </div>
@@ -162,57 +185,64 @@ export default function ProjectDetails() {
       <SectionTabs tabs={visibleTabs} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Section */}
+        {/* LEFT SECTION */}
         <div className="col-span-2 space-y-8">
-          {/* Project Description */}
-          <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg">
+          {/* Description */}
+          <div className="bg-white border border-gray-200 dark:bg-secondary/30 dark:border-border-primary p-6 rounded-2xl shadow-sm">
             <h2 className="text-lg font-semibold mb-3">Project Description</h2>
+
             {project?.description && (
-              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+              <p className="text-sm leading-relaxed whitespace-pre-line text-gray-600 dark:text-gray-400">
                 {project.description}
               </p>
             )}
           </div>
 
-          {/* Required Skills */}
-          <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg">
+          {/* Skills */}
+          <div className="bg-white border border-gray-200 dark:bg-secondary/30 dark:border-border-primary p-6 rounded-2xl shadow-sm">
             <h2 className="text-lg font-semibold mb-3">Required Skills</h2>
+
             <div className="flex flex-wrap gap-2">
-              {project?.requiredSkills &&
-                project.requiredSkills.map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1 text-sm bg-gray-800 rounded-full border border-gray-700 hover:border-gray-500 cursor-pointer"
-                  >
-                    {skill}
-                  </span>
-                ))}
+              {project?.requiredSkills?.map((skill, idx) => (
+                <span
+                  key={idx}
+                  className="px-3 py-1 text-sm rounded-full border transition
+                    bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200
+                    dark:bg-secondary/30 dark:border-border-primary dark:text-gray-300 dark:hover:bg-neutral-700 cursor-pointer"
+                >
+                  {skill}
+                </span>
+              ))}
             </div>
           </div>
 
-          {/* Uploaded Documents */}
-          {project?.documents && project.documents.length > 0 && (
-            <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg">
-              <div className="flex items-center gap-1">
+          {/* Attachments */}
+          {project?.documents && project?.documents?.length > 0 && (
+            <div className="bg-white border border-gray-200 dark:bg-secondary/30 dark:border-border-primary p-6 rounded-2xl shadow-sm">
+              <div className="flex items-center gap-2">
                 <Files size={18} />
                 <h2 className="text-lg font-semibold">Attachments</h2>
               </div>
-              <ul className="mt-3 space-y-2">
+
+              <ul className="mt-4 space-y-2">
                 {project.documents.map((file, i) => (
                   <li
                     key={i}
-                    className="flex items-center justify-between bg-secondary px-3 py-4 rounded-lg text-sm text-gray-300"
+                    className="flex items-center justify-between px-4 py-3 rounded-lg text-sm
+                      bg-gray-50 hover:bg-gray-100
+                      dark:bg-neutral-800 dark:hover:bg-neutral-700 transition"
                   >
-                    <span>{file.name}</span>
-                    <div className="flex gap-4">
-                      <button
-                        onClick={() => handleViewFile(file.key)}
-                        className="flex gap-2 hover:text-red-300 text-xs cursor-pointer"
-                      >
-                        <Eye size={18} />
-                        <span>view</span>
-                      </button>
-                    </div>
+                    <span className="text-gray-700 dark:text-gray-300">
+                      {file.name}
+                    </span>
+
+                    <button
+                      onClick={() => handleViewFile(file.key)}
+                      className="flex items-center gap-2 text-xs hover:text-blue-500"
+                    >
+                      <Eye size={16} />
+                      View
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -220,123 +250,130 @@ export default function ProjectDetails() {
           )}
         </div>
 
-        {/* Right Section */}
-        <div className="space-y-6">
-          {/* Project Info */}
-          <div className="bg-secondary/30 border border-border-primary p-6 rounded-2xl shadow-lg space-y-4">
+        {/* RIGHT SECTION */}
+        <div className="space-y-6 lg:sticky lg:top-6 h-fit">
+          <div className="bg-white border border-gray-200 dark:bg-secondary/30 dark:border-border-primary p-6 rounded-2xl shadow-sm space-y-5">
+            {/* Budget */}
+            <InfoRow
+              icon={<DollarSign className="w-4 h-4 text-green-500" />}
+              label="Budget"
+              value={
+                project?.budgetMin && project?.budgetMax
+                  ? `${project.budgetMin} - ${project.budgetMax}`
+                  : "-"
+              }
+            />
+
+            {/* Duration */}
+            <InfoRow
+              icon={<Calendar className="w-4 h-4 text-blue-500" />}
+              label="Duration"
+              value={
+                project?.durationMin &&
+                project?.durationMax &&
+                project?.durationUnit
+                  ? `${project.durationMin} - ${project.durationMax} ${project.durationUnit}`
+                  : "-"
+              }
+            />
+
+            {/* Applicants */}
+            <InfoRow
+              icon={<Users className="w-4 h-4 text-purple-500" />}
+              label="Applicants"
+              value="12 Applied"
+            />
+
+            {/* Status */}
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold">Budget</h2>
-              <div className="flex items-center text-gray-300">
-                <DollarSign className="w-4 h-4 mr-1 text-green-400" />
-                {project?.budgetMax && project?.budgetMin && (
-                  <span>
-                    {project.budgetMin} - {project.budgetMax}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Duration</h2>
-              <div className="flex items-center text-gray-300">
-                <Calendar className="w-4 h-4 mr-1 text-blue-400" />
-                {project?.durationMin &&
-                  project?.durationMax &&
-                  project?.durationUnit && (
-                    <span>
-                      {project.durationMin} - {project.durationMax}{" "}
-                      {project.durationUnit}
-                    </span>
-                  )}
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Applicants</h2>
-              <div className="flex items-center text-gray-300">
-                <Users className="w-4 h-4 mr-1 text-purple-400" />
-                <span>12 Applied</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Status</h2>
-              {project?.status && (
-                <span className="text-green-400 font-medium">
-                  {project.status.slice(0, 1).toUpperCase() +
-                    project.status.slice(1)}
-                </span>
-              )}
+              <h2 className="font-medium">Status</h2>
+              <span className="px-2 py-1 text-xs rounded-md font-medium bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400">
+                {formattedStatus}
+              </span>
             </div>
 
-            <div className="flex space-x-3">
+            {/* Actions */}
+            <div className="flex gap-3 pt-3">
               {currentRole === Role.CREATOR ? (
                 <>
                   <button
-                    className="flex-1 flex items-center justify-center gap-2 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer"
                     onClick={handleEditProjectClick}
+                    className="flex-1 flex items-center justify-center gap-2 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium transition cursor-pointer"
                   >
                     <Edit size={16} />
-                    <span>Edit Project</span>
+                    Edit
                   </button>
+
                   <button
-                    className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium cursor-pointer"
                     onClick={handleConfirmModal}
+                    className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition cursor-pointerD"
                   >
                     <Trash size={16} />
-                    <span>Delete</span>
+                    Delete
                   </button>
                 </>
               ) : currentRole === Role.CONTRIBUTOR ? null : (
                 <button
-                  className="flex-1 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer"
                   onClick={handleApplyClick}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition"
                 >
                   Apply to contribute
                 </button>
               )}
             </div>
           </div>
-
-          {/* Confirm Delete Modal */}
-          {confirmModal && (
-            <div className="fixed inset-0 bg-primary/60  flex justify-center items-center">
-              <div className="bg-white dark:bg-secondary p-4 rounded shadow flex flex-col">
-                <p className="font-bold text-black dark:text-white">
-                  Are you sure you want to delete this project?
-                </p>
-                <div className="flex justify-end gap-4 mt-4">
-                  <button
-                    className="bg-red-400 text-white py-1 px-4 hover:  rounded cursor-pointer"
-                    onClick={() => setConfirmModal(false)}
-                  >
-                    No
-                  </button>
-                  <button className="bg-green-400 py-1 px-4 rounded text-gray-950 cursor-pointer">
-                    Yes
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Apply Modal */}
-          {applyModal && (
-            <ApplyModal
-              projectId={projectId}
-              key={projectId}
-              closeModal={() => setApplyModal(false)}
-            ></ApplyModal>
-          )}
-
-          {/* Edit Project modal */}
-          {editProjectModal && (
-            <EditProjectModal
-              isOpen={editProjectModal}
-              onClose={() => setEditProjectModal(false)}
-              onUpdated={onProjectEditUpdated}
-              projectId={projectId}
-            />
-          )}
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      {confirmModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="w-full max-w-md bg-white dark:bg-primary border border-gray-200 dark:border-border-primary p-6 rounded-2xl shadow-xl">
+            <p className="font-semibold text-lg">
+              Are you sure you want to delete this project?
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setConfirmModal(false)}
+                type="button"
+                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-secondary dark:hover:bg-secondary/80 cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                onClick={() => {
+                  console.log("Deleting project with id: ", projectId);
+                  handleDeleteProject(projectId);
+                  setConfirmModal(false);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Other Modals */}
+      {applyModal && (
+        <ApplyModal
+          projectId={projectId}
+          key={projectId}
+          closeModal={() => setApplyModal(false)}
+        />
+      )}
+
+      {editProjectModal && (
+        <EditProjectModal
+          isOpen={editProjectModal}
+          onClose={() => setEditProjectModal(false)}
+          onUpdated={onProjectEditUpdated}
+          projectId={projectId}
+        />
+      )}
     </div>
   );
 }

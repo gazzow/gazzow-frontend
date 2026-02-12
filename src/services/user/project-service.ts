@@ -52,6 +52,14 @@ export const projectService = {
     console.log("list project response: ", res);
     return res.data;
   },
+
+  async deleteProject(projectId: string) {
+    console.log("deleting project");
+    const res = await api.delete(PROJECT_API.DELETE_PROJECT(projectId));
+    console.log("delete project response: ", res);
+    return res.data;
+  },
+
   async myProjects(params: ListMyProjectsParams) {
     const res = await api.get(PROJECT_API.MY_PROJECT, { params });
     console.log("my project response: ", res);
@@ -75,7 +83,7 @@ export const projectService = {
   async updateApplicationStatus(data: UpdateApplicationStatusPayload) {
     const res = await api.patch(
       PROJECT_API.UPDATE_APPLICATION_STATUS(data.projectId, data.applicationId),
-      { status: data.status }
+      { status: data.status },
     );
     console.log("Update application Status response: ", res);
     return res.data;
@@ -88,11 +96,11 @@ export const projectService = {
   async updateContributorStatus(
     projectId: string,
     contributorId: string,
-    status: ContributorStatus
+    status: ContributorStatus,
   ) {
     const res = await api.patch(
       PROJECT_API.UPDATE_CONTRIBUTOR_STATUS(projectId),
-      { contributorId, status }
+      { contributorId, status },
     );
     console.log("update contributor status response: ", res);
     return res.data;

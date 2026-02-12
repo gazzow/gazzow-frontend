@@ -56,9 +56,9 @@ export default function AuthForm({
   const [showPassword, setShowPassword] = useState<Record<string, boolean>>({});
 
   const handleShowPassword = (fieldName: string) => {
-    setShowPassword(prev => ({
+    setShowPassword((prev) => ({
       ...prev,
-      [fieldName]: !prev[fieldName]
+      [fieldName]: !prev[fieldName],
     }));
   };
 
@@ -66,7 +66,7 @@ export default function AuthForm({
   useEffect(() => {
     if (Object.keys(resErrors).length > 0 && clearErrors) {
       const timer = setTimeout(() => {
-        Object.keys(resErrors).forEach(field => {
+        Object.keys(resErrors).forEach((field) => {
           clearErrors(field);
         });
       }, 100);
@@ -75,23 +75,61 @@ export default function AuthForm({
   }, [resErrors, clearErrors]);
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-white dark:bg-primary text-white px-4">
-      <div className="w-full max-w-md bg-secondary/30 border-2 border-border-primary p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold text-center">{title}</h1>
+    <section
+      className="min-h-screen flex items-center justify-center 
+  bg-gray-50 dark:bg-gray-950 
+  px-4 sm:px-6 lg:px-8 transition-colors duration-300"
+    >
+      <div
+        className="
+    w-full 
+    max-w-md 
+    sm:max-w-md 
+    md:max-w-lg 
+    bg-white dark:bg-gray-900 
+    border border-gray-200 dark:border-gray-800 
+    p-6 sm:p-8 
+    rounded-2xl 
+    shadow-xl 
+    transition-all duration-300
+  "
+      >
+        {/* Title */}
+        <h1
+          className="text-2xl sm:text-3xl font-bold text-center 
+      text-gray-900 dark:text-white"
+        >
+          {title}
+        </h1>
+
         {subTitle && (
-          <h3 className="text-md text-center text-text-secondary mb-6">
+          <h3
+            className="text-sm sm:text-base text-center 
+        text-gray-500 dark:text-gray-400 
+        mb-6 mt-2"
+          >
             {subTitle}
           </h3>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-5"
+          noValidate
+        >
           {fields.map((field) => (
             <div key={field.name}>
-              <label htmlFor={field.name} className="block text-sm mb-1">
+              {/* Label */}
+              <label
+                htmlFor={field.name}
+                className="block text-sm font-medium 
+              text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {field.label}
-                {field.required && <span className="text-red-400 ml-1">*</span>}
+                {field.required && <span className="text-red-500 ml-1">*</span>}
               </label>
-              
+
+              {/* Input Wrapper */}
               {field.type === "password" ? (
                 <div className="relative">
                   <input
@@ -99,21 +137,39 @@ export default function AuthForm({
                     {...register(field.name)}
                     type={showPassword[field.name] ? "text" : "password"}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-2 pr-12 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary transition-colors"
-                    aria-invalid={!!(errors[field.name] || resErrors[field.name])}
+                    className="
+                  w-full px-4 py-2.5 pr-12 
+                  rounded-lg 
+                  bg-gray-100 dark:bg-gray-800
+                  text-gray-900 dark:text-white
+                  border border-gray-300 dark:border-gray-700
+                  focus:outline-none 
+                  focus:ring-2 focus:ring-indigo-500
+                  focus:border-indigo-500
+                  transition-all duration-200
+                "
+                    aria-invalid={
+                      !!(errors[field.name] || resErrors[field.name])
+                    }
                     aria-describedby={
                       errors[field.name] || resErrors[field.name]
                         ? `${field.name}-error`
                         : undefined
                     }
                   />
+
                   <button
                     type="button"
                     onClick={() => handleShowPassword(field.name)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer hover:opacity-70 transition-opacity"
-                    aria-label={showPassword[field.name] ? "Hide password" : "Show password"}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 
+                  text-gray-500 dark:text-gray-400 
+                  hover:text-indigo-500 transition"
                   >
-                    {showPassword[field.name] ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword[field.name] ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
                   </button>
                 </div>
               ) : (
@@ -122,7 +178,17 @@ export default function AuthForm({
                   type={field.type || "text"}
                   placeholder={field.placeholder}
                   {...register(field.name)}
-                  className="w-full px-4 py-2 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary transition-colors"
+                  className="
+                w-full px-4 py-2.5
+                rounded-lg 
+                bg-gray-100 dark:bg-gray-800
+                text-gray-900 dark:text-white
+                border border-gray-300 dark:border-gray-700
+                focus:outline-none 
+                focus:ring-2 focus:ring-indigo-500
+                focus:border-indigo-500
+                transition-all duration-200
+              "
                   aria-invalid={!!(errors[field.name] || resErrors[field.name])}
                   aria-describedby={
                     errors[field.name] || resErrors[field.name]
@@ -132,23 +198,34 @@ export default function AuthForm({
                 />
               )}
 
-              {/* Show client-side validation errors first, then server errors */}
+              {/* Errors */}
               {(errors[field.name] || resErrors[field.name]) && (
-                <p 
+                <p
                   id={`${field.name}-error`}
-                  className="text-red-400 text-sm mt-1"
+                  className="text-red-500 text-sm mt-1"
                   role="alert"
                 >
-                  {(errors[field.name]?.message as string) || resErrors[field.name]}
+                  {(errors[field.name]?.message as string) ||
+                    resErrors[field.name]}
                 </p>
               )}
             </div>
           ))}
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-6 py-2 bg-btn-primary text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-opacity cursor-pointer"
+            className="
+          w-full mt-4 py-2.5
+          rounded-lg
+          bg-btn-primary
+          hover:bg-btn-primary-hover
+          text-white font-medium
+          transition-all duration-200
+          cursor-pointer
+          disabled:opacity-50 disabled:cursor-not-allowed
+        "
           >
             {isSubmitting ? "Loading..." : submitButtonLabel}
           </button>
@@ -156,7 +233,7 @@ export default function AuthForm({
 
         {divider && <div className="mt-6">{divider}</div>}
         {OAuthButtons && <div className="mt-4">{OAuthButtons}</div>}
-        {footer && <div className="mt-6">{footer}</div>}
+        {footer && <div className="mt-6 text-center">{footer}</div>}
       </div>
     </section>
   );

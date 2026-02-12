@@ -1,6 +1,25 @@
 "use client";
 
+import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
+import { USER_ROUTES } from "@/constants/routes/user-routes";
+import { useRouter, useSearchParams } from "next/navigation";
+
 export default function FailedPayment() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const taskId = searchParams.get("taskId");
+
+  const onDashboardClick = () => {
+    router.push(USER_ROUTES.HOME);
+  };
+
+  const onGoToProjectsClick = () => {
+    if (taskId) {
+      router.push(PROJECT_ROUTES.DETAILS(taskId));
+    } else {
+      router.push(PROJECT_ROUTES.BROWSE);
+    }
+  };
   return (
     <div className="text-neutral-100 flex items-center justify-center p-6">
       <div className="w-full max-w-md text-center space-y-6">
@@ -28,11 +47,18 @@ export default function FailedPayment() {
 
         {/* Buttons */}
         <div className="space-y-3 mt-6">
-          <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-sm font-medium transition">
-            Retry Payment
+          <button
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-sm font-medium transition cursor-pointer
+          "
+            onClick={onGoToProjectsClick}
+          >
+            Try Again
           </button>
 
-          <button className="w-full border border-neutral-600 hover:border-neutral-400 text-neutral-300 py-3 rounded-lg text-sm transition">
+          <button
+            className="w-full border border-neutral-600 hover:border-neutral-400 text-neutral-300 py-3 rounded-lg text-sm transition cursor-pointer"
+            onClick={onDashboardClick}
+          >
             Dashboard
           </button>
         </div>

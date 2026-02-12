@@ -117,7 +117,7 @@ export default function Tasks() {
   if (!projectId) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-7xl w-full shadow-lg space-y-6">
+    <div className="max-w-7xl w-full space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between w-full">

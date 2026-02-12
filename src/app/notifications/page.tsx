@@ -1,29 +1,22 @@
 "use client";
 
-import { useSocket } from "@/providers/SocketProvider";
 import { notificationService } from "@/services/user/notification.service";
-import { useAppSelector } from "@/store/store";
 import { INotification } from "@/types/notification";
-import { SOCKET_EVENTS } from "@/types/socket-event";
 import axios from "axios";
 import { Check, CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function NotificationPage() {
-  const [tab, setTab] = useState<"all" | "unread">("all");
+  const [tab, setTab] = useState<"all" | "unread">("unread");
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const hasFetched = useRef(false);
-  const socket = useSocket();
-  const id = useAppSelector((state) => state.user.id);
 
   const fetchNotifications = useCallback(async () => {
     try {
       const res = await notificationService.listNotifications();
-      console.log("notification data: ", res.data);
       if (res.success) {
         setNotifications(res.data);
-        // toast.success(res.message);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -35,10 +28,8 @@ export default function NotificationPage() {
   const onMarkAsRead = async (notificationId: string) => {
     try {
       const res = await notificationService.markAsRead(notificationId);
-      console.log("mark as read data: ", res.data);
       if (res.success) {
         toast.success(res.message);
-        socket?.emit(SOCKET_EVENTS.UPDATE_NOTIFICATION_COUNT, { userId: id });
         fetchNotifications();
       }
     } catch (error) {
@@ -92,14 +83,14 @@ export default function NotificationPage() {
 
       {/* Tabs */}
       <div className="flex gap-6 border-b border-gray-200 dark:border-neutral-800 mb-6">
-        {["all"].map((key) => (
+        {["unread", "all"].map((key) => (
           <button
             key={key}
-            onClick={() => {}}
-            className={`pb-3 text-sm capitalize transition-colors
+            onClick={() => setTab(key as "unread" | "all")}
+            className={`pb-3 text-sm capitalize transition-colors cursor-pointer
           ${
             tab === key
-              ? "text-purple-500 border-b-2 border-purple-500"
+              ? "text-gray-800 dark:text-gray-200 border-b-2 border-purple-500"
               : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
           }`}
           >

@@ -4,11 +4,12 @@ import Link from "next/link";
 
 export function GithubAuthButton() {
   return (
-    <button className="flex-1 flex items-center justify-center gap-4 py-2 bg-black text-white rounded-lg font-medium border border-gray-700 hover:opacity-90 transition">
+    <Link
+      href={ADMIN_ROUTES.LOGIN}
+      className="flex-1 flex items-center justify-center gap-4 py-2 bg-black text-white rounded-lg font-medium border border-gray-700 hover:opacity-90 transition"
+    >
       <Github size={18} />
-      <Link href={ADMIN_ROUTES.LOGIN}>
-        <span>Admin</span>
-      </Link>
-    </button>
+      <span>Admin</span>
+    </Link>
   );
 }
