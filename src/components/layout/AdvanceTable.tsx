@@ -25,15 +25,7 @@ interface AdvancedTableProps<T extends DataRow> {
   columns: Column<T>[];
 }
 
-// Sample data structure
-interface SampleDataType extends DataRow {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  status: string;
-  department: string;
-}
+
 
 type SortableValue = string | number | boolean | Date;
 
