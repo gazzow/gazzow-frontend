@@ -61,14 +61,22 @@ export default function ProjectCard({
     }
   };
 
-  const markAsFavorite = async (projectId: string) => {
+  const markAsFavorite = async (e: React.MouseEvent, projectId: string) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    console.log(
+      "marking as favorite, projectId: ",
+      projectId,
+      " isFavorite: ",
+      isFavorite,
+    );
     if (isFavorite) {
       // Remove From Favorites
       console.log("removing from favorite");
       try {
         const res = await favoriteService.removeFromFavorite(projectId);
         if (res.success) {
-          toast.success(res.message);
           onFavoriteToggle();
         } else {
           toast.warn(res.message);
@@ -83,12 +91,9 @@ export default function ProjectCard({
         }
       }
     } else {
-      // Add From Favorites
-      console.log("Add As favorite");
       try {
         const res = await favoriteService.markAsFavorite(projectId);
         if (res.success) {
-          toast.success(res.message);
           onFavoriteToggle();
         } else {
           toast.warn(res.message);
@@ -106,7 +111,8 @@ export default function ProjectCard({
   };
 
   return (
-    <div
+    <Link
+      href={PROJECT_ROUTES.DETAILS(id)}
       className="flex flex-col space-y-3 p-4 rounded-md border transition-all
                 bg-white dark:bg-secondary/30
                 border-gray-200 dark:border-gray-800
@@ -118,7 +124,10 @@ export default function ProjectCard({
         </h3>
 
         {isFavorite !== undefined && (
-          <button className="cursor-pointer" onClick={() => markAsFavorite(id)}>
+          <button
+            className="cursor-pointer"
+            onClick={(e) => markAsFavorite(e, id)}
+          >
             {isFavorite ? (
               <Star size={18} color="yellow" fill="yellow" />
             ) : (
@@ -133,23 +142,38 @@ export default function ProjectCard({
       </p>
 
       <div className="flex flex-wrap gap-2">
-        {(requiredSkills.length > 4
-          ? requiredSkills.slice(0, 4)
-          : requiredSkills
-        ).map((tech) => (
+        {/* Show first 3 skills */}
+        {requiredSkills.slice(0, 3).map((tech) => (
           <span
             key={tech}
-            className="text-xs px-2 py-0.5 rounded-full border
-                   bg-gray-200 dark:bg-gray-800
-                   text-gray-800 dark:text-gray-200
-                   border-gray-300 dark:border-gray-700"
+            className="
+        text-xs px-2 py-0.5 rounded-full border
+        bg-gray-200 dark:bg-gray-800
+        text-gray-800 dark:text-gray-200
+        border-gray-300 dark:border-gray-700
+      "
           >
             {tech}
           </span>
         ))}
+        
+        {/* Show +More Badge */}
+        {requiredSkills.length > 3 && (
+          <span
+            className="
+       text-xs px-2 py-0.5 rounded-full border
+        bg-gray-200 dark:bg-gray-800
+        text-gray-800 dark:text-gray-200
+        border-gray-300 dark:border-gray-700
+        font-medium
+      "
+          >
+            +{requiredSkills.length - 3} more
+          </span>
+        )}
       </div>
 
-      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 gap-4">
+      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 gap-8">
         <div className="flex items-center gap-1">
           <DollarSign size={14} /> {budgetMin} - {budgetMax}
         </div>
@@ -169,17 +193,6 @@ export default function ProjectCard({
         </div>
 
         <div className="flex items-center gap-2">
-          <Link
-            href={PROJECT_ROUTES.DETAILS(id)}
-            className="px-2 py-1 border rounded text-sm transition
-                   bg-gray-100 dark:bg-secondary/30
-                   border-gray-300 dark:border-border-primary
-                   text-black dark:text-white
-                   hover:bg-gray-200 dark:hover:bg-secondary"
-          >
-            View More
-          </Link>
-
           {!isContributor && (
             <button
               className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded cursor-pointer transition"
@@ -194,6 +207,6 @@ export default function ProjectCard({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
