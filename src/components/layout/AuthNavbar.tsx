@@ -1,14 +1,12 @@
 "use client";
 
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
-import { useTheme } from "@/hook/useTheme";
 import { useAppSelector } from "@/store/store";
-import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { LogoutButton } from "../ui/LogoutButton";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 export default function AuthNavbar() {
-  const { theme, toggleTheme } = useTheme();
   const userId = useAppSelector((state) => state.user.id);
 
   return (
@@ -47,32 +45,16 @@ export default function AuthNavbar() {
         {/* Right Side */}
         <div className="flex justify-center items-center text-center gap-4">
           {/* Toggle Theme */}
-          <button onClick={toggleTheme} className="px-4 py3">
-            {theme === "light" ? (
-              <Moon size={18} className="cursor-pointer text-secondary"></Moon>
-            ) : (
-              <Sun
-                size={18}
-                className="cursor-pointer dark:text-yellow-400"
-              ></Sun>
-            )}
-          </button>
+          <ThemeToggle />
 
           {userId === null ? (
             <>
               <Link
                 href={AUTH_ROUTES.LOGIN}
-                className="text-black dark:text-text-primary dark:hover:text-text-secondary "
+                className="px-4 py-2 bg-btn-primary hover:bg-btn-primary-hover text-text-primary rounded-lg"
               >
                 Sign In
               </Link>
-              <Link
-                href={AUTH_ROUTES.SIGNUP}
-                className="px-4 py-2 bg-btn-primary hover:bg-btn-primary-hover text-text-primary rounded-lg"
-              >
-                Get Started
-              </Link>
-              ,
             </>
           ) : (
             <LogoutButton></LogoutButton>
