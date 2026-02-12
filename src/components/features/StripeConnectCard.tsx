@@ -3,6 +3,7 @@ import { IUser } from "@/types/user";
 import axios from "axios";
 import { CreditCard } from "lucide-react";
 import { useEffect, useState } from "react";
+import { StatusBadge } from "../ui/StatusBadge";
 
 type IStripeConnectCardProps = {
   user: IUser | null;
@@ -10,133 +11,116 @@ type IStripeConnectCardProps = {
 
 export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
   const [isOnboarded, setIsOnboarded] = useState<boolean>(false);
-  console.log("Onboarded status: ", isOnboarded);
+  const [isChecking, setIsChecking] = useState<boolean>(true);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [isCompleting, setIsCompleting] = useState<boolean>(false);
+
   useEffect(() => {
     checkOnboardingStatus();
   }, []);
 
-  const createConnectAccount = async () => {
+  const checkOnboardingStatus = async () => {
     try {
-      const res = await paymentService.createConnectAccount();
+      setIsChecking(true);
+      const res = await paymentService.checkOnboardingStatus();
       if (res.success) {
-        const res = await paymentService.generateOnboardingUrl();
-        window.location.href = res.data.onboardingUrl;
+        setIsOnboarded(res.data.isOnboarded || false);
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        console.log("Error connecting account: ", e.response?.data);
+        console.log("Error checking onboarding status:", e.response?.data);
       }
+    } finally {
+      setIsChecking(false);
     }
   };
 
-  const checkOnboardingStatus = async () => {
+  const createConnectAccount = async () => {
     try {
-      const res = await paymentService.checkOnboardingStatus();
-      console.log("Onboarding status: ", res.data);
+      setIsConnecting(true);
+      const res = await paymentService.createConnectAccount();
       if (res.success) {
-        const { isOnboarded } = res.data;
-        setIsOnboarded(isOnboarded || false);
+        const urlRes = await paymentService.generateOnboardingUrl();
+        window.location.href = urlRes.data.onboardingUrl;
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        console.log("Error checking onboarding status: ", e.response?.data);
+        console.log("Error connecting account:", e.response?.data);
       }
+    } finally {
+      setIsConnecting(false);
     }
   };
 
   const completeOnboarding = async () => {
     try {
+      setIsCompleting(true);
       const res = await paymentService.generateOnboardingUrl();
       window.location.href = res.data.onboardingUrl;
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        console.log("Error completing onboarding: ", e.response?.data);
+        console.log("Error completing onboarding:", e.response?.data);
       }
+    } finally {
+      setIsCompleting(false);
     }
   };
 
   return (
-    <div className="w-full max-w-4xl bg-white dark:bg-secondary border border-gray-200 dark:border-border-primary rounded-xl p-6 space-y-5 transition-colors">
-      {/* Header */}
-      <div className="space-y-1 flex justify-between items-center">
-        <div>
-          <h2 className="text-lg font-semibold text-black dark:text-white flex items-center gap-2">
-            <CreditCard />
-            Stripe Connect
-          </h2>
-          <p className="text-sm text-gray-600 dark:text-neutral-400">
-            Connect your Stripe account to receive payments for your
-            contributions
-          </p>
+    <div className="w-full max-w-4xl bg-white dark:bg-secondary/60 border border-gray-200 dark:border-gray-800 rounded-xl p-6 space-y-5 transition-colors">
+      {/* Show global checking state */}
+      {isChecking ? (
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          Checking Stripe connection status...
         </div>
+      ) : (
+        <>
+          {/* Header */}
+          <div className="space-y-1 flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <CreditCard />
+                Stripe Connect
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Connect your Stripe account to receive payments
+              </p>
+            </div>
 
-        {user && user.stripeAccountId && isOnboarded ? (
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-xs font-medium text-green-700 dark:text-green-300 bg-green-500/10 px-2 py-1 rounded-full">
-              Connected
-            </span>
-          </div>
-        ) : !isOnboarded && user?.stripeAccountId ? (
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-red-500" />
-            <span className="text-xs font-medium text-red-700 dark:text-red-300 bg-red-500/10 px-2 py-1 rounded-full">
-              Onboarding Pending
-            </span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-red-500" />
-            <span className="text-xs font-medium text-red-700 dark:text-red-300 bg-red-500/10 px-2 py-1 rounded-full">
-              Not Connected
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Content Row */}
-      {!user?.stripeAccountId && (
-        <div className="flex justify-between items-center gap-4">
-          <div className="space-y-1">
-            <h3 className="text-sm font-medium text-black dark:text-white">
-              Connect Stripe Account
-            </h3>
-            <span className="text-xs text-gray-500 dark:text-neutral-500">
-              Connect your Stripe account to start receiving payments
-            </span>
+            {/* Status Badge */}
+            {user?.stripeAccountId && isOnboarded ? (
+              <StatusBadge color="green" text="Connected" />
+            ) : user?.stripeAccountId ? (
+              <StatusBadge color="red" text="Onboarding Pending" />
+            ) : (
+              <StatusBadge color="red" text="Not Connected" />
+            )}
           </div>
 
-          <div>
+          {/* Connect Button */}
+          {!user?.stripeAccountId && (
             <button
-              className="flex gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
+              disabled={isConnecting}
               onClick={createConnectAccount}
+              className="flex gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
             >
               <CreditCard className="w-5 h-5" />
-              Connect Stripe
+              {isConnecting ? "Connecting..." : "Connect Stripe"}
             </button>
-          </div>
-        </div>
-      )}
+          )}
 
-      {!isOnboarded && user?.stripeAccountId && (
-        <div className="flex justify-between items-center gap-4">
-          <div className="space-y-1">
-            <h3 className="text-sm font-medium text-black dark:text-white">
-              Complete Stripe Onboarding
-            </h3>
-            <span className="text-xs text-gray-500 dark:text-neutral-500">
-              Complete your Stripe onboarding to start receiving payments
-            </span>
-          </div>
-
-          <button
-            className="flex gap-2 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
-            onClick={completeOnboarding}
-          >
-            <CreditCard className="w-5 h-5" />
-            Complete Onboarding
-          </button>
-        </div>
+          {/* Complete Onboarding */}
+          {!isOnboarded && user?.stripeAccountId && (
+            <button
+              disabled={isCompleting}
+              onClick={completeOnboarding}
+              className="flex gap-2 bg-yellow-200 hover:bg-yellow-300 disabled:opacity-50 text-yellow-800 text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
+            >
+              <CreditCard className="w-5 h-5" />
+              {isCompleting ? "Redirecting..." : "Complete Onboarding"}
+            </button>
+          )}
+        </>
       )}
     </div>
   );
