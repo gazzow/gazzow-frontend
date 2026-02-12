@@ -44,7 +44,7 @@ export default function ProjectList() {
     prevPage,
     nextPage,
   } = usePagination({
-    limit: 6,
+    limit: 12,
   });
 
   const updateFilter = (key: keyof ProjectFilters, value: unknown) => {
@@ -135,10 +135,10 @@ export default function ProjectList() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="md:min-w-80 px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
+                 bg-gray-100 dark:bg-secondary/30
                  text-black dark:text-white
                  border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
         />
 
         {/* Experience Filter */}
@@ -146,14 +146,14 @@ export default function ProjectList() {
           value={filters.experience}
           onChange={(e) => updateFilter("experience", e.target.value)}
           className="px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
+                 bg-gray-100 dark:bg-secondary/30
                  text-black dark:text-white
                  border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
         >
-          <option value="">Experience Level</option>
+          <option className="dark:bg-secondary"  value="">Experience Level</option>
           {Object.values(ProjectExperience).map((exp) => (
-            <option key={exp} value={exp}>
+            <option className="dark:bg-secondary" key={exp} value={exp}>
               {exp.replace(/\b\w/, (c) => c.toUpperCase())}
             </option>
           ))}
@@ -164,14 +164,18 @@ export default function ProjectList() {
           value={filters.budgetOrder}
           onChange={(e) => updateFilter("budgetOrder", e.target.value)}
           className="px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
+                 bg-gray-100 dark:bg-secondary/30
                  text-black dark:text-white
                  border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
         >
-          <option>Budget Sort</option>
-          <option value="asc">Low → High</option>
-          <option value="desc">High → Low</option>
+          <option className="dark:bg-secondary">Budget Sort</option>
+          <option className="dark:bg-secondary" value="asc">
+            Low → High
+          </option>
+          <option className="dark:bg-secondary" value="desc">
+            High → Low
+          </option>
         </select>
       </div>
 
