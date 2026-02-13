@@ -7,7 +7,6 @@ import { subscriptionManagementService } from "@/services/admin/subscription-man
 import { ISubscription } from "@/types/subscription";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 export default function SubscriptionManagement() {
   const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
