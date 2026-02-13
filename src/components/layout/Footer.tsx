@@ -35,9 +35,9 @@ export default function Footer() {
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12">
         {/* Top */}
-        <div className="grid  gap-10 md:gap-5  grid-cols-1 sm:grid-cols-2 lg:grid-cols-6">
+        <div className="grid gap-10 md:gap-5 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {/* Brand */}
-          <div className="sm:col-span-2 space-y-4">
+          <div className="sm:col-span-1 space-y-4">
             <Link
               href="/"
               className="text-2xl font-bold text-btn-primary hover:text-btn-primary-hover"
