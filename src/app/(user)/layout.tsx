@@ -15,7 +15,7 @@ export default function UserLayout({
   const isAuth = authEndpoints.includes(usePathname());
   const user = useAuthRedirect(isAuth);
 
-  // Show notification toast when received
+  if (user.id === null) return;
 
   return (
     <div className="flex bg-primary">

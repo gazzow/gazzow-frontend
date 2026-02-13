@@ -36,7 +36,7 @@ export default function PaymentFailedPage() {
         {/* Buttons */}
         <div className="space-y-3 mt-6">
           <button
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-sm font-medium transition"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-sm font-medium transition cursor-pointer"
             onClick={() => router.replace(USER_ROUTES.PRICING)}
           >
             Retry Payment
@@ -46,7 +46,7 @@ export default function PaymentFailedPage() {
             className="w-full border border-gray-300 dark:border-neutral-600
                    hover:border-gray-400 dark:hover:border-neutral-400
                    text-gray-700 dark:text-neutral-300
-                   py-3 rounded-lg text-sm transition"
+                   py-3 rounded-lg text-sm transition cursor-pointer"
             onClick={() => router.replace(USER_ROUTES.HOME)}
           >
             Dashboard

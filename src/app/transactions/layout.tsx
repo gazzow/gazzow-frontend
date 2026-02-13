@@ -14,7 +14,8 @@ export default function TransactionLayout({
   const authEndpoints: string[] = Object.values(AUTH_ROUTES) || [];
   const isAuth = authEndpoints.includes(usePathname());
   const user = useAuthRedirect(isAuth);
-  console.log("user id: ", user.id);
+
+  if (user.id === null) return;
 
   return (
     <div className="flex bg-primary">

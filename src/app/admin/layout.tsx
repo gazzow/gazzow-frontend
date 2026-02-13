@@ -18,7 +18,6 @@ export default function AdminLayout({
 
   const router = useRouter();
   const admin = useAppSelector((state) => state.admin);
-  // console.log("admin app data: ", admin);
 
   useEffect(() => {
     if (!admin.id && !isLogin) {
@@ -28,6 +27,7 @@ export default function AdminLayout({
     }
     setChecking(false);
   }, [router, isLogin, admin]);
+
 
   return (
     <div className="flex bg-primary">

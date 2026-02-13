@@ -16,7 +16,6 @@ export default function UserProfileMenu() {
   const router = useRouter();
   const { handleLogout } = useLogout();
 
-  // Close when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -46,18 +45,18 @@ export default function UserProfileMenu() {
       <button
         onClick={() => setOpen(!open)}
         className="
-      flex items-center gap-2 pl-3 pr-1 py-1 rounded-full
+      flex items-center gap-2  px-1 py-1 rounded-full
       transition cursor-pointer
       hover:bg-slate-200 dark:hover:bg-slate-700
     "
       >
-        <span className="text-sm font-medium hidden md:block text-slate-700 dark:text-slate-200">
+        <span className="ml-2 text-sm font-medium hidden md:block text-slate-700 dark:text-slate-200">
           {name && name.split(" ").length > 2
             ? name?.split(" ").slice(0, 2).join(" ")
             : name || "Guest"}
         </span>
 
-        <div className="relative w-8 h-8 rounded-xl overflow-hidden shrink-0 ring-2 ring-white dark:ring-slate-900">
+        <div className="relative  w-8 h-8 rounded-xl overflow-hidden shrink-0 ring-2 ring-white dark:ring-slate-900">
           <Image
             src={imageUrl || "/avatar.png"}
             alt={name || "User"}
@@ -72,16 +71,25 @@ export default function UserProfileMenu() {
       {open && (
         <div
           className="
-        absolute right-0 mt-3 w-72 z-50 overflow-hidden p-3
-        rounded-xl border shadow-xl
-
-        bg-white border-slate-200
-        dark:bg-slate-900 dark:border-slate-700
-      "
+      absolute right-0 mt-3 z-50
+     sm:w-72
+      max-w-sm
+      overflow-hidden p-3
+      rounded-xl border shadow-xl
+      bg-white border-slate-200
+      dark:bg-primary dark:border-slate-700
+    "
         >
           {/* User Info */}
           <div className="flex gap-3 items-center pb-3 border-b border-slate-200 dark:border-slate-700">
-            <div className="relative w-10 h-10 rounded-xl overflow-hidden shrink-0 ring-2 ring-white dark:ring-slate-800">
+            <div
+              className="
+    relative
+    w-8 h-8 sm:w-10 sm:h-10
+    rounded-xl overflow-hidden shrink-0
+    ring-2 ring-white dark:ring-slate-800
+  "
+            >
               <Image
                 src={imageUrl || "/avatar.png"}
                 alt={name || "User"}
@@ -91,9 +99,11 @@ export default function UserProfileMenu() {
               />
             </div>
 
-            <div className="flex flex-col text-slate-800 dark:text-slate-200">
-              <p className="text-md font-semibold">{name}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex flex-col text-slate-800 dark:text-slate-200 min-w-0">
+              <p className="text-xs sm:text-sm md:text-md font-semibold truncate">
+                {name}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                 {email}
               </p>
             </div>
@@ -109,28 +119,31 @@ export default function UserProfileMenu() {
             <button
               onClick={handleOnProfileClick}
               className="
-            w-full flex items-center gap-2 px-3 py-2 rounded-md
-            text-slate-700 dark:text-slate-200
-            hover:bg-slate-100 dark:hover:bg-slate-800
-            transition cursor-pointer
-          "
+      w-full flex items-center gap-2
+      px-3 py-2.5 sm:py-2
+      rounded-md
+      text-slate-700 dark:text-slate-200
+      hover:bg-slate-100 dark:hover:bg-slate-800
+      transition cursor-pointer
+    "
             >
-              <User size={18} />
-              <span>Your Profile</span>
+              <User className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+              <span className="text-sm">Your Profile</span>
             </button>
 
-            {/* Logout Button */}
             <button
               onClick={handleLogout}
               className="
-            w-full flex items-center gap-2 px-3 py-2 rounded-md
-            text-red-600 dark:text-red-400
-            hover:bg-red-50 dark:hover:bg-red-900/30
-            transition cursor-pointer
-          "
+      w-full flex items-center gap-2
+      px-3 py-2.5 sm:py-2
+      rounded-md
+      text-red-600 dark:text-red-400
+      hover:bg-red-50 dark:hover:bg-red-900/30
+      transition cursor-pointer
+    "
             >
-              <LogOut size={18} />
-              <span>Log out</span>
+              <LogOut className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+              <span className="text-sm">Log out</span>
             </button>
           </div>
         </div>

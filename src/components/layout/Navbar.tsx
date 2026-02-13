@@ -10,17 +10,17 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-primary backdrop-blur-md border-b border-border-primary/70 transition ease-in-out">
-      <div className="max-w-10xl mx-auto px-6 flex items-center justify-between h-16">
+      <div className="max-w-10xl mx-auto px-2 sm:px-4 md:px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <Link
           href={USER_ROUTES.HOME}
-          className="text-2xl font-bold text-btn-primary hover:text-btn-primary-hover"
+          className="text-xl sm:text-2xl font-bold text-btn-primary hover:text-btn-primary-hover"
         >
           Gazzow
         </Link>
 
         {/* Right Side */}
-        <div className="flex justify-center items-center text-center gap-3">
+        <div className="flex justify-center items-center text-center gap-2 md:gap-3">
           {/* Notification Bell */}
           <NotificationBellIcon />
 

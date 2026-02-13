@@ -29,12 +29,24 @@ export default function NotificationPage() {
     try {
       const res = await notificationService.markAsRead(notificationId);
       if (res.success) {
-        toast.success(res.message);
         fetchNotifications();
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("Mark as read notification error: ", error);
+      }
+    }
+  };
+  const onMarkAllAsRead = async () => {
+    try {
+      const res = await notificationService.markAllAsRead();
+      if (res.success) {
+        toast.success(res.message);
+        fetchNotifications();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Mark all as read notification error: ", error);
       }
     }
   };
@@ -58,96 +70,132 @@ export default function NotificationPage() {
   }, [tab, notifications]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto text-black dark:text-white transition-colors">
+    <div
+      className="
+  w-full max-w-7xl mx-auto
+  px-4 sm:px-6
+  text-black dark:text-white
+  transition-colors
+"
+    >
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div
+        className="
+  flex flex-col sm:flex-row
+  sm:items-center
+  sm:justify-between
+  gap-3 mb-4
+"
+      >
         <div>
-          <h1 className="text-2xl font-bold text-black dark:text-white">
-            Notifications
-          </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <h1 className="text-xl sm:text-2xl font-bold">Notifications</h1>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             Stay updated with your projects and activities
           </p>
         </div>
 
-        {unreadCount && unreadCount > 0 && (
+        {unreadCount > 0 && (
           <button
-            onClick={() => {}}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg bg-btn-primary text-white"
+            onClick={onMarkAllAsRead}
+            className="
+        flex items-center justify-center gap-2
+        px-3 py-2 sm:py-1.5
+        text-xs sm:text-sm
+        rounded-lg
+        bg-btn-primary text-white
+        w-full sm:w-auto cursor-pointer
+      "
           >
-            <CheckCheck size={16} />
+            <CheckCheck className="w-4 h-4" />
             Mark all as read ({unreadCount})
           </button>
         )}
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-6 border-b border-gray-200 dark:border-neutral-800 mb-6">
+      <div
+        className="
+  flex gap-4 sm:gap-6
+  border-b border-gray-200 dark:border-neutral-800
+  mb-6
+  overflow-x-auto
+  no-scrollbar
+"
+      >
         {["unread", "all"].map((key) => (
           <button
             key={key}
             onClick={() => setTab(key as "unread" | "all")}
-            className={`pb-3 text-sm capitalize transition-colors cursor-pointer
-          ${
-            tab === key
-              ? "text-gray-800 dark:text-gray-200 border-b-2 border-purple-500"
-              : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
-          }`}
+            className={`pb-3 text-sm capitalize transition-colors whitespace-nowrap cursor-pointer
+        ${
+          tab === key
+            ? "text-gray-800 dark:text-gray-200 border-b-2 border-purple-500"
+            : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+        }
+      `}
           >
             {key}
-            {key === "unread" &&
-              unreadCount &&
-              unreadCount > 0 &&
-              ` (${unreadCount})`}
           </button>
         ))}
       </div>
 
       {/* List */}
       <div className="space-y-3">
-        {filtered && filtered.length === 0 && (
-          <p className="text-center text-gray-500 py-12">No notifications</p>
+        {filtered.length === 0 && (
+          <p className="text-center text-gray-500 py-12 text-sm">
+            No notifications found
+          </p>
         )}
 
-        {filtered &&
-          filtered.map((n) => (
-            <div
-              key={n.id}
-              className={`flex justify-between items-start p-4 rounded-xl border transition-colors
-            ${
-              n.isRead
-                ? "bg-gray-100 dark:bg-secondary/20 border-gray-200 dark:border-neutral-800"
-                : "bg-purple-50 dark:bg-secondary/60 border-purple-300/40 dark:border-purple-500/40"
-            }`}
-            >
-              <div className="flex gap-3">
-                <div className="mt-1 h-2 w-2 rounded-full bg-purple-500 opacity-80" />
-                <div>
-                  <h3 className="text-sm font-semibold text-black dark:text-white">
-                    {n.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {n.body}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-2">
-                    {new Date(n.createdAt).toLocaleString()}
-                  </p>
-                </div>
-              </div>
+        {filtered.map((n) => (
+          <div
+            key={n.id}
+            className={`
+        flex flex-col sm:flex-row
+        sm:justify-between sm:items-start
+        gap-3
+        p-4 rounded-xl border transition-colors
+        ${
+          n.isRead
+            ? "bg-gray-100 dark:bg-secondary/20 border-gray-200 dark:border-neutral-800"
+            : "bg-purple-50 dark:bg-secondary/60 border-purple-300/40 dark:border-purple-500/40"
+        }
+      `}
+          >
+            {/* Content */}
+            <div className="flex gap-3">
+              <div className="mt-1 h-2 w-2 rounded-full bg-purple-500 shrink-0" />
 
-              {!n.isRead && (
+              <div className="min-w-0">
+                <h3 className="text-sm font-semibold">{n.title}</h3>
+
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {n.body}
+                </p>
+
+                <p className="text-xs text-gray-500 mt-2">
+                  {new Date(n.createdAt).toLocaleString()}
+                </p>
+              </div>
+            </div>
+
+            {/* Action */}
+            {!n.isRead && (
+              <div className="flex sm:block justify-end">
                 <button
                   onClick={() => onMarkAsRead(n.id)}
-                  className="p-2 rounded-lg bg-gray-200 dark:bg-secondary hover:bg-gray-300 dark:hover:bg-secondary/80 cursor-pointer"
+                  className="
+              p-2 rounded-lg
+              bg-gray-200 dark:bg-secondary
+              hover:bg-gray-300 dark:hover:bg-secondary/80
+            "
                 >
-                  <Check
-                    size={16}
-                    className="text-gray-600 dark:text-gray-400"
-                  />
+                  <Check className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                 </button>
-              )}
-            </div>
-          ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

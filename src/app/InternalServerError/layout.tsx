@@ -6,7 +6,7 @@ import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { useAuthRedirect } from "@/hook/useAuthRedirect";
 import { usePathname } from "next/navigation";
 
-export default function PricingLayout({
+export default function ServerErrorLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -22,8 +22,11 @@ export default function PricingLayout({
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 w-full text-white">
-          <div className="min-h-screen w-full mt-16 p-6 flex bg-white dark:bg-primary text-black dark:text-white transition ease-in-out">
+        <main className="flex-1 w-full text-black dark:text-white transition-colors">
+          <div
+            className="min-h-screen w-full mt-16 p-6 flex justify-center
+                  bg-white dark:bg-primary transition-colors"
+          >
             {children}
           </div>
         </main>
