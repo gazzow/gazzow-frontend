@@ -16,7 +16,6 @@ export default function UserProfileMenu() {
   const router = useRouter();
   const { handleLogout } = useLogout();
 
-  // Close when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -73,7 +72,7 @@ export default function UserProfileMenu() {
         <div
           className="
       absolute right-0 mt-3 z-50
-      w-[90vw] sm:w-72
+     sm:w-72
       max-w-sm
       overflow-hidden p-3
       rounded-xl border shadow-xl
@@ -86,7 +85,7 @@ export default function UserProfileMenu() {
             <div
               className="
     relative
-    w-9 h-9 sm:w-10 sm:h-10
+    w-8 h-8 sm:w-10 sm:h-10
     rounded-xl overflow-hidden shrink-0
     ring-2 ring-white dark:ring-slate-800
   "
@@ -101,7 +100,7 @@ export default function UserProfileMenu() {
             </div>
 
             <div className="flex flex-col text-slate-800 dark:text-slate-200 min-w-0">
-              <p className="text-sm sm:text-md font-semibold truncate">
+              <p className="text-xs sm:text-sm md:text-md font-semibold truncate">
                 {name}
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 truncate">

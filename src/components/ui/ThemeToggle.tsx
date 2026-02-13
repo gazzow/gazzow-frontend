@@ -10,11 +10,8 @@ export function ThemeToggle() {
       className="
     p-2 rounded-xl cursor-pointer
     transition-all duration-200 ease-in-out
-    active:scale-95
-
-    bg-slate-100 hover:bg-slate-200
+    active:scale-95 bg-slate-100 hover:bg-slate-200
     dark:bg-slate-800 dark:hover:bg-slate-700
-
     text-slate-700 dark:text-slate-200
     shadow-sm hover:shadow-md
   "
