@@ -97,16 +97,21 @@ export default function Footer() {
         {/* Bottom */}
         <div
           className="
-      mt-10 pt-6 border-t
-      border-gray-200 dark:border-secondary
-      flex
-      justify-center items-center 
-      text-sm
-      text-gray-500 dark:text-text-muted
-    "
+    mt-10 pt-6 border-t
+    border-gray-200 dark:border-secondary
+    flex flex-col sm:flex-row
+    justify-center sm:justify-between
+    items-center gap-2 sm:gap-4
+    text-sm
+    text-gray-500 dark:text-text-muted
+  "
         >
           <p className="text-center sm:text-left">
             © {new Date().getFullYear()} Gazzow. All rights reserved.
+          </p>
+
+          <p className="text-center sm:text-right">
+            Built with ❤️ for developers, by a developer
           </p>
         </div>
       </div>
