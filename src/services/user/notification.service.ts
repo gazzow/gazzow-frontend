@@ -12,4 +12,9 @@ export const notificationService = {
     console.log("Mark As Read response: ", res);
     return res.data;
   },
+  async markAllAsRead() {
+    const res = await api.patch(NOTIFICATION_API.MARK_ALL_AS_READ);
+    console.log("Mark ALL As Read response: ", res);
+    return res.data;
+  },
 };
