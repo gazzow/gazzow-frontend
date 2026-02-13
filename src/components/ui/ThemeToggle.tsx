@@ -20,9 +20,9 @@ export function ThemeToggle() {
   "
     >
       {theme === "light" ? (
-        <Sun size={22} className="text-amber-500" />
+        <Sun className="w-4 h-4 text-amber-500 sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]" />
       ) : (
-        <Moon size={22} className="text-slate-300" />
+        <Moon className="w-4 h-4 text-slate-300 sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]" />
       )}
     </button>
   );

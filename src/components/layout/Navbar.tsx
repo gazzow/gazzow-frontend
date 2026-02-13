@@ -20,7 +20,7 @@ export default function Navbar() {
         </Link>
 
         {/* Right Side */}
-        <div className="flex justify-center items-center text-center gap-3">
+        <div className="flex justify-center items-center text-center gap-1 md:gap-3">
           {/* Notification Bell */}
           <NotificationBellIcon />
 
