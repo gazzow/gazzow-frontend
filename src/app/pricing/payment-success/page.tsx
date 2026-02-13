@@ -2,8 +2,10 @@
 
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function PaymentSuccessPage() {
+  const router = useRouter();
   return (
     <div
       className="w-full flex items-center justify-center p-6
@@ -31,7 +33,7 @@ export default function PaymentSuccessPage() {
         {/* Buttons */}
         <div className="flex flex-col space-y-4 mt-6">
           <Link href={USER_ROUTES.PRICING}>
-            <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg text-sm font-medium transition">
+            <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg text-sm font-medium transition cursor-pointer">
               Go to pricing
             </button>
           </Link>
@@ -40,7 +42,8 @@ export default function PaymentSuccessPage() {
             className="w-full border border-gray-300 dark:border-neutral-600
                          hover:border-gray-400 dark:hover:border-neutral-400
                          text-gray-700 dark:text-neutral-300
-                         py-3 rounded-lg text-sm transition"
+                         py-3 rounded-lg text-sm transition cursor-pointer"
+            onClick={() => router.push(USER_ROUTES.HOME)}
           >
             Dashboard
           </button>
