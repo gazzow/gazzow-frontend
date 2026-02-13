@@ -29,12 +29,24 @@ export default function NotificationPage() {
     try {
       const res = await notificationService.markAsRead(notificationId);
       if (res.success) {
-        toast.success(res.message);
         fetchNotifications();
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("Mark as read notification error: ", error);
+      }
+    }
+  };
+  const onMarkAllAsRead = async () => {
+    try {
+      const res = await notificationService.markAllAsRead();
+      if (res.success) {
+        toast.success(res.message);
+        fetchNotifications();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Mark all as read notification error: ", error);
       }
     }
   };
@@ -84,14 +96,14 @@ export default function NotificationPage() {
 
         {unreadCount > 0 && (
           <button
-            onClick={() => {}}
+            onClick={onMarkAllAsRead}
             className="
         flex items-center justify-center gap-2
         px-3 py-2 sm:py-1.5
         text-xs sm:text-sm
         rounded-lg
         bg-btn-primary text-white
-        w-full sm:w-auto
+        w-full sm:w-auto cursor-pointer
       "
           >
             <CheckCheck className="w-4 h-4" />
@@ -114,7 +126,7 @@ export default function NotificationPage() {
           <button
             key={key}
             onClick={() => setTab(key as "unread" | "all")}
-            className={`pb-3 text-sm capitalize transition-colors whitespace-nowrap
+            className={`pb-3 text-sm capitalize transition-colors whitespace-nowrap cursor-pointer
         ${
           tab === key
             ? "text-gray-800 dark:text-gray-200 border-b-2 border-purple-500"
@@ -131,7 +143,7 @@ export default function NotificationPage() {
       <div className="space-y-3">
         {filtered.length === 0 && (
           <p className="text-center text-gray-500 py-12 text-sm">
-            No notifications
+            No notifications found
           </p>
         )}
 
