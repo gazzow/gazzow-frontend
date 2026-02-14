@@ -2,13 +2,13 @@
 
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { Calendar, DollarSign, Star } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
 import ApplyModal from "./ApplyModal";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { userService } from "@/services/user/user-service";
 import { favoriteService } from "@/services/user/favorite.service";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ProjectCardProps {
   id: string;
@@ -43,6 +43,12 @@ export default function ProjectCard({
   onFavoriteToggle,
 }: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const router = useRouter();
+
+  const handleProjectCardClick = () => {
+    router.push(PROJECT_ROUTES.DETAILS(id));
+  };
 
   const handleApplyClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -113,12 +119,12 @@ export default function ProjectCard({
   };
 
   return (
-    <Link
-      href={PROJECT_ROUTES.DETAILS(id)}
+    <div
+      onClick={handleProjectCardClick}
       className="flex flex-col space-y-3 p-4 rounded-md border transition-all
                 bg-white dark:bg-secondary/30
                 border-gray-200 dark:border-gray-800
-                hover:border-gray-400 dark:hover:border-gray-600"
+                hover:border-gray-400 dark:hover:border-gray-600 cursor-pointer"
     >
       <div className="flex justify-between">
         <h3 className="flex-1 text-black dark:text-white text-lg font-semibold">
@@ -205,10 +211,14 @@ export default function ProjectCard({
           )}
 
           {isOpen && (
-            <ApplyModal key={id} projectId={id} closeModal={setIsOpen} />
+            <ApplyModal
+              key={id}
+              projectId={id}
+              closeModal={() => setIsOpen(false)}
+            />
           )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

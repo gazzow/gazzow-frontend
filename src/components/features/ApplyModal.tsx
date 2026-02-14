@@ -3,17 +3,30 @@
 import { projectService } from "@/services/user/project-service";
 import axios from "axios";
 import { Send, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 interface ApplyModalProp {
   projectId: string;
-  closeModal(val: boolean): void;
+  closeModal(): void;
 }
 
 export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
   const [proposal, setProposal] = useState("");
   const [expectedRate, setExpectedRate] = useState<number | "">("");
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleModalClick = (e: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        closeModal();
+      }
+    };
+
+    document.addEventListener("mousedown", handleModalClick);
+
+    return () => document.removeEventListener("mousedown", handleModalClick);
+  }, [closeModal]);
 
   const onSubmit = async () => {
     if (!expectedRate || expectedRate <= 0) {
@@ -21,7 +34,6 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
       return;
     }
 
-    console.log("Project application submitting for Id: ", projectId);
     try {
       const res = await projectService.createApplication(
         { proposal, expectedRate },
@@ -29,32 +41,31 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
       );
       console.log("Response Data: ", res);
       toast.success(res.message || "Application Submitted");
-      closeModal(false);
+      closeModal();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message || "Apply project Error");
-        closeModal(false);
+        closeModal();
       }
     }
   };
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 w-full min-h-screen flex items-center justify-center"
-      onClick={() => closeModal(false)}
+      className="fixed inset-0 bg-black/90 w-full min-h-screen flex items-center justify-center"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     >
       <div
+        ref={modalRef}
         className="max-w-xl min-w-sm p-6 flex flex-col gap-4 bg-secondary text-text-primary rounded-lg"
-        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className=" flex justify-between items-center">
           <h1 className="text-2xl font-semibold">Apply to project</h1>
-          <button
-            onClick={() => {
-              closeModal(false);
-            }}
-          >
+          <button onClick={closeModal}>
             <X className="cursor-pointer text-gray-300" />
           </button>
         </div>
@@ -67,6 +78,7 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
             rows={4}
             value={proposal}
             onChange={(e) => {
+              console.log("proposal message triggers");
               e.stopPropagation();
               e.preventDefault();
               setProposal(e.target.value);
@@ -82,6 +94,7 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
             className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-btn-primary"
             value={expectedRate}
             onChange={(e) => {
+              console.log("expectedRate triggers");
               e.stopPropagation();
               e.preventDefault();
               setExpectedRate(Number(e.target.value));
@@ -94,7 +107,7 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
         <div className="pt-2 flex justify-end gap-4">
           <button
             className="border py-1 px-2 rounded border-border-primary hover:border-gray-500 cursor-pointer transition ease-in"
-            onClick={() => closeModal(false)}
+            onClick={closeModal}
           >
             Cancel
           </button>
