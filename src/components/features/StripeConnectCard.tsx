@@ -67,34 +67,37 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
   };
 
   return (
-    <div className="w-full max-w-4xl bg-white dark:bg-secondary/60 border border-gray-200 dark:border-gray-800 rounded-xl p-6 space-y-5 transition-colors">
+    <div className="w-full max-w-4xl bg-white dark:bg-secondary/60 border border-gray-200 dark:border-gray-800 rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-5 transition-colors">
       {/* Show global checking state */}
       {isChecking ? (
-        <div className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="text-sm text-gray-500 dark:text-gray-400 text-center sm:text-left">
           Checking Stripe connection status...
         </div>
       ) : (
         <>
           {/* Header */}
-          <div className="space-y-1 flex justify-between items-center">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <CreditCard />
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+            {/* Left */}
+            <div className="space-y-1">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <CreditCard className="w-5 h-5" />
                 Stripe Connect
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 Connect your Stripe account to receive payments
               </p>
             </div>
 
             {/* Status Badge */}
-            {user?.stripeAccountId && isOnboarded ? (
-              <StatusBadge color="green" text="Connected" />
-            ) : user?.stripeAccountId ? (
-              <StatusBadge color="red" text="Onboarding Pending" />
-            ) : (
-              <StatusBadge color="red" text="Not Connected" />
-            )}
+            <div className="self-start sm:self-auto">
+              {user?.stripeAccountId && isOnboarded ? (
+                <StatusBadge color="green" text="Connected" />
+              ) : user?.stripeAccountId ? (
+                <StatusBadge color="yellow" text="Onboarding Pending" />
+              ) : (
+                <StatusBadge color="red" text="Not Connected" />
+              )}
+            </div>
           </div>
 
           {/* Connect Button */}
@@ -102,7 +105,7 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
             <button
               disabled={isConnecting}
               onClick={createConnectAccount}
-              className="flex gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
+              className="w-full sm:w-auto flex justify-center items-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
             >
               <CreditCard className="w-5 h-5" />
               {isConnecting ? "Connecting..." : "Connect Stripe"}
@@ -114,7 +117,7 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
             <button
               disabled={isCompleting}
               onClick={completeOnboarding}
-              className="flex gap-2 bg-yellow-200 hover:bg-yellow-300 disabled:opacity-50 text-yellow-800 text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
+              className="w-full sm:w-auto flex justify-center items-center gap-2 bg-yellow-200 hover:bg-yellow-300 disabled:opacity-50 text-yellow-800 text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
             >
               <CreditCard className="w-5 h-5" />
               {isCompleting ? "Redirecting..." : "Complete Onboarding"}
