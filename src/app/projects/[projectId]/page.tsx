@@ -93,9 +93,6 @@ export default function ProjectDetails() {
         encodeURIComponent(fileKey),
       );
 
-      if (res.success) {
-        toast.success(res.message);
-      }
       window.open(res.data, "_black", "noopener,noreferrer");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -208,7 +205,7 @@ export default function ProjectDetails() {
                   key={idx}
                   className="px-3 py-1 text-sm rounded-full border transition
                     bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200
-                    dark:bg-secondary/30 dark:border-border-primary dark:text-gray-300 dark:hover:bg-neutral-700 cursor-pointer"
+                    dark:bg-secondary/30 dark:border-border-primary dark:text-gray-300 dark:hover:bg-secondary cursor-pointer"
                 >
                   {skill}
                 </span>
@@ -229,8 +226,8 @@ export default function ProjectDetails() {
                   <li
                     key={i}
                     className="flex items-center justify-between px-4 py-3 rounded-lg text-sm
-                      bg-gray-50 hover:bg-gray-100
-                      dark:bg-neutral-800 dark:hover:bg-neutral-700 transition"
+                      bg-gray-100 hover:bg-gray-200
+                      dark:bg-secondary dark:hover:bg-secondary transition"
                   >
                     <span className="text-gray-700 dark:text-gray-300">
                       {file.name}
@@ -238,7 +235,7 @@ export default function ProjectDetails() {
 
                     <button
                       onClick={() => handleViewFile(file.key)}
-                      className="flex items-center gap-2 text-xs hover:text-blue-500"
+                      className="flex items-center gap-2 text-xs hover:text-blue-500 cursor-pointer"
                     >
                       <Eye size={16} />
                       View
