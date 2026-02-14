@@ -4,6 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { useAuthRedirect } from "@/hook/useAuthRedirect";
+import { NavigationProvider } from "@/providers/NavigationProvider";
 import { usePathname } from "next/navigation";
 
 export default function UserLayout({
@@ -19,13 +20,15 @@ export default function UserLayout({
 
   return (
     <div className="flex bg-primary">
-      {!user.isOnboarding && <Navbar />}
+      <NavigationProvider>
+        {!user.isOnboarding && <Navbar />}
 
-      <div className="flex flex-1 overflow-hidden">
-        {!user.isOnboarding && <Sidebar />}
+        <div className="flex flex-1 overflow-hidden">
+          {!user.isOnboarding && <Sidebar />}
 
-        <main className="flex-1 text-white">{children}</main>
-      </div>
+          <main className="flex-1 text-white">{children}</main>
+        </div>
+      </NavigationProvider>
     </div>
   );
 }

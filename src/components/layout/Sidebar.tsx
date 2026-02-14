@@ -16,6 +16,7 @@ import { LogoutButton } from "../ui/LogoutButton";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { CONTRIBUTOR_ROUTES } from "@/constants/routes/contributor-routes";
+import { useNavigation } from "@/providers/NavigationProvider";
 
 const sections = [
   { label: "Dashboard", icon: Home, href: USER_ROUTES.HOME },
@@ -47,9 +48,12 @@ const sections = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { open } = useNavigation();
 
   return (
-    <aside className="md:min-w-40 h-full mt-16 p-4 flex flex-col gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out">
+    <aside
+      className={`md:min-w-40 h-full mt-16 p-4 ${open ? "flex" : "hidden"} flex-col gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out`}
+    >
       {sections.map(({ label, icon: Icon, href, matchPaths }) => (
         <ul key={label}>
           <li key={label}>
