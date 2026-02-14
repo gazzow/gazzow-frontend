@@ -147,7 +147,9 @@ export default function ProposalCard({
         </div>
       </div>
 
-      {isOpen && <ApplyModal projectId={id} closeModal={setIsOpen} />}
+      {isOpen && (
+        <ApplyModal projectId={id} closeModal={() => setIsOpen(false)} />
+      )}
     </div>
   );
 }
