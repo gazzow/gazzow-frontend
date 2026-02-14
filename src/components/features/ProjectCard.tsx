@@ -44,7 +44,9 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleApplyClick = async () => {
+  const handleApplyClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     try {
       const res = await userService.getUser();
       if (res.success && res.data.stripeAccountId) {
@@ -156,7 +158,7 @@ export default function ProjectCard({
             {tech}
           </span>
         ))}
-        
+
         {/* Show +More Badge */}
         {requiredSkills.length > 3 && (
           <span
@@ -196,7 +198,7 @@ export default function ProjectCard({
           {!isContributor && (
             <button
               className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded cursor-pointer transition"
-              onClick={handleApplyClick}
+              onClick={(e) => handleApplyClick(e)}
             >
               Apply
             </button>
