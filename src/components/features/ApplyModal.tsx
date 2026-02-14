@@ -25,7 +25,7 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
     try {
       const res = await projectService.createApplication(
         { proposal, expectedRate },
-        projectId
+        projectId,
       );
       console.log("Response Data: ", res);
       toast.success(res.message || "Application Submitted");
@@ -50,7 +50,11 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
         {/* Header */}
         <div className=" flex justify-between items-center">
           <h1 className="text-2xl font-semibold">Apply to project</h1>
-          <button onClick={() => closeModal(false)}>
+          <button
+            onClick={() => {
+              closeModal(false);
+            }}
+          >
             <X className="cursor-pointer text-gray-300" />
           </button>
         </div>
@@ -62,7 +66,11 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
             className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-btn-primary"
             rows={4}
             value={proposal}
-            onChange={(e) => setProposal(e.target.value)}
+            onChange={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setProposal(e.target.value);
+            }}
           />
         </div>
 
@@ -73,7 +81,11 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
             type="number"
             className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-btn-primary"
             value={expectedRate}
-            onChange={(e) => setExpectedRate(Number(e.target.value))}
+            onChange={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setExpectedRate(Number(e.target.value));
+            }}
             min={1}
           />
         </div>
