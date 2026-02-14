@@ -63,7 +63,7 @@ export function NotificationBellIcon() {
     shadow-sm hover:shadow-md
   "
     >
-      <Bell className="w-4 h-4 sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]" />
+      <Bell className="w-5 h-5 md:w-[22px] md:h-[22px]" />
 
       {notificationCount > 0 && (
         <span

@@ -78,9 +78,9 @@ export default function AuthNavbar() {
             className="md:hidden p-2 rounded-xl dark:bg-secondary"
           >
             {open ? (
-              <X  className="w-4 h-4 sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]" color={theme == "dark" ? "white" : "black"} />
+              <X  className="w-5 h-5 md:w-[22px] md:h-[22px]" color={theme == "dark" ? "white" : "black"} />
             ) : (
-              <Menu className="w-4 h-4 sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]" color={theme == "dark" ? "white" : "black"} />
+              <Menu className="w-5 h-5 md:w-[22px] md:h-[22px]" color={theme == "dark" ? "white" : "black"} />
             )}
           </button>
         </div>
