@@ -54,11 +54,12 @@ export default function ProposalCard({
     >
       {/* Header */}
       <div className="flex items-start justify-between">
-        <div>
+        <div className="flex-1">
           <h3 className="text-lg font-semibold tracking-wide">
             {projectId.title || "Untitled Project"}
           </h3>
-          <p className="text-gray-600 dark:text-gray-500 text-sm mt-1 line-clamp-2">
+
+          <p className="text-gray-600 dark:text-gray-500 text-sm mt-1 line-clamp-2 min-h-[2.5rem]">
             {projectId.description || "No description available."}
           </p>
         </div>
@@ -89,14 +90,15 @@ export default function ProposalCard({
         </div>
 
         {/* Proposal */}
-        <div className="flex items-center gap-2 col-span-2">
-          <FileText size={16} className="text-gray-500" />
-          <span className="truncate">
-            Proposal:{" "}
+        <div className="flex items-start gap-2 col-span-2">
+          <FileText size={16} className="text-gray-500 mt-1" />
+
+          <p className="text-sm line-clamp-2 min-h-[40px]">
+            <span className="text-gray-500">Proposal: </span>
             <span className="text-gray-800 dark:text-gray-300">
               {proposal || "—"}
             </span>
-          </span>
+          </p>
         </div>
 
         {/* Expected Rate */}
