@@ -83,7 +83,11 @@ export default function ProjectList() {
         router.push(PROJECT_ROUTES.CREATE);
       } else {
         toast.warn(
-          "Please complete your Stripe setup before posting projects.",
+          <p className="text-sm">
+            Please complete your Stripe setup in your Profile before posting a
+            project. Payment configuration is required to manage project funding
+            and transactions.
+          </p>,
         );
       }
     } catch (e) {
@@ -151,7 +155,9 @@ export default function ProjectList() {
                  border-gray-300 dark:border-border-primary
                  focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
         >
-          <option className="dark:bg-secondary"  value="">Experience Level</option>
+          <option className="dark:bg-secondary" value="">
+            Experience Level
+          </option>
           {Object.values(ProjectExperience).map((exp) => (
             <option className="dark:bg-secondary" key={exp} value={exp}>
               {exp.replace(/\b\w/, (c) => c.toUpperCase())}
