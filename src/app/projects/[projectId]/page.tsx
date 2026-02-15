@@ -159,7 +159,7 @@ export default function ProjectDetails() {
         <div className="flex items-center gap-3 w-full">
           <button
             onClick={onBackClick}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800 transition"
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-secondary/30 transition cursor-pointer"
           >
             <ArrowLeft />
           </button>
