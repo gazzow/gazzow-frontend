@@ -91,11 +91,11 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
             {/* Status Badge */}
             <div className="self-start sm:self-auto">
               {user?.stripeAccountId && isOnboarded ? (
-                <StatusBadge color="green" text="Connected" />
+                <StatusBadge text="Connected" status="connected" />
               ) : user?.stripeAccountId ? (
-                <StatusBadge color="yellow" text="Onboarding Pending" />
+                <StatusBadge text="Onboarding Pending" status="pending" />
               ) : (
-                <StatusBadge color="red" text="Not Connected" />
+                <StatusBadge text="Not Connected" status="not_connected" />
               )}
             </div>
           </div>
@@ -105,7 +105,7 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
             <button
               disabled={isConnecting}
               onClick={createConnectAccount}
-              className="w-full sm:w-auto flex justify-center items-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
+              className="w-full sm:w-auto flex justify-center items-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-medium px-5 py-2.5 rounded-lg cursor-pointer transition-all"
             >
               <CreditCard className="w-5 h-5" />
               {isConnecting ? "Connecting..." : "Connect Stripe"}
@@ -117,7 +117,7 @@ export default function StripeConnectCard({ user }: IStripeConnectCardProps) {
             <button
               disabled={isCompleting}
               onClick={completeOnboarding}
-              className="w-full sm:w-auto flex justify-center items-center gap-2 bg-yellow-200 hover:bg-yellow-300 disabled:opacity-50 text-yellow-800 text-sm font-medium px-5 py-2.5 rounded-lg transition-all"
+              className="w-full sm:w-auto flex justify-center items-center gap-2 bg-yellow-200 hover:bg-yellow-300 disabled:opacity-50 text-yellow-800 text-sm font-medium px-5 py-2.5 rounded-lg cursor-pointer transition-all"
             >
               <CreditCard className="w-5 h-5" />
               {isCompleting ? "Redirecting..." : "Complete Onboarding"}

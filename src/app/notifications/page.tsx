@@ -71,12 +71,8 @@ export default function NotificationPage() {
 
   return (
     <div
-      className="
-  w-full max-w-7xl mx-auto
-  px-4 sm:px-6
-  text-black dark:text-white
-  transition-colors
-"
+      className="max-w-7xl w-full flex flex-col space-y-6
+                text-black dark:text-white transition-colors"
     >
       {/* Header */}
       <div

@@ -5,10 +5,10 @@ import { Calendar, DollarSign, Star } from "lucide-react";
 import ApplyModal from "./ApplyModal";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { userService } from "@/services/user/user-service";
 import { favoriteService } from "@/services/user/favorite.service";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { paymentService } from "@/services/user/payment-service";
 
 interface ProjectCardProps {
   id: string;
@@ -54,12 +54,14 @@ export default function ProjectCard({
     e.preventDefault();
     e.stopPropagation();
     try {
-      const res = await userService.getUser();
-      if (res.success && res.data.stripeAccountId) {
+      const res = await paymentService.checkOnboardingStatus();
+      if (res.success && res.data.isOnboarded) {
         setIsOpen(true);
       } else {
         toast.warn(
-          "Please complete your Stripe setup in Settings before applying for jobs.",
+          <p className="text-sm">
+            Please complete your Stripe setup in your Profile before applying to projects. This is required to receive payments.
+          </p>,
         );
       }
     } catch (e) {

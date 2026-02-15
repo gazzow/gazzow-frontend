@@ -1,6 +1,7 @@
 "use client";
 
 import { IMessage, MessageDeleteType } from "@/types/message";
+import { formatChatTime } from "@/utils/formatChatTime";
 import { EllipsisVertical, Trash, X } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -67,9 +68,7 @@ export const MessageCard = ({
         >
           {/* Name row */}
           {showAvatar && (
-            <div
-              className={`flex justify-between items-center text-xs font-medium mb-1 `}
-            >
+            <div className={`flex text-xs font-medium mb-1 `}>
               <div
                 className={`flex gap-2 w-full justify-between  ${isMine ? "" : "flex-row-reverse"}`}
               >
@@ -83,6 +82,7 @@ export const MessageCard = ({
                 <EllipsisVertical
                   size={14}
                   onClick={onOpenMenu}
+                  className="cursor-pointer"
                 ></EllipsisVertical>
               </div>
             </div>
@@ -138,9 +138,7 @@ export const MessageCard = ({
               </button>
             </div>
           )}
-          <div
-            className={`flex items-center gap-2 ${isMine ? "" : "flex-row-reverse"}`}
-          >
+          <div className={`flex gap-2 ${isMine ? "" : "flex-row-reverse"}`}>
             {message.isDeletedForEveryone ? (
               <p className="flex-1 text-sm leading-relaxed break-words italic">
                 {isMine
@@ -148,7 +146,7 @@ export const MessageCard = ({
                   : "This message was deleted"}
               </p>
             ) : (
-              <p className="flex-1 text-sm leading-relaxed break-words">
+              <p className="flex-1 text-sm leading-relaxed break-words max-w-2xl">
                 {message.content}
               </p>
             )}
@@ -156,6 +154,7 @@ export const MessageCard = ({
               <EllipsisVertical
                 size={14}
                 onClick={onOpenMenu}
+                className="cursor-pointer mt-1"
               ></EllipsisVertical>
             )}
           </div>
@@ -165,10 +164,7 @@ export const MessageCard = ({
               <span className="text-teal-400 text-xs font-medium">Edited</span>
             )}
             <span className="text-xs opacity-60">
-              {new Date(message.createdAt).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {formatChatTime(message.createdAt)}
             </span>
           </div>
         </div>
