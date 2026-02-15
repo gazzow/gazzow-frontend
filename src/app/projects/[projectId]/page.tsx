@@ -9,8 +9,8 @@ import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { CONTRIBUTOR_ROUTES } from "@/constants/routes/contributor-routes";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
+import { paymentService } from "@/services/user/payment-service";
 import { projectService } from "@/services/user/project-service";
-import { userService } from "@/services/user/user-service";
 import { IProject, Role } from "@/types/project";
 import axios from "axios";
 import {
@@ -121,13 +121,16 @@ export default function ProjectDetails() {
 
   const handleApplyClick = async () => {
     try {
-      const res = await userService.getUser();
-      if (res.success && res.data.stripeAccountId) {
-        setApplyModal(true);
+      const res = await paymentService.checkOnboardingStatus();
+      if (res.success && res.data.isOnboarded) {
+        router.push(PROJECT_ROUTES.CREATE);
       } else {
-        toast.info(
-          "Please complete your Stripe setup in Settings before applying for jobs. You need to be able to receive payments to work on paid projects.",
-          {},
+        toast.warn(
+          <p className="text-sm">
+            Please complete your Stripe setup in your Profile before posting a
+            project. Payment configuration is required to manage project funding
+            and transactions.
+          </p>,
         );
       }
     } catch (e) {
@@ -312,7 +315,7 @@ export default function ProjectDetails() {
               ) : currentRole === Role.CONTRIBUTOR ? null : (
                 <button
                   onClick={handleApplyClick}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition"
+                  className="flex-1 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer transition"
                 >
                   Apply to contribute
                 </button>
