@@ -1,10 +1,19 @@
-"use Client";
+"use client";
 
 import { projectService } from "@/services/user/project-service";
 import axios from "axios";
 import { Send, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+
+import { useForm, SubmitHandler } from "react-hook-form";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { applyProjectSchema } from "@/validators/apply-project";
+
+type ApplyProjectFormInput = z.input<typeof applyProjectSchema>;
+type ApplyProjectFormOutput = z.output<typeof applyProjectSchema>;
 
 interface ApplyModalProp {
   projectId: string;
@@ -12,9 +21,15 @@ interface ApplyModalProp {
 }
 
 export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
-  const [proposal, setProposal] = useState("");
-  const [expectedRate, setExpectedRate] = useState<number | "">("");
   const modalRef = useRef<HTMLDivElement | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ApplyProjectFormInput, unknown, ApplyProjectFormOutput>({
+    resolver: zodResolver(applyProjectSchema),
+  });
 
   useEffect(() => {
     const handleModalClick = (e: MouseEvent) => {
@@ -24,100 +39,85 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
     };
 
     document.addEventListener("mousedown", handleModalClick);
-
     return () => document.removeEventListener("mousedown", handleModalClick);
   }, [closeModal]);
 
-  const onSubmit = async () => {
-    if (!expectedRate || expectedRate <= 0) {
-      alert("Please enter a valid rate");
-      return;
-    }
-
+  const onSubmit: SubmitHandler<ApplyProjectFormOutput> = async (data) => {
     try {
-      const res = await projectService.createApplication(
-        { proposal, expectedRate },
-        projectId,
-      );
-      console.log("Response Data: ", res);
-      toast.success(res.message || "Application Submitted");
+      const res = await projectService.createApplication(data, projectId);
+
+      toast.success(res.message || "Application submitted");
       closeModal();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message || "Apply project Error");
-        closeModal();
+        toast.error(error.response?.data.message || "Apply project error");
       }
     }
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/90 w-full min-h-screen flex items-center justify-center"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-    >
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-md w-full min-h-screen flex items-center justify-center">
       <div
         ref={modalRef}
-        className="max-w-xl min-w-sm p-6 flex flex-col gap-4 bg-secondary text-text-primary rounded-lg"
+        className="max-w-xl min-w-sm p-6 flex flex-col gap-4 bg-primary text-text-primary rounded-lg"
       >
         {/* Header */}
-        <div className=" flex justify-between items-center">
+        <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">Apply to project</h1>
           <button onClick={closeModal}>
             <X className="cursor-pointer text-gray-300" />
           </button>
         </div>
 
-        {/* Proposal */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="proposal">Project Proposal (Optional)</label>
-          <textarea
-            className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-btn-primary"
-            rows={4}
-            value={proposal}
-            onChange={(e) => {
-              console.log("proposal message triggers");
-              e.stopPropagation();
-              e.preventDefault();
-              setProposal(e.target.value);
-            }}
-          />
-        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          {/* Proposal */}
+          <div className="flex flex-col gap-2">
+            <label>Project Proposal (Optional)</label>
+            <textarea
+              {...register("proposal")}
+              rows={4}
+              className="p-2 border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-btn-primary"
+            />
+            {errors.proposal && (
+              <p className="text-red-500 text-sm">{errors.proposal.message}</p>
+            )}
+          </div>
 
-        {/* Rate */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="expectedRate">Expected Rate ($/Hour)</label>
-          <input
-            type="number"
-            className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-btn-primary"
-            value={expectedRate}
-            onChange={(e) => {
-              console.log("expectedRate triggers");
-              e.stopPropagation();
-              e.preventDefault();
-              setExpectedRate(Number(e.target.value));
-            }}
-            min={1}
-          />
-        </div>
+          {/* Expected Rate */}
+          <div className="flex flex-col gap-2">
+            <label>Expected Rate ($/Hour)</label>
+            <input
+              type="number"
+              {...register("expectedRate")}
+              className="p-2 border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-btn-primary"
+            />
+            {errors.expectedRate && (
+              <p className="text-red-500 text-sm">
+                {errors.expectedRate.message}
+              </p>
+            )}
+          </div>
 
-        {/* Footer */}
-        <div className="pt-2 flex justify-end gap-4">
-          <button
-            className="border py-1 px-2 rounded border-border-primary hover:border-gray-500 cursor-pointer transition ease-in"
-            onClick={closeModal}
-          >
-            Cancel
-          </button>
-          <button
-            className="py-1 px-2 flex items-center bg-btn-primary rounded gap-2 cursor-pointer"
-            onClick={onSubmit}
-          >
-            <Send size={16} /> <span>Apply</span>
-          </button>
-        </div>
+          {/* Footer */}
+          <div className="pt-2 flex justify-end gap-4">
+            <button
+              type="button"
+              onClick={closeModal}
+              className="border py-1 px-2 rounded border-border-primary hover:border-gray-500 cursor-pointer"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="py-1 px-2 flex items-center bg-btn-primary rounded gap-2 cursor-pointer"
+            >
+              <Send size={16} />
+              <span>{isSubmitting ? "Applying..." : "Apply"}</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
