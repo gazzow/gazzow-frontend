@@ -56,10 +56,13 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-md w-full min-h-screen flex items-center justify-center">
+    <div
+      className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-md flex items-center justify-center cursor-default"
+    >
       <div
         ref={modalRef}
-        className="max-w-xl min-w-sm p-6 flex flex-col gap-4 bg-primary text-text-primary rounded-lg"
+        onClick={(e) => e.stopPropagation()}
+        className="relative z-[10000] max-w-xl min-w-sm p-6 flex flex-col gap-4 bg-primary text-text-primary rounded-lg"
       >
         {/* Header */}
         <div className="flex justify-between items-center">

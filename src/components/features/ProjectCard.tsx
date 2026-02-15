@@ -1,7 +1,13 @@
 "use client";
 
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
-import { Calendar, DollarSign, Star } from "lucide-react";
+import {
+  Calendar,
+  DollarSign,
+  Star,
+  User,
+  Users2,
+} from "lucide-react";
 import ApplyModal from "./ApplyModal";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -9,6 +15,7 @@ import { favoriteService } from "@/services/user/favorite.service";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { paymentService } from "@/services/user/payment-service";
+import Image from "next/image";
 
 interface ProjectCardProps {
   id: string;
@@ -20,9 +27,12 @@ interface ProjectCardProps {
   durationMin: number;
   durationMax: number;
   durationUnit: string;
-  creator?: string;
+  creator: {
+    name: string;
+    imageUrl: string;
+  };
   rating?: number;
-  applicants?: number;
+  applicationCount: number;
   isContributor?: boolean;
   isFavorite?: boolean;
   onFavoriteToggle: () => void;
@@ -38,6 +48,8 @@ export default function ProjectCard({
   durationMin,
   durationMax,
   durationUnit,
+  creator,
+  applicationCount,
   isContributor,
   isFavorite,
   onFavoriteToggle,
@@ -60,7 +72,8 @@ export default function ProjectCard({
       } else {
         toast.warn(
           <p className="text-sm">
-            Please complete your Stripe setup in your Profile before applying to projects. This is required to receive payments.
+            Please complete your Stripe setup in your Profile before applying to
+            projects. This is required to receive payments.
           </p>,
         );
       }
@@ -139,7 +152,7 @@ export default function ProjectCard({
             onClick={(e) => markAsFavorite(e, id)}
           >
             {isFavorite ? (
-              <Star size={18} color="yellow" fill="yellow" />
+              <Star size={18} color="orange" fill="orange" />
             ) : (
               <Star size={18} className="text-black dark:text-white" />
             )}
@@ -193,16 +206,37 @@ export default function ProjectCard({
       </div>
 
       <div className="flex items-center justify-between mt-3">
-        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm">
-          <div className="bg-gray-300 dark:bg-gray-700 rounded-full w-8 h-8 flex items-center justify-center text-black dark:text-white font-semibold">
-            M
-          </div>
-          <div>
-            <div className="text-sm">Muhammed Abbas</div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm">
+            <div className="relative w-8 h-8 rounded-full overflow-hidden">
+              {creator?.imageUrl ? (
+                <Image
+                  fill
+                  src={creator.imageUrl}
+                  alt={creator.name || "Creator"}
+                  sizes="32px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-700 text-white">
+                  <User size={16} />
+                </div>
+              )}
+            </div>
+
+            <div>
+              <span className="text-sm">{creator.name || "Unknown"}</span>
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
+          {/* Applications count */}
+          <div className="flex gap-2 items-center  text-gray-200">
+            <Users2 size={18} />
+            <p>{applicationCount}</p>
+          </div>
+
           {!isContributor && (
             <button
               className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded cursor-pointer transition"
@@ -211,15 +245,15 @@ export default function ProjectCard({
               Apply
             </button>
           )}
-
-          {isOpen && (
-            <ApplyModal
-              key={id}
-              projectId={id}
-              closeModal={() => setIsOpen(false)}
-            />
-          )}
         </div>
+
+        {isOpen && (
+          <ApplyModal
+            key={id}
+            projectId={id}
+            closeModal={() => setIsOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

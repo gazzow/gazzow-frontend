@@ -2,18 +2,19 @@
 
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { useSocket } from "@/providers/SocketProvider";
-import api from "@/lib/axios/api";
 import { SOCKET_EVENTS } from "@/types/socket-event";
 import axios from "axios";
 import { Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { notificationService } from "@/services/user/notification.service";
 
 export function NotificationBellIcon() {
   const router = useRouter();
   const [notificationCount, setNotificationCount] = useState(0);
   const socket = useSocket();
+  const hasFetchedRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (!socket) return;
@@ -27,10 +28,13 @@ export function NotificationBellIcon() {
   }, [socket]);
 
   const fetchUnReadCount = useCallback(async () => {
+    if (hasFetchedRef.current) return;
+    console.log("fetching unread notification count : ", hasFetchedRef.current);
     try {
-      const res = await api.get("/notifications/unread-count");
-      if (res.data.success) {
-        setNotificationCount(res.data.data.count);
+      const res = await notificationService.fetchUnreadCount();
+      if (res.success) {
+        setNotificationCount(res.data.count);
+        hasFetchedRef.current = true;
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
