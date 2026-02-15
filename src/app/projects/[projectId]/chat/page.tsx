@@ -9,7 +9,7 @@ import { useRole } from "@/hook/useRole";
 import { projectService } from "@/services/user/project-service";
 import { useAppSelector } from "@/store/store";
 import { IProject } from "@/types/project";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, SendHorizontal } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
 import axios from "axios";
@@ -68,11 +68,8 @@ export default function ProjectChat() {
 
     const fetchProject = async () => {
       try {
-        console.log("projectId: ", projectId);
-
         const res = await projectService.getProject(projectId);
         if (res.success) {
-          console.log("res data: ", res.data);
           setProject(res.data);
         }
       } catch (error) {
@@ -93,7 +90,6 @@ export default function ProjectChat() {
   // }, [messages]);
 
   const fetchTeamMessages = useCallback(async () => {
-    console.log("fetching team messages");
     try {
       const res = await teamChatService.listMessages(projectId);
       if (res.success) {
@@ -119,7 +115,6 @@ export default function ProjectChat() {
     console.log("team chat joined✅");
 
     socket.on(SOCKET_EVENTS.TEAM_MESSAGE, (msg) => {
-      console.log("New message from team chat to be updated");
       setMessages((prev) => [...prev, msg]);
     });
 
@@ -184,8 +179,7 @@ export default function ProjectChat() {
     );
 
     try {
-      const res = await teamChatService.deleteMessage(messageId, type);
-      toast.success(res.message);
+      await teamChatService.deleteMessage(messageId, type);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === HttpStatusCode.CONFLICT) {
@@ -355,11 +349,11 @@ export default function ProjectChat() {
             className="
         cursor-pointer
         px-5 rounded-lg font-medium text-white transition
-        bg-blue-600 hover:bg-blue-700
+       bg-btn-primary hover:bg-btn-primary-hover
         disabled:opacity-50 disabled:cursor-not-allowed
       "
           >
-            Send
+            <SendHorizontal size={22}></SendHorizontal>
           </button>
         </div>
       </section>
