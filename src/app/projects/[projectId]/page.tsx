@@ -123,7 +123,7 @@ export default function ProjectDetails() {
     try {
       const res = await paymentService.checkOnboardingStatus();
       if (res.success && res.data.isOnboarded) {
-        router.push(PROJECT_ROUTES.CREATE);
+        setApplyModal(true);
       } else {
         toast.warn(
           <p className="text-sm">

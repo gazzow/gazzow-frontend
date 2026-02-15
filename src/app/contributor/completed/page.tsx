@@ -10,7 +10,7 @@ import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { contributorService } from "@/services/user/contributor.service";
 import { CONTRIBUTOR_ROUTES } from "@/constants/routes/contributor-routes";
-import { IProject } from "@/types/project";
+import { IAggregatedProject } from "@/types/project";
 import { useAppSelector } from "@/store/store";
 
 const tabs = [
@@ -21,7 +21,7 @@ const tabs = [
 ];
 
 export default function ProjectList() {
-  const [projects, setProjects] = useState<IProject[]>([]);
+  const [projects, setProjects] = useState<IAggregatedProject[]>([]);
   const userId = useAppSelector((state) => state.user.id);
 
   const { page, totalPages, hasNextPage, hasPrevPage, prevPage, nextPage } =

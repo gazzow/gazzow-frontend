@@ -64,6 +64,11 @@ export enum Role {
 
 export interface IAggregatedProject extends IProject {
   isFavorite: boolean;
+  applicationCount: number;
+  creator: {
+    name: string;
+    imageUrl: string;
+  }
 }
 
 export interface IPopulatedContributor {
