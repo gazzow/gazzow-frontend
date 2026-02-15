@@ -29,12 +29,12 @@ export default function Navbar() {
           {open ? (
             <PanelRightOpen
               onClick={() => setOpen(false)}
-              className="text-text-secondary mt-2 w-5 h-5 md:w-[18px] md:h-[18px] cursor-pointer"
+              className="text-black dark:text-text-secondary mt-1 w-5 h-5 md:w-[18px] md:h-[18px] cursor-pointer"
             ></PanelRightOpen>
           ) : (
             <PanelLeftOpen
               onClick={() => setOpen(true)}
-              className="text-text-secondary mt-2 w-5 h-5 md:w-[18px] md:h-[18px] cursor-pointer"
+              className="text-black dark:text-text-secondary mt-1 w-5 h-5 md:w-[18px] md:h-[18px] cursor-pointer"
             ></PanelLeftOpen>
           )}
         </div>
