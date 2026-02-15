@@ -7,6 +7,11 @@ export const notificationService = {
     console.log("list notification response: ", res);
     return res.data;
   },
+  async fetchUnreadCount() {
+    const res = await api.get(NOTIFICATION_API.UNREAD_COUNT);
+    console.log("Fetch unread count response: ", res);
+    return res.data;
+  },
   async markAsRead(notificationId: string) {
     const res = await api.patch(NOTIFICATION_API.MARK_AS_READ(notificationId));
     console.log("Mark As Read response: ", res);
