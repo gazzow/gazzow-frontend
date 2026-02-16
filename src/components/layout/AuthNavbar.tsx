@@ -78,9 +78,15 @@ export default function AuthNavbar() {
             className="md:hidden p-2 rounded-xl dark:bg-secondary"
           >
             {open ? (
-              <X  className="w-5 h-5 md:w-[22px] md:h-[22px]" color={theme == "dark" ? "white" : "black"} />
+              <X
+                className="w-5 h-5 md:w-[22px] md:h-[22px]"
+                color={theme == "dark" ? "white" : "black"}
+              />
             ) : (
-              <Menu className="w-5 h-5 md:w-[22px] md:h-[22px]" color={theme == "dark" ? "white" : "black"} />
+              <Menu
+                className="w-5 h-5 md:w-[22px] md:h-[22px]"
+                color={theme == "dark" ? "white" : "black"}
+              />
             )}
           </button>
         </div>
@@ -120,7 +126,7 @@ export default function AuthNavbar() {
                 href={USER_ROUTES.HOME}
                 className="px-4 py-2 bg-btn-primary text-text-primary rounded-lg text-center"
               >
-                Dashboard
+                My Account
               </Link>
             )}
           </div>
