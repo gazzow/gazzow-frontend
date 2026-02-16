@@ -1,4 +1,4 @@
-import { IProject } from "./project";
+import { IAggregatedProject } from "./project";
 
 export interface IFavorite {
   id: string;
@@ -9,5 +9,5 @@ export interface IFavorite {
 }
 
 export interface IPopulatedFavorite extends Omit<IFavorite, "projectId"> {
-  project: IProject;
+  project: IAggregatedProject;
 }

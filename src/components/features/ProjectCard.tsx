@@ -1,13 +1,7 @@
 "use client";
 
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
-import {
-  Calendar,
-  DollarSign,
-  Star,
-  User,
-  Users2,
-} from "lucide-react";
+import { Calendar, DollarSign, FileText, Star, User, Users2 } from "lucide-react";
 import ApplyModal from "./ApplyModal";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -33,6 +27,7 @@ interface ProjectCardProps {
   };
   rating?: number;
   applicationCount: number;
+  contributorsCount?: number;
   isContributor?: boolean;
   isFavorite?: boolean;
   onFavoriteToggle: () => void;
@@ -50,6 +45,7 @@ export default function ProjectCard({
   durationUnit,
   creator,
   applicationCount,
+  contributorsCount,
   isContributor,
   isFavorite,
   onFavoriteToggle,
@@ -225,17 +221,24 @@ export default function ProjectCard({
             </div>
 
             <div>
-              <span className="text-sm">{creator.name || "Unknown"}</span>
+              <span className="text-sm">{creator?.name || "Unknown"}</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
           {/* Applications count */}
-          <div className="flex gap-2 items-center  text-gray-200">
-            <Users2 size={18} />
-            <p>{applicationCount}</p>
-          </div>
+          {isContributor ? (
+            <div className="flex gap-2 items-center  text-gray-200">
+              <Users2 size={18} />
+              <p>{contributorsCount}</p>
+            </div>
+          ) : (
+            <div className="flex gap-2 items-center  text-gray-200">
+              <FileText size={18} />
+              <p>{applicationCount}</p>
+            </div>
+          )}
 
           {!isContributor && (
             <button
