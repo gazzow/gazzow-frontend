@@ -2,6 +2,7 @@
 
 import { ApplicationStatus } from "@/types/application";
 import { IUser } from "@/types/user";
+import { getDisplayName } from "@/utils/getDisplayName";
 import { Check, X } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -30,64 +31,111 @@ export default function ApplicantCard({
   };
 
   return (
-    <div className=" bg-secondary/30 text-white rounded-2xl p-3 flex flex-col justify-between  gap-2 shadow-md border border-border-primary">
+    <div
+      className="
+  bg-white dark:bg-secondary/30
+  text-gray-900 dark:text-white
+  rounded-2xl p-3
+  flex flex-col justify-between gap-2
+  shadow-md
+  border border-gray-200 dark:border-border-primary
+"
+    >
       {/* Header */}
       <div className="flex justify-between items-start">
-        <div className="flex items-center gap-3">
-          <Image
-            src={applicant.imageUrl || ""}
-            alt={"Applicant Profile"}
-            width={44}
-            height={18}
-            className="rounded-full object-cover"
-          />
-          <div>
-            <h3 className="font-semibold leading-tight">{applicant.name}</h3>
-            <p className="text-gray-400 text-sm">{applicant.developerRole}</p>
+        <div className="flex items-center gap-3 min-w-0">
+          {applicant.imageUrl && applicant.name ? (
+            <Image
+              src={applicant.imageUrl}
+              alt={applicant.name}
+              width={48}
+              height={48}
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-gray-200 dark:border-white/10"
+            />
+          ) : (
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-sm sm:text-lg font-semibold">
+              {applicant.name && applicant.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+
+          <div className="min-w-0">
+            <h2 className="text-sm sm:text-base font-semibold truncate">
+              {applicant.name && getDisplayName(applicant.name)}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
+              {applicant.developerRole}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Skills */}
-      {/* <div className="flex gap-2 flex-wrap mt-3">
-        {applicant.techStacks?.map((skill, i) => (
+      <div className="flex flex-wrap gap-2">
+        {applicant.techStacks &&
+          applicant.techStacks.slice(0, 3).map((tech) => (
+            <span
+              key={tech}
+              className="
+          text-[10px] sm:text-xs px-2 py-0.5 rounded-full border
+          bg-gray-200 dark:bg-gray-800
+          text-gray-800 dark:text-gray-200
+          border-gray-300 dark:border-gray-700
+        "
+            >
+              {tech}
+            </span>
+          ))}
+
+        {applicant.techStacks && applicant.techStacks.length > 3 && (
           <span
-            key={i}
-            className="text-xs bg-gray-800 px-2 py-0.5 rounded-full border border-gray-700"
+            className="
+        text-[10px] sm:text-xs px-2 py-0.5 rounded-full border
+        bg-gray-200 dark:bg-gray-800
+        text-gray-800 dark:text-gray-200
+        border-gray-300 dark:border-gray-700
+        font-medium
+      "
           >
-            {skill}
+            +{applicant.techStacks.length - 3} more
           </span>
-        ))}
-        ...
-      </div> */}
+        )}
+      </div>
 
       {/* Proposal */}
       <div className="grow">
         {proposal && (
-          <p title={proposal} className="text-sm">
-            {proposal.length > 75 ? proposal.slice(0, 82) + "..." : proposal}
+          <p
+            title={proposal}
+            className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-snug line-clamp-3"
+          >
+            {proposal}
           </p>
         )}
       </div>
 
-      {/* Expected Rate  & Experience*/}
+      {/* Expected Rate & Experience */}
       <div className="flex items-center justify-between">
-        <p>{applicant.experience}</p>
-        <p className="text-gray-300 text-sm">
-          <span className="text-white font-medium">${expectedRate}</span> / Hour
-        </p>
+        <span className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
+          {applicant.experience}
+        </span>
+
+        <span className="text-[11px] sm:text-xs px-2 py-1 rounded-md bg-primary/20 text-primary dark:text-text-primary font-medium">
+          ${expectedRate}/hr
+        </span>
       </div>
+
       {/* Footer */}
       <div className="flex justify-end items-center gap-2">
         <button
           onClick={handleReject}
-          className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-2 py-1.5 text-xs rounded-md transition-colors cursor-pointer"
+          className="w-full sm:w-auto flex items-center justify-center gap-1 bg-red-600 hover:bg-red-700 text-white px-2 py-1.5 text-xs rounded-md transition-colors cursor-pointer"
         >
           <X size={14} /> Reject
         </button>
+
         <button
           onClick={handleAccept}
-          className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-2 py-1.5 text-xs rounded-md transition-colors cursor-pointer"
+          className="w-full sm:w-auto flex items-center justify-center gap-1 bg-green-600 hover:bg-green-700 text-white px-2 py-1.5 text-xs rounded-md transition-colors cursor-pointer"
         >
           <Check size={14} /> Accept
         </button>
