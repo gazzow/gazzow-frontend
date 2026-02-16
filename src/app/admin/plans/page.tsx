@@ -1,18 +1,22 @@
 "use client";
 
 import CreatePlanModal from "@/components/features/admin/CreatePlanModal";
+import EditPlanModal from "@/components/features/admin/EditPlanModal";
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { planService } from "@/services/admin/plan-service";
 import { IPlan } from "@/types/plan";
 import { CreatePlanFormValues } from "@/validators/create-plan";
 import axios from "axios";
+import { Edit } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function PlanManagement() {
   const [plans, setPlans] = useState<IPlan[]>([]);
   const [openPlanModal, setOpenPlanModal] = useState<boolean>(false);
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   const {
     page,
@@ -30,6 +34,16 @@ export default function PlanManagement() {
 
   const handleCloseModal = () => {
     setOpenPlanModal(false);
+  };
+
+  const handleOpenEditModal = (planId: string) => {
+    setOpenEditModal(true);
+    setSelectedPlanId(planId);
+  };
+
+  const handleCloseEditModal = () => {
+    fetchPlans();
+    setOpenEditModal(false);
   };
 
   const fetchPlans = useCallback(async () => {
@@ -67,13 +81,15 @@ export default function PlanManagement() {
     try {
       const res = await planService.createPlan(payload);
       if (res.success) {
-        toast.success(res.message);
-        fetchPlans()
+        fetchPlans();
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(
-          error.response?.data.message || "Failed to create plan. Try again"
+          toast.error(
+            error.response?.data.message ||
+              "Unable to create plan. Please try again later",
+          ),
         );
       }
     }
@@ -103,18 +119,20 @@ export default function PlanManagement() {
       <div className="overflow-x-auto shadow rounded-lg border border-border-primary mb-4">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="text-left text-text-primary">
-              <th className="p-3">Plan</th>
+            <tr className="text-center text-text-primary">
+              <th className="p-3">Plan Name</th>
+              <th className="p-3">Type</th>
               <th className="p-3">Duration</th>
               <th className="p-3">Price</th>
               <th className="p-3">Commission</th>
               <th className="p-3">Status</th>
               <th className="p-3">Created</th>
+              <th className="p-3">Edited</th>
               <th className="p-3">Actions</th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="text-center">
             {plans.length === 0 && (
               <tr>
                 <td colSpan={7} className="text-center py-6 text-gray-400">
@@ -128,6 +146,11 @@ export default function PlanManagement() {
                 key={plan.id}
                 className="border border-border-primary hover:bg-secondary/30 transition"
               >
+                {/* Plan Name */}
+                <td className="p-3 text-white font-medium capitalize">
+                  {plan.name}
+                </td>
+
                 {/* Plan Type */}
                 <td className="p-3 text-white font-medium capitalize">
                   {plan.type}
@@ -164,22 +187,31 @@ export default function PlanManagement() {
                   })}
                 </td>
 
+                {/* Created At */}
+                <td className="p-3 text-white">
+                  {new Date(plan.updatedAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "2-digit",
+                  })}
+                </td>
+
                 {/* Actions */}
                 <td className="p-3 flex gap-2">
-                  {/* <button
-                    className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 transition"
-                    onClick={() => {}}
+                  <button
+                    className="flex gap-2 items-center justify-center px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 cursor-pointer transition"
+                    onClick={() => handleOpenEditModal(plan.id)}
                   >
-                    Edit
-                  </button> */}
+                    <Edit size={14}></Edit>
+                    <span>Edit</span>
+                  </button>
 
                   <button
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition ${
+                    className={`px-3 py-1 rounded-md text-xs font-medium cursor-pointer transition ${
                       plan.isActive
-                        ? "bg-red-500 text-white hover:bg-red-600"
+                        ? "bg-red-600 text-white hover:bg-red-500"
                         : "bg-green-500 text-white hover:bg-green-600"
                     }`}
-                    onClick={() => {}}
                   >
                     {plan.isActive ? "Disable" : "Enable"}
                   </button>
@@ -205,6 +237,14 @@ export default function PlanManagement() {
           open={openPlanModal}
           onClose={handleCloseModal}
           onSubmit={handleCreatePlan}
+        />
+      )}
+
+      {openEditModal && (
+        <EditPlanModal
+          open={openEditModal}
+          planId={selectedPlanId}
+          onClose={handleCloseEditModal}
         />
       )}
     </div>

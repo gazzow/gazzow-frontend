@@ -18,4 +18,9 @@ export const planService = {
     console.log("Get plan response: ", res);
     return res.data;
   },
+  async updatePlan(planId: string, data: Partial<IPlan>) {
+    const res = await api.put(PLAN_API.UPDATE_PLAN(planId), data);
+    console.log("Update plan response: ", res);
+    return res.data;
+  },
 };
