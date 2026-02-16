@@ -75,8 +75,9 @@ export default function ProjectList() {
         {projects.length > 0 ? (
           projects.map((p) => (
             <ProjectCard
-              key={p.id}
               {...p}
+              key={p.id}
+              contributorsCount={p.contributors.length}
               onFavoriteToggle={() => fetchProjects()}
               isContributor={true}
             />

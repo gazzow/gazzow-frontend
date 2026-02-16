@@ -127,6 +127,7 @@ export default function ProjectList() {
             <ProjectCard
               key={p.id}
               {...p}
+              contributorsCount={p.contributors.length}
               onFavoriteToggle={() => fetchProjects()}
               isContributor={true}
             />
