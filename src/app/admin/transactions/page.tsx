@@ -89,7 +89,7 @@ export default function TransactionManagement() {
   "
       >
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Payment Management
+          All Transactions
         </h1>
         <p className="text-gray-500 dark:text-text-muted text-sm">
           Track all platform transactions, payouts, and refunds.
