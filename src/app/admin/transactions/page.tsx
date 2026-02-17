@@ -71,20 +71,44 @@ export default function TransactionManagement() {
   };
 
   return (
-    <div className="p-8 min-h-screen">
+    <div
+      className="
+  p-6 min-h-screen
+  bg-gray-50 dark:bg-transparent
+  text-gray-800 dark:text-white
+  transition-colors duration-300
+"
+    >
       {/* Header */}
-      <div className="flex flex-col p-4 border border-border-primary rounded-lg mb-6">
-        <h1 className="text-2xl font-bold text-white">Payment Management</h1>
-        <p className="text-text-muted text-sm">
+      <div
+        className="
+    flex flex-col p-5 mb-6
+    bg-white dark:bg-secondary/20
+    border border-gray-200 dark:border-border-primary
+    rounded-xl shadow-sm dark:shadow-none
+  "
+      >
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Payment Management
+        </h1>
+        <p className="text-gray-500 dark:text-text-muted text-sm">
           Track all platform transactions, payouts, and refunds.
         </p>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto shadow rounded-lg border border-border-primary mb-4">
-        <table className="w-full border-collapse text-sm">
+      <div
+        className="
+    overflow-x-auto
+    bg-white dark:bg-secondary/20
+    border border-gray-200 dark:border-border-primary
+    rounded-xl shadow-sm dark:shadow-none
+    mb-4
+  "
+      >
+        <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-text-primary">
+            <tr className="text-left text-gray-600 dark:text-gray-300">
               <th className="p-3">User</th>
               <th className="p-3">Type</th>
               <th className="p-3">Amount</th>
@@ -93,13 +117,14 @@ export default function TransactionManagement() {
               <th className="p-3">Status</th>
               <th className="p-3">Created</th>
               <th className="p-3">Reference Id</th>
+              {/* <th className="p-3">Action</th> */}
             </tr>
           </thead>
 
           <tbody>
             {payments.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center py-6 text-gray-400">
+                <td colSpan={8} className="text-center py-6 text-gray-400">
                   No payments found
                 </td>
               </tr>
@@ -108,10 +133,14 @@ export default function TransactionManagement() {
             {payments.map((payment) => (
               <tr
                 key={payment.id}
-                className="border border-border-primary hover:bg-secondary/30 transition"
+                className="
+            border-t border-gray-200 dark:border-border-primary
+            hover:bg-gray-50 dark:hover:bg-secondary/30
+            transition-colors
+          "
               >
                 {/* User */}
-                <td className="p-3 text-white">
+                <td className="p-3 font-medium text-gray-900 dark:text-white">
                   {payment.userId.slice(0, 8)}...
                 </td>
 
@@ -119,7 +148,7 @@ export default function TransactionManagement() {
                 <td className="p-3">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${getTypeBadge(
-                      payment.type
+                      payment.type,
                     )}`}
                   >
                     {payment.type.replace("_", " ")}
@@ -127,33 +156,34 @@ export default function TransactionManagement() {
                 </td>
 
                 {/* Gross */}
-                <td>
-                  <div className="p-3 text-white flex items-center">
+                <td className="p-3">
+                  <div className="flex items-center gap-1">
                     <DollarSign size={14} />
                     <span>{payment.totalAmount?.toLocaleString() || 0}</span>
                   </div>
                 </td>
 
                 {/* Platform Fee */}
-                <td>
-                  <div className="p-3 text-white flex items-center">
+                <td className="p-3">
+                  <div className="flex items-center gap-1">
                     <DollarSign size={14} />
                     <span>{payment.platformFee?.toLocaleString() || 0}</span>
                   </div>
                 </td>
 
                 {/* Net */}
-                <td>
-                  <div className="p-3 text-white flex items-center">
+                <td className="p-3">
+                  <div className="flex items-center gap-1">
                     <DollarSign size={14} />
                     <span>{payment.netAmount?.toLocaleString() || 0}</span>
                   </div>
                 </td>
+
                 {/* Status */}
                 <td className="p-3">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${getStatusColor(
-                      payment.status
+                      payment.status,
                     )}`}
                   >
                     {payment.status}
@@ -161,7 +191,7 @@ export default function TransactionManagement() {
                 </td>
 
                 {/* Created */}
-                <td className="p-3 text-white">
+                <td className="p-3">
                   {new Date(payment.createdAt).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "short",
@@ -170,11 +200,25 @@ export default function TransactionManagement() {
                 </td>
 
                 {/* Reference */}
-                <td className="p-3 text-white">
+                <td className="p-3">
                   {payment.stripeTransferId ||
                     payment.stripePaymentIntentId ||
                     "N/A"}
                 </td>
+                {/* Actions */}
+                {/* <td className="p-3">
+                  <button
+                    className="text-center
+                px-3 py-1 rounded-md text-xs font-medium
+                bg-gray-100 dark:bg-slate-700
+                text-gray-700 dark:text-gray-300
+                hover:bg-gray-200 dark:hover:bg-slate-800
+                transition cursor-pointer
+              "
+                  >
+                    View
+                  </button>
+                </td> */}
               </tr>
             ))}
           </tbody>
