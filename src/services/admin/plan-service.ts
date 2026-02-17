@@ -23,4 +23,9 @@ export const planService = {
     console.log("Update plan response: ", res);
     return res.data;
   },
+  async updateStatus(planId: string, isActive: boolean) {
+    const res = await api.patch(PLAN_API.UPDATE_STATUS(planId), { isActive });
+    console.log("Update plan status response: ", res);
+    return res.data;
+  },
 };

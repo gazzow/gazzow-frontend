@@ -17,6 +17,8 @@ export default function PlanManagement() {
   const [openPlanModal, setOpenPlanModal] = useState<boolean>(false);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<IPlan | null>(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const {
     page,
@@ -44,6 +46,33 @@ export default function PlanManagement() {
   const handleCloseEditModal = () => {
     fetchPlans();
     setOpenEditModal(false);
+    setSelectedPlanId(null);
+  };
+
+  const handleStatusUpdate = (plan: IPlan) => {
+    setConfirmModal(true);
+    setSelectedPlan(plan);
+  };
+
+  const handleConfirmButton = async () => {
+    if (!selectedPlan) return;
+    try {
+      const res = await planService.updateStatus(
+        selectedPlan.id,
+        selectedPlan.isActive ? false : true,
+      );
+      console.log("plans data: ", res.data);
+      if (res.success) {
+        fetchPlans();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Project management error: ", error);
+      }
+    } finally {
+      setConfirmModal(false);
+      setSelectedPlan(null);
+    }
   };
 
   const fetchPlans = useCallback(async () => {
@@ -99,19 +128,19 @@ export default function PlanManagement() {
     <div className="p-8 min-h-screen">
       {/* Header */}
       <div className="flex flex-col gap-4  p-4 border border-border-primary rounded-lg mb-6">
-        <div className="flex flex-col">
-          <div className="flex justify-between">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col">
             <h1 className="text-2xl font-bold text-white">Plan Management</h1>
-            <button
-              className="px-2 py-1 bg-btn-primary text-white text-md font-semibold rounded-md transition cursor-pointer"
-              onClick={handleOpenModal}
-            >
-              Create Plan
-            </button>
+            <p className="text-text-muted text-sm">
+              Manage and monitor all subscription plans.
+            </p>
           </div>
-          <p className="text-text-muted text-sm">
-            Manage and monitor all subscription plans.
-          </p>
+          <button
+            className="px-2 py-1 bg-btn-primary text-white text-md font-semibold rounded-md transition cursor-pointer"
+            onClick={handleOpenModal}
+          >
+            Create Plan
+          </button>
         </div>
       </div>
 
@@ -197,9 +226,9 @@ export default function PlanManagement() {
                 </td>
 
                 {/* Actions */}
-                <td className="p-3 flex gap-2">
+                <td className="p-3 flex justify-center gap-2">
                   <button
-                    className="flex gap-2 items-center justify-center px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 cursor-pointer transition"
+                    className="flex gap-1 items-center justify-center px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 cursor-pointer transition"
                     onClick={() => handleOpenEditModal(plan.id)}
                   >
                     <Edit size={14}></Edit>
@@ -212,6 +241,7 @@ export default function PlanManagement() {
                         ? "bg-red-600 text-white hover:bg-red-500"
                         : "bg-green-500 text-white hover:bg-green-600"
                     }`}
+                    onClick={() => handleStatusUpdate(plan)}
                   >
                     {plan.isActive ? "Disable" : "Enable"}
                   </button>
@@ -246,6 +276,36 @@ export default function PlanManagement() {
           planId={selectedPlanId}
           onClose={handleCloseEditModal}
         />
+      )}
+
+      {/* Confirm Modal */}
+      {confirmModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex justify-center items-center z-50">
+          <div className="w-full max-w-md bg-white dark:bg-primary border border-gray-200 dark:border-border-primary p-6 rounded-2xl shadow-xl">
+            <p className="font-semibold text-lg dark:text-text-primary">
+              {selectedPlan?.isActive
+                ? "This plan will be made unavailable to new users. Do you want to continue?"
+                : "This plan will become available to users again. Do you want to continue?"}
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setConfirmModal(false)}
+                type="button"
+                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-secondary dark:text-text-primary dark:hover:bg-secondary/80 cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                onClick={handleConfirmButton}
+              >
+                {selectedPlan && selectedPlan.isActive ? "Disable" : "Enable"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
