@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { X } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +28,7 @@ export default function CreateTaskModal({
   const [contributors, setContributors] = useState<IContributor[]>([]);
   const [calculatedAmount, setCalculatedAmount] = useState<number>(0);
   const [files, setFiles] = useState<File[]>([]);
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   const {
     register,
@@ -63,6 +64,21 @@ export default function CreateTaskModal({
       }
     }
   }, [projectId]);
+
+  useEffect(() => {
+    const handleMouseDownEvent = (e: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(e.target as HTMLElement)
+      ) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleMouseDownEvent);
+
+    return () =>
+      document.removeEventListener("mousedown", handleMouseDownEvent);
+  }, [onClose]);
 
   useEffect(() => {
     fetchContributors();
@@ -117,22 +133,25 @@ export default function CreateTaskModal({
 
   return (
     <div
-      className="fixed min-h-screen inset-0 z-50 bg-black/50 backdrop-blur-sm 
-                flex items-center justify-center 
-                overflow-y-auto px-4 py-6"
+      className="fixed inset-0 z-50 bg-black/40 dark:bg-black/60 backdrop-blur-sm 
+  flex items-center justify-center
+"
     >
       <div
-        className="bg-secondary text-white 
-                  w-full max-w-lg 
-                  rounded-lg shadow-lg
-                  max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-secondary text-gray-800 dark:text-white 
+  w-full max-w-lg
+  h-[90vh]
+  rounded-xl shadow-2xl
+  border border-gray-200 dark:border-border-primary
+  flex flex-col
+"
       >
         {/* Header */}
-        <div className="flex justify-between items-center border-b border-border-primary px-6 py-4">
-          <h2 className="text-lg font-semibold ">Create New Task</h2>
+        <div className="flex justify-between items-center border-b border-gray-200 dark:border-border-primary px-5 py-4 shrink-0">
+          <h2 className="text-lg font-semibold">Create New Task</h2>
           <button
             onClick={onClose}
-            className="text-gray-200 hover:text-gray-300 cursor-pointer"
+            className="text-gray-500 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition cursor-pointer"
           >
             <X size={20} />
           </button>
@@ -141,179 +160,187 @@ export default function CreateTaskModal({
         {/* Form */}
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
-          className="p-6 space-y-4"
+          className="flex flex-col flex-1 overflow-hidden"
         >
-          {/* Task Title */}
-          <div>
-            <label className="block text-sm font-medium  mb-1">
-              Task Title
-            </label>
-            <input
-              type="text"
-              placeholder="Enter task title"
-              {...register("title")}
-              className={`w-full rounded-md border px-3 py-2 focus:outline-none focus:border-0 focus:ring-2 ${
-                errors.title
+          {/* Scrollable Body */}
+          <div className="p-5 space-y-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
+            {/* Task Title */}
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Task Title
+              </label>
+              <input
+                type="text"
+                placeholder="Enter task title"
+                {...register("title")}
+                className={`w-full rounded-md border px-3 py-2 
+            bg-white dark:bg-gray-800
+            focus:outline-none focus:ring-2 transition
+            ${
+              errors.title
+                ? "border-red-500 focus:ring-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:ring-primary"
+            }`}
+              />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.title.message}
+                </p>
+              )}
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Description
+              </label>
+              <textarea
+                {...register("description")}
+                rows={3}
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 
+            bg-white dark:bg-gray-800
+            px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
+              />
+              {errors.description && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.description.message}
+                </p>
+              )}
+            </div>
+
+            {/* Assign To + Estimated Hours */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Assign To
+                </label>
+                <select
+                  {...register("assigneeId")}
+                  className={`w-full rounded-md border px-3 py-2
+              bg-white dark:bg-gray-800
+              focus:outline-none focus:ring-2 transition
+              ${
+                errors.assigneeId
                   ? "border-red-500 focus:ring-red-500"
-                  : "border-gray-500 focus:ring-[#9333EA]"
+                  : "border-gray-300 dark:border-gray-600 focus:ring-primary"
               }`}
-            />
-            {errors.title && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.title.message}
-              </p>
-            )}
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium  mb-1">
-              Description
-            </label>
-            <textarea
-              placeholder="Describe the task in detail"
-              {...register("description")}
-              rows={3}
-              className="w-full rounded-md border border-gray-500 px-3 py-2 focus:outline-none focus:border-0 focus:ring-2 focus:ring-[#9333EA]"
-            />
-            {errors.description && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.description.message}
-              </p>
-            )}
-          </div>
-
-          {/* Assign To + Estimated Hours */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium  mb-1">
-                Assign To
-              </label>
-              <select
-                {...register("assigneeId")}
-                className={`w-full bg-secondary rounded-md border px-3 py-2 focus:outline-none focus:border-0 focus:ring-2 ${
-                  errors.assigneeId
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-gray-500 focus:ring-btn-primary"
-                }`}
-              >
-                <option key={0} value="">
-                  Select contributor
-                </option>
-                {contributors.length > 0 ? (
-                  contributors.map((c, idx) => (
-                    <option key={idx} value={c.userId}>
-                      {c.name.split(" ").length > 2
-                        ? c.name.split(" ").slice(0, 2).join(" ") +
-                          " —  " +
-                          c.expectedRate +
-                          "/hr"
-                        : c.name + " - " + c.expectedRate + "/hr"}
+                >
+                  <option value="">Select contributor</option>
+                  {contributors.map((c) => (
+                    <option key={c.userId} value={c.userId}>
+                      {c.name} — {c.expectedRate}/hr
                     </option>
-                  ))
-                ) : (
-                  <option disabled>No contributors found</option>
+                  ))}
+                </select>
+
+                {errors.assigneeId && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.assigneeId.message}
+                  </p>
                 )}
-              </select>
-              {errors.assigneeId && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.assigneeId.message}
-                </p>
-              )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Estimated Hours
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  {...register("estimatedHours", { valueAsNumber: true })}
+                  className={`w-full rounded-md border px-3 py-2 
+              bg-white dark:bg-gray-800
+              focus:outline-none focus:ring-2 transition
+              ${
+                errors.estimatedHours
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 dark:border-gray-600 focus:ring-primary"
+              }`}
+                />
+                {errors.estimatedHours && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.estimatedHours.message}
+                  </p>
+                )}
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium  mb-1">
-                Estimated Hours
-              </label>
-              <input
-                type="number"
-                min="0"
-                {...register("estimatedHours", { valueAsNumber: true })}
-                className={`w-full rounded-md border px-3 py-2 focus:outline-none focus:border-0 focus:ring-2 ${
-                  errors.estimatedHours
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-gray-500 focus:ring-[#9333EA]"
-                }`}
-              />
-              {errors.estimatedHours && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.estimatedHours.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Show calculated payment */}
-          <div className="flex items-center justify-between mt-2">
-            <span className="text-sm text-gray-300">Payable Amount: </span>
-            <span className="text-base font-semibold text-green-500">
-              $ {calculatedAmount.toLocaleString("en-IN")}
-            </span>
-          </div>
-
-          {/* Due Date + Priority */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium  mb-1">
-                Due Date
-              </label>
-              <input
-                type="date"
-                {...register("dueDate")}
-                className="w-full rounded-md border border-gray-500 px-3 py-2 focus:outline-none  focus:border-0 focus:ring-2 focus:ring-[#9333EA]"
-              />
-              {errors.dueDate && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.dueDate.message}
-                </p>
-              )}
+            {/* Payable */}
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Payable Amount:
+              </span>
+              <span className="text-base font-semibold text-green-500">
+                $ {calculatedAmount.toLocaleString("en-IN")}
+              </span>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium  mb-1">
-                Priority
-              </label>
-              <select
-                {...register("priority")}
-                className="w-full bg-secondary rounded-md border border-gray-500 px-3 py-2 focus:outline-none focus:border-0 focus:ring-2 focus:ring-btn-primary"
-              >
-                <option value="">Select priority</option>
-                {Object.values(TaskPriority).map((priority, idx) => {
-                  return (
-                    <option value={priority} key={idx}>
-                      {priority.slice(0, 1).toUpperCase() + priority.slice(1)}
+            {/* Due Date + Priority */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Due Date
+                </label>
+                <input
+                  type="date"
+                  {...register("dueDate")}
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 
+              bg-white dark:bg-gray-800
+              px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                />
+                {errors.dueDate && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.dueDate.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Priority
+                </label>
+                <select
+                  {...register("priority")}
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 
+              bg-white dark:bg-gray-800
+              px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                >
+                  <option value="">Select priority</option>
+                  {Object.values(TaskPriority).map((priority) => (
+                    <option key={priority} value={priority}>
+                      {priority}
                     </option>
-                  );
-                })}
-              </select>
-              {errors.priority && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.priority.message}
-                </p>
-              )}
+                  ))}
+                </select>
+                {errors.priority && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.priority.message}
+                  </p>
+                )}
+              </div>
             </div>
+
+            <ProjectFileUpload label="Attachments" onFilesChange={setFiles} />
           </div>
 
-          {/* Upload Documents  ( ADD validation file limit)*/}
-          <ProjectFileUpload label="Attachments" onFilesChange={setFiles} />
-
-          {/* Footer */}
-          <div className="flex justify-end gap-3">
+          {/* Sticky Footer */}
+          <div className="px-5 py-4 rounded-xl border-t border-gray-200 dark:border-border-primary bg-white dark:bg-secondary shrink-0 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => {
                 reset();
                 onClose();
               }}
-              className="px-2 py-1 rounded-md border border-gray-500 cursor-pointer transition"
+              className="px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-2 py-1 rounded-md text-white font-medium bg-[#9333EA] cursor-pointer hover:bg-[#7E22CE] transition disabled:opacity-50"
+              className="px-3 py-1.5 rounded-md text-white font-medium 
+          bg-btn-primary hover:bg-btn-primary-hover transition disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? "Creating..." : "Create Task"}
             </button>
