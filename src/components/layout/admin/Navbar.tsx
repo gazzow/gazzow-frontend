@@ -2,11 +2,9 @@
 
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
-import { useTheme } from "@/hook/useTheme";
 import Link from "next/link";
 
 export default function Navbar() {
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <nav
