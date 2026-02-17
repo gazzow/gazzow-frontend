@@ -30,7 +30,7 @@ export default function AdminLayout({
 
 
   return (
-    <div className="flex bg-primary">
+    <div className="flex bg-gray-50 dark:bg-primary">
       {!isLogin && <Navbar />}
 
       <div className="flex flex-1 overflow-hidden">

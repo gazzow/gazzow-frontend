@@ -36,10 +36,10 @@ const COLORS = ["#8b5cf6", "#22c55e", "#ec4899"];
 
 export default function Dashboard() {
   const [dashboardStats, setDashboardStats] = useState<IDashboardStats | null>(
-    null
+    null,
   );
   const [monthlyRevenue, setMonthlyRevenue] = useState<IChartPoint[] | null>(
-    null
+    null,
   );
   const [subscriptionDistribution, setSubscriptionDistribution] = useState<
     IChartPoint[] | null
@@ -130,67 +130,82 @@ export default function Dashboard() {
   }, [subscriptionDistribution]);
 
   return (
-    <div className="p-8">
+    <div
+      className="
+  p-6
+  bg-gray-50 dark:bg-transparent
+  text-gray-800 dark:text-white
+  transition-colors duration-300
+"
+    >
       {/* Header */}
-      <div className="flex flex-col gap-4  p-4 border border-border-primary rounded-lg mb-6">
-        <div className="flex flex-col">
-          <div className="flex justify-between">
-            <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
-          </div>
-          <p className="text-text-muted text-sm">
-            {`Welcome back! Here's what's happening on your platform.`}
-          </p>
+      <div
+        className="
+    flex flex-col gap-4 p-5 rounded-xl mb-6
+    bg-white dark:bg-secondary/20
+    border border-gray-200 dark:border-border-primary
+    shadow-sm dark:shadow-none
+  "
+      >
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Admin Dashboard
+          </h1>
         </div>
+        <p className="text-gray-500 dark:text-text-muted text-sm">
+          {`Welcome back! Here's what's happening on your platform. `}
+        </p>
       </div>
 
-      <div className="text-white rounded-xl space-y-6">
+      <div className="space-y-6">
         {/* Top Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {dashboardStats && (
             <>
-              {/* Total Users Stats */}
-              <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
-                <div>
-                  <p className="text-gray-400 text-sm">Total Users</p>
-                  <h2 className="text-2xl font-bold text-white">
-                    {dashboardStats.totalUsers}
-                  </h2>
+              {[
+                {
+                  label: "Total Users",
+                  value: dashboardStats.totalUsers,
+                  icon: <User />,
+                },
+                {
+                  label: "Total Revenue",
+                  value: dashboardStats.totalRevenue,
+                  icon: <Wallet />,
+                },
+                {
+                  label: "Total Projects",
+                  value: dashboardStats.totalProjects,
+                  icon: <FolderKanban />,
+                },
+                {
+                  label: "Completed Tasks",
+                  value: dashboardStats.completedTasks,
+                  icon: <SquareCheckBig />,
+                },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="
+              flex items-center justify-between
+              bg-white dark:bg-secondary/20
+              border border-gray-200 dark:border-border-primary
+              shadow-sm dark:shadow-none
+              p-5 rounded-xl
+              transition
+            "
+                >
+                  <div>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">
+                      {stat.label}
+                    </p>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {stat.value}
+                    </h2>
+                  </div>
+                  {stat.icon}
                 </div>
-                <User />
-              </div>
-
-              {/* Revenue */}
-              <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
-                <div>
-                  <p className="text-gray-400 text-sm">Total Revenue</p>
-                  <h2 className="text-2xl font-bold text-white">
-                    {dashboardStats.totalRevenue}
-                  </h2>
-                </div>
-                <Wallet />
-              </div>
-
-              {/* Total Projects */}
-              <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
-                <div>
-                  <p className="text-gray-400 text-sm">Total Projects</p>
-                  <h2 className="text-2xl font-bold text-white">
-                    {dashboardStats.totalProjects}
-                  </h2>
-                </div>
-                <FolderKanban />
-              </div>
-
-              {/* Completed Tasks */}
-              <div className="flex items-center justify-between bg-secondary/20 border border-border-primary p-5 rounded-xl">
-                <div>
-                  <p className="text-gray-400 text-sm">Completed Tasks</p>
-                  <h2 className="text-2xl font-bold text-white">
-                    {dashboardStats.completedTasks}
-                  </h2>
-                </div>
-                <SquareCheckBig />
-              </div>
+              ))}
             </>
           )}
         </div>
@@ -198,14 +213,24 @@ export default function Dashboard() {
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Monthly Revenue */}
-          <div className="bg-secondary/20 p-5 rounded-xl">
-            <h3 className="mb-4 font-semibold">Monthly Revenue</h3>
-            {monthlyRevenue && monthlyRevenue.length > 0 ? (
+          <div
+            className="
+        bg-white dark:bg-secondary/20
+        border border-gray-200 dark:border-border-primary
+        shadow-sm dark:shadow-none
+        p-5 rounded-xl
+      "
+          >
+            <h3 className="mb-4 font-semibold text-gray-800 dark:text-white">
+              Monthly Revenue
+            </h3>
+
+            {monthlyRevenue?.length ? (
               <div className="h-60">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyRevenue}>
-                    <XAxis dataKey="name" stroke="#aaa" />
-                    <YAxis stroke="#aaa" />
+                    <XAxis dataKey="name" stroke="currentColor" />
+                    <YAxis stroke="currentColor" />
                     <Tooltip />
                     <Bar dataKey="value" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
                   </BarChart>
@@ -220,9 +245,19 @@ export default function Dashboard() {
           </div>
 
           {/* Subscription */}
-          <div className="bg-secondary/20 p-5 rounded-xl">
-            <h3 className="mb-4 font-semibold">Subscription Distribution</h3>
-            {subscriptionDistribution && subscriptionDistribution.length > 0 ? (
+          <div
+            className="
+        bg-white dark:bg-secondary/20
+        border border-gray-200 dark:border-border-primary
+        shadow-sm dark:shadow-none
+        p-5 rounded-xl
+      "
+          >
+            <h3 className="mb-4 font-semibold text-gray-800 dark:text-white">
+              Subscription Distribution
+            </h3>
+
+            {subscriptionDistribution?.length ? (
               <div className="h-60">
                 <ResponsiveContainer>
                   <PieChart>
@@ -232,7 +267,9 @@ export default function Dashboard() {
                       nameKey="name"
                       innerRadius={50}
                       outerRadius={80}
-                     label={({ name, value }) => `${name?.toUpperCase()}: ${value} `}
+                      label={({ name, value }) =>
+                        `${name?.toUpperCase()}: ${value}`
+                      }
                     >
                       {subscriptionDistribution.map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -251,12 +288,23 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex gap-4 flex-col bg-secondary/20 p-5 rounded-xl text-center">
+        <div
+          className="
+      flex flex-col gap-4
+      bg-white dark:bg-secondary/20
+      border border-gray-200 dark:border-border-primary
+      shadow-sm dark:shadow-none
+      p-5 rounded-xl
+      text-center
+    "
+        >
           <div className="flex items-start">
-            <h1>Quick Actions</h1>
+            <h1 className="text-gray-800 dark:text-white font-semibold">
+              Quick Actions
+            </h1>
           </div>
 
-          <div className=" grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {[
               { label: "Users", url: ADMIN_ROUTES.USER_MANAGEMENT },
               { label: "Projects", url: ADMIN_ROUTES.PROJECTS },
@@ -266,7 +314,14 @@ export default function Dashboard() {
               <Link
                 href={nav.url}
                 key={nav.label}
-                className="hover:bg-secondary/30 border border-border-primary/70 hover:border-border-primary py-4 rounded-lg transition"
+                className="
+              border border-gray-200 dark:border-border-primary
+              hover:bg-gray-100 dark:hover:bg-secondary/30
+              hover:border-gray-300 dark:hover:border-border-primary
+              text-gray-700 dark:text-white
+              py-4 rounded-lg
+              transition-all duration-200
+            "
               >
                 {nav.label}
               </Link>
