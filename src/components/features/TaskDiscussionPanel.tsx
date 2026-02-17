@@ -6,7 +6,7 @@ import { ITaskComment } from "@/types/task-comment";
 import { formatTaskDate } from "@/utils/format-task-date";
 import { createCommentSchema } from "@/validators/create-comment";
 import axios from "axios";
-import { Send } from "lucide-react";
+import { SendHorizontal } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -50,7 +50,7 @@ export function TaskDiscussionPanel({ task }: TaskDiscussionPanelProp) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(
-          error.response?.data.message || "Failed to post comment. Try again."
+          error.response?.data.message || "Failed to post comment. Try again.",
         );
       }
     } finally {
@@ -68,7 +68,7 @@ export function TaskDiscussionPanel({ task }: TaskDiscussionPanelProp) {
       if (axios.isAxiosError(error)) {
         toast.error(
           error.response?.data.message ||
-            "Failed to Fetch task comments. Try again"
+            "Failed to Fetch task comments. Try again",
         );
       }
     } finally {
@@ -81,163 +81,152 @@ export function TaskDiscussionPanel({ task }: TaskDiscussionPanelProp) {
   }, [fetchComments]);
 
   return (
-    <section className="w-full">
+    <section className="w-full space-y-3">
       {/* Tabs Header */}
-      <div className="flex items-center border-b gap-2 border-border-primary">
+      <div className="flex border-b border-gray-200 dark:border-border-primary">
         <button
           onClick={() => setActiveTab("comments")}
-          className={`flex-1 px-6 py-2 rounded-t-md text-sm font-medium transition bg-primary/30 cursor-pointer
-            ${
-              activeTab === "comments"
-                ? "text-white bg-primary/70"
-                : "text-gray-400 hover:text-white hover:bg-primary/50"
-            }`}
+          className={`flex-1 py-2 text-sm font-medium transition cursor-pointer
+        ${
+          activeTab === "comments"
+            ? "border-b-2 border-primary text-primary"
+            : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
+        }
+      `}
         >
           Comments
         </button>
 
         <button
           onClick={() => setActiveTab("activity")}
-          className={`flex-1 px-6 py-2 rounded-t-md text-sm font-medium transition bg-primary/30 cursor-pointer
-            ${
-              activeTab === "activity"
-                ? "text-white bg-primary/70"
-                : "text-gray-400 hover:text-white hover:bg-primary/50"
-            }`}
+          className={`flex-1 py-2 text-sm font-medium transition cursor-pointer
+        ${
+          activeTab === "activity"
+            ? "border-b-2 border-primary text-primary"
+            : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
+        }
+      `}
         >
           Activity
         </button>
       </div>
 
-      {/* Tabs Content */}
-      <div>
-        {activeTab === "comments" && (
-          <div className="space-y-4">
-            {/* Comments */}
-            {comments.length > 0 ? (
-              <div className="max-h-[320px] bg-primary/40 p-2 rounded-b-lg overflow-y-auto space-y-3">
-                {comments.map((comment) => (
-                  <div
-                    key={comment.id}
-                    className="flex items-start gap-3 rounded-lg px-2 py-1"
-                  >
-                    {/* Avatar */}
-                    <Image
-                      width={55}
-                      height={55}
-                      src={comment.author.imageUrl || "/avatar-placeholder.png"}
-                      alt={comment.author.name}
-                      className="h-8 w-8 rounded-full object-cover"
-                    />
-
-                    {/* Content */}
-                    <div className="flex-1">
-                      <div className="flex flex-col gap-0.5">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-white">
-                            {comment.author.name}
-                            {comment.isCreator && (
-                              <span className="text-xm text-white px-1">
-                                [creator]
-                              </span>
-                            )}
-                          </span>
-
-                          <span className="text-xs text-gray-400">
-                            {formatTaskDate(comment.createdAt)}
-                          </span>
-
-                          {comment.isEdited && (
-                            <span className="text-xs text-gray-500 italic">
-                              (edited)
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <p className="mt-1 text-sm text-gray-300 leading-relaxed">
-                        {comment.content}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-400 italic">No comments yet.</p>
-            )}
-
-            {/* Comment Input */}
-            <div className="space-y-2">
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Write a comment..."
-                rows={2}
-                className="w-full rounded-md border border-border-primary bg-gray-800 px-3 py-2 text-sm text-white focus:outline-none focus:ring-primary"
-              />
-              {error && <p className="text-xs text-red-400">{error}</p>}
-
-              <div className="flex justify-end">
-                <button
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="flex items-center gap-2 px-3 py-1 text-md rounded-md bg-primary text-white disabled:opacity-50 cursor-pointer"
+      {/* COMMENTS TAB */}
+      {activeTab === "comments" && (
+        <div className="space-y-4">
+          {/* Comments List */}
+          {comments.length > 0 ? (
+            <div className="max-h-[320px] overflow-y-auto space-y-3 pr-1">
+              {comments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="flex items-start gap-3 p-3 rounded-xl 
+              bg-white dark:bg-primary/30
+              border border-gray-200 dark:border-gray-700"
                 >
-                  <Send size={12} />
-                  <span>Post</span>
-                </button>
-              </div>
+                  {/* Avatar */}
+                  <Image
+                    width={36}
+                    height={36}
+                    src={comment.author.imageUrl || "/avatar-placeholder.png"}
+                    alt={comment.author.name}
+                    className="h-9 w-9 rounded-full object-cover"
+                  />
+
+                  {/* Content */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm font-medium text-gray-800 dark:text-white">
+                        {comment.author.name}
+                      </span>
+
+                      {comment.isCreator && (
+                        <span className="text-[10px] px-1.5 py-[2px] rounded bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400">
+                          creator
+                        </span>
+                      )}
+
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {formatTaskDate(comment.createdAt)}
+                      </span>
+
+                      {comment.isEdited && (
+                        <span className="text-xs text-gray-400 italic">
+                          edited
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="mt-1 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                      {comment.content}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
+          ) : (
+            <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+              No comments yet.
+            </p>
+          )}
+
+          {/* COMMENT INPUT */}
+          <div className="border border-gray-200 dark:border-border-primary rounded-full bg-white dark:bg-primary/30 p-1 flex items-center gap-2">
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Write a comment..."
+              rows={1}
+              className="flex-1 resize-none bg-transparent px-2 py-2 text-sm 
+          text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none"
+            />
+
+            <button
+              onClick={handleSubmit}
+              disabled={loading || !content.trim()}
+              className="px-3 py-1.5 text-sm rounded-full 
+          bg-btn-primary text-white hover:bg-btn-primary
+          disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer"
+            >
+              <SendHorizontal></SendHorizontal>
+            </button>
           </div>
-        )}
 
-        {activeTab === "activity" && (
-          <div className="space-y-4">
-            {/* Dates & Payment */}
-            <div className="text-sm max-h-[320px] bg-primary/40 p-2 rounded-b-lg overflow-y-auto space-y-3 ">
-              <div className="flex justify-between">
-                <span className="text-gray-300 font-medium">Created</span>
-                <span>{formatTaskDate(task.createdAt)}</span>
+          {error && (
+            <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
+          )}
+        </div>
+      )}
+
+      {/* ACTIVITY TAB */}
+      {activeTab === "activity" && (
+        <div className="max-h-[320px] overflow-y-auto space-y-3">
+          {[
+            { label: "Created", value: task.createdAt },
+            { label: "Updated", value: task.updatedAt },
+            { label: "Due Date", value: task.dueDate },
+            task.acceptedAt && { label: "Accepted", value: task.acceptedAt },
+            task.submittedAt && { label: "Submitted", value: task.submittedAt },
+            task.completedAt && { label: "Completed", value: task.completedAt },
+            task.paidAt && { label: "Paid", value: task.paidAt },
+          ]
+            .filter(Boolean)
+            .map((item, i) => (
+              <div
+                key={i}
+                className="flex justify-between text-sm 
+            bg-white dark:bg-primary/30
+            border border-gray-200 dark:border-gray-700
+            px-3 py-2 rounded-lg"
+              >
+                <span className="text-gray-600 dark:text-gray-300 font-medium">
+                  {item?.label}
+                </span>
+                <span>{formatTaskDate(item?.value || new Date())}</span>
               </div>
-
-              <div className="flex justify-between">
-                <span className="text-gray-300 font-medium">Updated</span>
-                <span>{formatTaskDate(task.updatedAt)}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-gray-300 font-medium">Due Date</span>
-                <span>{formatTaskDate(task.dueDate)}</span>
-              </div>
-
-              {task.acceptedAt && (
-                <div className="flex justify-between">
-                  <span className="text-gray-300 font-medium">Accepted</span>
-                  <span>{formatTaskDate(task.acceptedAt)}</span>
-                </div>
-              )}
-              {task.submittedAt && (
-                <div className="flex justify-between">
-                  <span className="text-gray-300 font-medium">Submitted</span>
-                  <span>{formatTaskDate(task.submittedAt)}</span>
-                </div>
-              )}
-              {task.completedAt && (
-                <div className="flex justify-between">
-                  <span className="text-gray-300 font-medium">Completed</span>
-                  <span>{formatTaskDate(task.completedAt)}</span>
-                </div>
-              )}
-              {task.paidAt && (
-                <div className="flex justify-between">
-                  <span className="text-gray-300 font-medium">Paid</span>
-                  <span>{formatTaskDate(task.paidAt)}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+            ))}
+        </div>
+      )}
     </section>
   );
 }
