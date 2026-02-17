@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ReassignTaskModal from "./ReassignTaskModal";
-import { Eye, Files, UserPen } from "lucide-react";
+import { Eye, Files, UserPen, UserRoundX } from "lucide-react";
 import { projectService } from "@/services/user/project-service";
 import { TaskDiscussionPanel } from "./TaskDiscussionPanel";
 
@@ -66,9 +66,8 @@ export default function TaskDetailsModal({
 
   const startWork = async (
     taskId: string,
-    paymentStatus?: TaskPaymentStatus
+    paymentStatus?: TaskPaymentStatus,
   ) => {
-    console.log("Starting work on task:", taskId);
 
     if (!paymentStatus || paymentStatus === TaskPaymentStatus.PENDING) {
       toast.error("Payment is pending. Unable to start work on this task.");
@@ -78,46 +77,40 @@ export default function TaskDetailsModal({
       const now = new Date().toISOString();
       const res = await taskService.startWork(taskId, projectId, now);
       if (res.success) {
-        toast.success("Work started on task.");
         onClose();
         fetchTasks();
       }
       // Refresh task details
       const updatedTaskRes = await taskService.getTaskDetails(
         taskId,
-        projectId
+        projectId,
       );
       if (updatedTaskRes.success) {
         setTask(updatedTaskRes.data);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("Failed to start work on task");
         toast.error(error.response?.data.message);
       }
     }
   };
 
   const submitWork = async (taskId: string) => {
-    console.log("Submitting work on task:", taskId);
     try {
       const now = new Date().toISOString();
       const res = await taskService.submitTask(taskId, projectId, now);
       if (res.success) {
-        toast.success("Task submitted for review.");
         onClose();
         fetchTasks();
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("Failed to submit work on task");
         toast.error(error.response?.data.message);
       }
     }
   };
 
   const completeTask = async (taskId: string) => {
-    console.log("Completing task:", taskId);
     try {
       const now = new Date().toISOString();
       const res = await taskService.completeTask(taskId, projectId, now);
@@ -128,7 +121,6 @@ export default function TaskDetailsModal({
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("Failed to complete task");
         toast.error(error.response?.data.message);
       }
     }
@@ -143,7 +135,6 @@ export default function TaskDetailsModal({
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("Failed to initiate payment for task");
         toast.error(error.response?.data.message);
       }
     }
@@ -161,12 +152,8 @@ export default function TaskDetailsModal({
   const handleViewFile = async (fileKey: string) => {
     try {
       const res = await projectService.generateSignedUrl(
-        encodeURIComponent(fileKey)
+        encodeURIComponent(fileKey),
       );
-
-      if (res.success) {
-        toast.success(res.message);
-      }
       window.open(res.data, "_black", "noopener,noreferrer");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -205,20 +192,20 @@ export default function TaskDetailsModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/30 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-6 cursor-default">
       <div
-        className="w-full max-w-2xl bg-secondary text-gray-200 rounded-2xl shadow-2xl animate-fadeIn border border-primary"
+        className="w-full max-w-2xl bg-white dark:bg-secondary text-gray-800 dark:text-gray-200 rounded-2xl shadow-2xl border border-gray-200 dark:border-primary transition-all"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex justify-between items-center px-5 py-4 bg-primary/30 rounded-t-2xl  border-b border-gray-700/50 backdrop-blur-sm">
-          <h2 className="text-md font-bold text-gray-100 tracking-wide">
+        <div className="flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 bg-gray-100 dark:bg-primary/30 rounded-t-2xl border-b border-gray-200 dark:border-gray-700 backdrop-blur-sm">
+          <h2 className="text-sm sm:text-md font-bold tracking-wide">
             {loading ? "Loading Task..." : task?.title.toUpperCase()}
           </h2>
 
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white text-2xl cursor-pointer transition"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white text-xl sm:text-2xl transition cursor-pointer"
           >
             &times;
           </button>
@@ -226,150 +213,175 @@ export default function TaskDetailsModal({
 
         {/* Loading */}
         {loading && (
-          <div className="flex items-center justify-center py-10 text-gray-400 text-sm animate-pulse">
+          <div className="flex items-center justify-center py-8 sm:py-10 text-gray-500 dark:text-gray-400 text-sm animate-pulse">
             ⏳ Fetching task details...
           </div>
         )}
 
         {/* Error */}
         {error && !loading && (
-          <div className="px-5 py-6 text-center text-red-400">⚠ {error}</div>
+          <div className="px-5 py-6 text-center text-red-500 dark:text-red-400">
+            ⚠ {error}
+          </div>
         )}
 
         {/* Body */}
         {task && !loading && !error && (
           <>
-            <div className="px-5 py-5 max-h-[65vh] overflow-y-auto space-y-6 scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 rounded-xl">
+            <div className="px-4 sm:px-5 py-4 sm:py-5 max-h-[65vh] overflow-y-auto space-y-5 sm:space-y-6 scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 rounded-xl">
               {/* Status & Priority */}
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="px-3 py-1 text-xs bg-blue-500/20 border border-blue-500 rounded-full">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                <span className="px-3 py-1 text-xs bg-blue-100 dark:bg-blue-500/20 border border-blue-300 dark:border-blue-500 rounded-full">
                   {formatTaskStatus(task.status)}
                 </span>
-                <span className="px-3 py-1 text-xs bg-yellow-500/20 border border-yellow-500 rounded-full">
+                <span className="px-3 py-1 text-xs bg-yellow-100 dark:bg-yellow-500/20 border border-yellow-300 dark:border-yellow-500 rounded-full">
                   Priority: {task.priority}
                 </span>
               </div>
 
               {/* Description */}
               <section>
-                <p className="text-xs font-medium text-gray-400 mb-1">
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                   Description
                 </p>
-                <p className="text-sm leading-6 text-gray-200">
-                  {task.description}
-                </p>
+                <p className="text-sm leading-6">{task.description}</p>
               </section>
 
               {/* Assignee + Financial Summary */}
-              <div className="p-4 rounded-xl bg-primary/40 border border-gray-700 space-y-4 transition ease-in-out duration-75">
+              <div className="relative p-3 sm:p-4 rounded-xl bg-gray-50 dark:bg-primary/40 border border-gray-200 dark:border-gray-700 space-y-4">
                 {/* Assignee */}
                 {task.assignee && (
-                  <div className="items-start flex justify-between gap-3 p-3 rounded-lg bg-white/5 border border-gray-700/50">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-blue-600 text-white text-sm font-semibold w-10 h-10 flex items-center justify-center rounded-full">
-                        {task.assignee.name?.[0] ?? "?"}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700/50 transition">
+                    {/* Assignee Info */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="bg-blue-600 text-white text-sm font-semibold w-10 h-10 flex items-center justify-center rounded-full shrink-0">
+                        {task.assignee.name?.[0] ?? "U"}
                       </div>
-                      <div>
-                        <p className="text-sm font-medium">
+
+                      <div className="truncate">
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
                           {task.assignee.name}
                         </p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                           {task.assignee.developerRole}
                         </p>
                       </div>
                     </div>
 
+                    {/* Actions */}
                     {!showReassign &&
                       task.status === TaskStatus.TODO &&
                       role === "creator" && (
-                        <button
-                          onClick={openReassignModal}
-                          className="flex gap-2 items-center text-left px-4 py-2 text-sm bg-gray-700 transition rounded cursor-pointer"
-                        >
-                          <UserPen size={16} color="cyan" />
-                          <span>Reassign</span>
-                        </button>
-                      )}
+                        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                          <button
+                            className="flex items-center justify-center gap-2 px-3 py-1.5 text-xs sm:text-sm rounded-md 
+            bg-red-100 text-red-600 
+            dark:bg-white dark:text-red-500 
+            hover:bg-red-200
+            transition w-full sm:w-auto cursor-pointer"
+                          >
+                            <UserRoundX size={16} />
+                            <span>Remove</span>
+                          </button>
 
-                    {showReassign && task.status === TaskStatus.TODO && (
-                      <ReassignTaskModal
-                        task={task}
-                        onClose={() => setShowReassign(false)}
-                        onSuccess={onReassignSuccess}
-                      />
-                    )}
+                          <button
+                            onClick={openReassignModal}
+                            className="flex items-center justify-center gap-2 px-3 py-1.5 text-xs sm:text-sm rounded-md 
+            bg-blue-100 text-blue-600 
+            dark:bg-blue-100 dark:text-blue-500
+            hover:bg-blue-200 dark:hover:bg-blue-200
+            transition w-full sm:w-auto cursor-pointer"
+                          >
+                            <UserPen size={16} />
+                            <span>Reassign</span>
+                          </button>
+                        </div>
+                      )}
                   </div>
                 )}
 
+                {showReassign && task.status === TaskStatus.TODO && (
+                  <ReassignTaskModal
+                    task={task}
+                    onClose={() => setShowReassign(false)}
+                    onSuccess={onReassignSuccess}
+                  />
+                )}
+
                 {/* Financial Summary */}
-                <div className="rounded-lg border border-white/10 p-4 space-y-4 bg-black/30">
-                  {/* Cost Breakdown */}
-                  <div className="grid grid-cols-3 gap-4 text-sm">
+                <div className="rounded-lg border border-gray-200 dark:border-white/10 p-3 sm:p-4 space-y-4 bg-white dark:bg-black/30">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                     <div>
-                      <p className="text-gray-400">Estimated Hours</p>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        Estimated Hours
+                      </p>
                       <p className="font-medium">{task.estimatedHours} hrs</p>
                     </div>
-
                     <div>
-                      <p className="text-gray-400">Hourly Rate</p>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        Hourly Rate
+                      </p>
                       <p className="font-medium">${task.expectedRate}/hr</p>
                     </div>
-
                     <div>
-                      <p className="text-gray-400">Total Cost</p>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        Total Cost
+                      </p>
                       <p className="font-semibold">${task.totalAmount}</p>
                     </div>
                   </div>
 
-                  <hr className="border-white/10" />
+                  <hr className="border-gray-200 dark:border-white/10" />
 
-                  {/* Payment Snapshot */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <p className="text-gray-400 text-xs">Paid (Escrow)</p>
-                      <p className="text-xl font-bold text-green-400">
+                      <p className="text-gray-500 dark:text-gray-400 text-xs">
+                        Paid (Escrow)
+                      </p>
+                      <p className="text-lg sm:text-xl font-bold text-green-500 dark:text-green-400">
                         ${task.amountInEscrow}
                       </p>
                     </div>
 
                     {task.refundAmount > 0 ? (
                       <div>
-                        <p className="text-gray-400 text-xs">Refund Amount</p>
-                        <p className="text-xl font-bold text-yellow-400">
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">
+                          Refund Amount
+                        </p>
+                        <p className="text-lg sm:text-xl font-bold text-yellow-500 dark:text-yellow-400">
                           ${task.refundAmount}
                         </p>
                       </div>
                     ) : (
                       <div>
-                        <p className="text-gray-400 text-xs">
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">
                           Remaining to Pay
                         </p>
-                        <p className="text-xl font-bold text-red-400">
+                        <p className="text-lg sm:text-xl font-bold text-red-500 dark:text-red-400">
                           ${task.balance}
                         </p>
                       </div>
                     )}
                   </div>
 
-                  {/* Status Message */}
                   {role === "creator" && (
-                    <div className="text-sm mt-2">
+                    <div className="text-sm mt-2 space-y-1">
                       {task.paymentStatus === TaskPaymentStatus.PENDING &&
                         task.balance > 0 && (
-                          <p className="text-yellow-400">
+                          <p className="text-yellow-600 dark:text-yellow-400">
                             ⚠️ Please pay ${task.balance} to continue this task.
                           </p>
                         )}
 
                       {task.refundStatus === RefundStatus.PENDING && (
-                        <p className="text-yellow-400">
+                        <p className="text-yellow-600 dark:text-yellow-400">
                           💸 A Refund of ${task.refundAmount} will be processed
                           automatically after the task is completed.
                         </p>
                       )}
 
                       {task.paymentStatus === TaskPaymentStatus.ESCROW_HELD && (
-                        <p className="text-green-400">
+                        <p className="text-green-600 dark:text-green-400">
                           ✅ Payment completed and securely held in escrow.
                         </p>
                       )}
@@ -388,18 +400,16 @@ export default function TaskDetailsModal({
                       {task.documents.map((file, i) => (
                         <li
                           key={i}
-                          className="flex items-center justify-between bg-primary/30 px-2 py-2 rounded-lg text-sm text-gray-300"
+                          className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gray-100 dark:bg-primary/30 px-3 py-2 rounded-lg text-sm"
                         >
                           <span>{file.name}</span>
-                          <div className="flex gap-4">
-                            <button
-                              onClick={() => handleViewFile(file.key)}
-                              className="flex gap-2 hover:text-red-300 text-xs cursor-pointer"
-                            >
-                              <Eye size={18} />
-                              <span>view</span>
-                            </button>
-                          </div>
+                          <button
+                            onClick={() => handleViewFile(file.key)}
+                            className="flex gap-2 hover:text-blue-600 dark:hover:text-blue-300 text-xs mt-2 sm:mt-0 cursor-pointer"
+                          >
+                            <Eye size={18} />
+                            <span>view</span>
+                          </button>
                         </li>
                       ))}
                     </ul>
@@ -407,23 +417,23 @@ export default function TaskDetailsModal({
                 )}
               </div>
 
-              {/* Activity  & Comment Section */}
               <TaskDiscussionPanel task={task} />
             </div>
 
             {/* Footer */}
-            <div className="px-5 py-4 border-t border-gray-700 bg-primary/20 flex justify-end gap-3 rounded-b-2xl">
+            <div className="px-4 sm:px-5 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-primary/20 flex flex-wrap justify-end gap-2 rounded-b-2xl">
               <button
                 onClick={onClose}
-                className="px-2 py-1 rounded-md border border-gray-500 hover:bg-gray-700 transition text-sm"
+                className="px-3 py-1 rounded-md border border-gray-400 dark:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 text-sm cursor-pointer"
               >
                 Close
               </button>
+
               {role === "creator" &&
                 task.assignee &&
                 task.paymentStatus === TaskPaymentStatus.PENDING && (
                   <button
-                    className="px-2 py-1 bg-green-600 hover:bg-green-700 rounded-md text-white text-sm"
+                    className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm cursor-pointer"
                     onClick={() => handlePayment(task.id)}
                   >
                     Pay Now
@@ -436,7 +446,7 @@ export default function TaskDetailsModal({
                   <button
                     key={i}
                     onClick={() => btn.onSubmit(task.id, task.paymentStatus)}
-                    className="px-2 py-1 bg-btn-primary hover:bg-btn-primary-hover rounded-md text-white text-sm"
+                    className="px-3 py-1 bg-btn-primary hover:bg-btn-primary-hover text-white rounded-md text-sm cursor-pointer"
                   >
                     {btn.label}
                   </button>
