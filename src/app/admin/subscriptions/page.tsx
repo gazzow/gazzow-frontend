@@ -60,150 +60,168 @@ export default function SubscriptionManagement() {
   };
 
   return (
-    <div className="p-8">
-      {/* Header */}
-      <div className="flex flex-col gap-4  p-4 border border-border-primary rounded-lg mb-6">
-        <div className="flex flex-col">
-          <div className="flex justify-between">
-            <h1 className="text-2xl font-bold text-white">
-              Subscription Management
-            </h1>
-          </div>
-          <p className="text-text-muted text-sm">
-            Manage and monitor all subscriptions.
-          </p>
-        </div>
-      </div>
-
-      {/* Table Wrapper */}
-      <div className="overflow-x-auto shadow rounded-lg border border-border-primary mb-4">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="text-left text-text-primary">
-              <th className="p-3">User Id</th>
-              <th className="p-3">Plan</th>
-              <th className="p-3">Duration</th>
-              <th className="p-3">Price</th>
-              <th className="p-3">Commission</th>
-              <th className="p-3">Status</th>
-              <th className="p-3">Started</th>
-              <th className="p-3">Ends</th>
-              <th className="p-3">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {subscriptions.length === 0 && (
-              <tr>
-                <td colSpan={8} className="text-center py-6 text-gray-400">
-                  No subscription found
-                </td>
-              </tr>
-            )}
-
-            {subscriptions.map((subscription) => {
-              const { activePlan } = subscription;
-
-              return (
-                <tr
-                  key={subscription.id}
-                  className="border border-border-primary hover:bg-secondary/30 transition"
-                >
-                  {/* User Id */}
-                  <td className="p-3 text-white font-medium capitalize">
-                    {subscription.userId.slice(0, 8)}…
-                  </td>
-
-                  {/* Plan Type */}
-                  <td className="p-3 text-white font-medium capitalize">
-                    {activePlan.type}
-                  </td>
-
-                  {/* Duration */}
-                  <td className="p-3 text-white capitalize">
-                    {activePlan.duration}
-                  </td>
-
-                  {/* Price */}
-                  <td className="p-3 text-white">₹{activePlan.price}</td>
-
-                  {/* Commission */}
-                  <td className="p-3 text-white">
-                    {activePlan.features.commissionRate}%
-                  </td>
-
-                  {/* Status */}
-                  <td className="p-3">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${
-                        subscription.status === "active"
-                          ? "bg-green-600"
-                          : subscription.status === "expired"
-                          ? "bg-yellow-600"
-                          : "bg-red-600"
-                      }`}
-                    >
-                      {subscription.status}
-                    </span>
-                  </td>
-
-                  {/* Start Date */}
-                  <td className="p-3 text-white">
-                    {new Date(subscription.startDate).toLocaleDateString(
-                      "en-GB",
-                      {
-                        day: "2-digit",
-                        month: "short",
-                        year: "2-digit",
-                      }
-                    )}
-                  </td>
-
-                  {/* End Date */}
-                  <td className="p-3 text-white">
-                    {new Date(subscription.endDate).toLocaleDateString(
-                      "en-GB",
-                      {
-                        day: "2-digit",
-                        month: "short",
-                        year: "2-digit",
-                      }
-                    )}
-                  </td>
-
-                  {/* Actions */}
-                  <td className="p-3 flex gap-2">
-                    {subscription.status === "active" && (
-                      <button
-                        className="px-3 py-1 rounded-md bg-red-500 text-white text-xs font-medium hover:bg-red-600 transition"
-                        onClick={() => {
-                          cancelSubscription(subscription.id);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    )}
-
-                    {subscription.status !== "active" && (
-                      <span className="text-xs text-gray-400">No actions</span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      <Pagination
-        hasNextPage={hasNextPage}
-        hasPrevPage={hasPrevPage}
-        nextPage={nextPage}
-        page={page}
-        prevPage={prevPage}
-        totalPages={totalPages}
-      />
+   <div
+  className="
+  p-6
+  bg-gray-50 dark:bg-transparent
+  text-gray-800 dark:text-white
+  transition-colors duration-300
+"
+>
+  {/* Header */}
+  <div
+    className="
+    flex flex-col gap-4 p-5 rounded-xl mb-6
+    bg-white dark:bg-secondary/20
+    border border-gray-200 dark:border-border-primary
+    shadow-sm dark:shadow-none
+  "
+  >
+    <div>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        Subscription Management
+      </h1>
+      <p className="text-gray-500 dark:text-text-muted text-sm">
+        Manage and monitor all subscriptions.
+      </p>
     </div>
+  </div>
+
+  {/* Table */}
+  <div
+    className="
+    overflow-x-auto
+    bg-white dark:bg-secondary/20
+    border border-gray-200 dark:border-border-primary
+    rounded-xl shadow-sm dark:shadow-none
+    mb-4
+  "
+  >
+    <table className="w-full text-sm">
+      <thead>
+        <tr className="text-left text-gray-600 dark:text-gray-300">
+          <th className="p-3">User Id</th>
+          <th className="p-3">Plan</th>
+          <th className="p-3">Duration</th>
+          <th className="p-3">Price</th>
+          <th className="p-3">Commission</th>
+          <th className="p-3">Status</th>
+          <th className="p-3">Started</th>
+          <th className="p-3">Ends</th>
+          <th className="p-3">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {subscriptions.length === 0 && (
+          <tr>
+            <td colSpan={9} className="text-center py-6 text-gray-400">
+              No subscription found
+            </td>
+          </tr>
+        )}
+
+        {subscriptions.map((subscription) => {
+          const { activePlan } = subscription;
+
+          return (
+            <tr
+              key={subscription.id}
+              className="
+              border-t border-gray-200 dark:border-border-primary
+              hover:bg-gray-50 dark:hover:bg-secondary/30
+              transition-colors
+            "
+            >
+              {/* User Id */}
+              <td className="p-3 font-medium text-gray-900 dark:text-white">
+                {subscription.userId.slice(0, 8)}…
+              </td>
+
+              {/* Plan */}
+              <td className="p-3 capitalize">{activePlan.type}</td>
+
+              {/* Duration */}
+              <td className="p-3 capitalize">{activePlan.duration}</td>
+
+              {/* Price */}
+              <td className="p-3">₹{activePlan.price}</td>
+
+              {/* Commission */}
+              <td className="p-3">
+                {activePlan.features.commissionRate}%
+              </td>
+
+              {/* Status */}
+              <td className="p-3">
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-semibold
+                  ${
+                    subscription.status === "active"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
+                      : subscription.status === "expired"
+                      ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300"
+                      : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
+                  }`}
+                >
+                  {subscription.status}
+                </span>
+              </td>
+
+              {/* Start */}
+              <td className="p-3">
+                {new Date(subscription.startDate).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "2-digit",
+                })}
+              </td>
+
+              {/* End */}
+              <td className="p-3">
+                {new Date(subscription.endDate).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "2-digit",
+                })}
+              </td>
+
+              {/* Actions */}
+              <td className="p-3 flex gap-2">
+                {subscription.status === "active" ? (
+                  <button
+                    className="
+                    px-3 py-1 rounded-md text-xs font-medium
+                    bg-red-500 text-white
+                    hover:bg-red-600 transition
+                  "
+                    onClick={() => cancelSubscription(subscription.id)}
+                  >
+                    Cancel
+                  </button>
+                ) : (
+                  <span className="text-xs text-gray-400">
+                    No actions
+                  </span>
+                )}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Pagination */}
+  <Pagination
+    hasNextPage={hasNextPage}
+    hasPrevPage={hasPrevPage}
+    nextPage={nextPage}
+    page={page}
+    prevPage={prevPage}
+    totalPages={totalPages}
+  />
+</div>
+
   );
 }

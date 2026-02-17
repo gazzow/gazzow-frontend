@@ -1,18 +1,24 @@
 "use client";
 
 import CreatePlanModal from "@/components/features/admin/CreatePlanModal";
+import EditPlanModal from "@/components/features/admin/EditPlanModal";
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { planService } from "@/services/admin/plan-service";
 import { IPlan } from "@/types/plan";
 import { CreatePlanFormValues } from "@/validators/create-plan";
 import axios from "axios";
+import { Edit } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function PlanManagement() {
   const [plans, setPlans] = useState<IPlan[]>([]);
   const [openPlanModal, setOpenPlanModal] = useState<boolean>(false);
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<IPlan | null>(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const {
     page,
@@ -30,6 +36,43 @@ export default function PlanManagement() {
 
   const handleCloseModal = () => {
     setOpenPlanModal(false);
+  };
+
+  const handleOpenEditModal = (planId: string) => {
+    setOpenEditModal(true);
+    setSelectedPlanId(planId);
+  };
+
+  const handleCloseEditModal = () => {
+    fetchPlans();
+    setOpenEditModal(false);
+    setSelectedPlanId(null);
+  };
+
+  const handleStatusUpdate = (plan: IPlan) => {
+    setConfirmModal(true);
+    setSelectedPlan(plan);
+  };
+
+  const handleConfirmButton = async () => {
+    if (!selectedPlan) return;
+    try {
+      const res = await planService.updateStatus(
+        selectedPlan.id,
+        selectedPlan.isActive ? false : true,
+      );
+      console.log("plans data: ", res.data);
+      if (res.success) {
+        fetchPlans();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("Project management error: ", error);
+      }
+    } finally {
+      setConfirmModal(false);
+      setSelectedPlan(null);
+    }
   };
 
   const fetchPlans = useCallback(async () => {
@@ -67,57 +110,92 @@ export default function PlanManagement() {
     try {
       const res = await planService.createPlan(payload);
       if (res.success) {
-        toast.success(res.message);
-        fetchPlans()
+        fetchPlans();
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(
-          error.response?.data.message || "Failed to create plan. Try again"
+          toast.error(
+            error.response?.data.message ||
+              "Unable to create plan. Please try again later",
+          ),
         );
       }
     }
   };
 
   return (
-    <div className="p-8 min-h-screen">
+    <div
+      className="
+  p-6 min-h-screen
+  bg-gray-50 dark:bg-transparent
+  text-gray-800 dark:text-white
+  transition-colors duration-300
+"
+    >
       {/* Header */}
-      <div className="flex flex-col gap-4  p-4 border border-border-primary rounded-lg mb-6">
-        <div className="flex flex-col">
-          <div className="flex justify-between">
-            <h1 className="text-2xl font-bold text-white">Plan Management</h1>
-            <button
-              className="px-2 py-1 bg-btn-primary text-white text-md font-semibold rounded-md transition cursor-pointer"
-              onClick={handleOpenModal}
-            >
-              Create Plan
-            </button>
+      <div
+        className="
+    flex flex-col gap-4 p-5 rounded-xl mb-6
+    bg-white dark:bg-secondary/20
+    border border-gray-200 dark:border-border-primary
+    shadow-sm dark:shadow-none
+  "
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Plan Management
+            </h1>
+            <p className="text-gray-500 dark:text-text-muted text-sm">
+              Manage and monitor all subscription plans.
+            </p>
           </div>
-          <p className="text-text-muted text-sm">
-            Manage and monitor all subscription plans.
-          </p>
+
+          <button
+            className="
+        px-3 py-1.5
+        bg-btn-primary text-white
+        rounded-md font-medium
+        hover:bg-btn-primary-hover
+        transition cursor-pointer
+      "
+            onClick={handleOpenModal}
+          >
+            Create Plan
+          </button>
         </div>
       </div>
 
-      {/* Table Wrapper */}
-      <div className="overflow-x-auto shadow rounded-lg border border-border-primary mb-4">
-        <table className="w-full border-collapse text-sm">
+      {/* Table */}
+      <div
+        className="
+    overflow-x-auto
+    bg-white dark:bg-secondary/20
+    border border-gray-200 dark:border-border-primary
+    rounded-xl shadow-sm dark:shadow-none
+    mb-4
+  "
+      >
+        <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-text-primary">
-              <th className="p-3">Plan</th>
+            <tr className="text-center text-gray-600 dark:text-gray-300">
+              <th className="p-3">Plan Name</th>
+              <th className="p-3">Type</th>
               <th className="p-3">Duration</th>
               <th className="p-3">Price</th>
               <th className="p-3">Commission</th>
               <th className="p-3">Status</th>
               <th className="p-3">Created</th>
+              <th className="p-3">Edited</th>
               <th className="p-3">Actions</th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="text-center">
             {plans.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center py-6 text-gray-400">
+                <td colSpan={9} className="py-6 text-gray-400">
                   No plans found
                 </td>
               </tr>
@@ -126,37 +204,39 @@ export default function PlanManagement() {
             {plans.map((plan) => (
               <tr
                 key={plan.id}
-                className="border border-border-primary hover:bg-secondary/30 transition"
+                className="
+            border-t border-gray-200 dark:border-border-primary
+            hover:bg-gray-50 dark:hover:bg-secondary/30
+            transition-colors
+          "
               >
-                {/* Plan Type */}
-                <td className="p-3 text-white font-medium capitalize">
-                  {plan.type}
+                <td className="p-3 font-medium capitalize text-gray-900 dark:text-white">
+                  {plan.name}
                 </td>
 
-                {/* Duration */}
-                <td className="p-3 text-white capitalize">{plan.duration}</td>
+                <td className="p-3 capitalize">{plan.type}</td>
 
-                {/* Price */}
-                <td className="p-3 text-white">₹{plan.price}</td>
+                <td className="p-3 capitalize">{plan.duration}</td>
 
-                {/* Commission */}
-                <td className="p-3 text-white">
-                  {plan.features.commissionRate}%
-                </td>
+                <td className="p-3">₹{plan.price}</td>
+
+                <td className="p-3">{plan.features.commissionRate}%</td>
 
                 {/* Status */}
                 <td className="p-3">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${
-                      plan.isActive ? "bg-green-600" : "bg-red-600"
-                    }`}
+                    className={`px-2 py-1 rounded-full text-xs font-semibold
+                ${
+                  plan.isActive
+                    ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
+                    : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
+                }`}
                   >
                     {plan.isActive ? "Active" : "Inactive"}
                   </span>
                 </td>
 
-                {/* Created At */}
-                <td className="p-3 text-white">
+                <td className="p-3">
                   {new Date(plan.createdAt).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "short",
@@ -164,22 +244,39 @@ export default function PlanManagement() {
                   })}
                 </td>
 
+                <td className="p-3">
+                  {new Date(plan.updatedAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "2-digit",
+                  })}
+                </td>
+
                 {/* Actions */}
-                <td className="p-3 flex gap-2">
-                  {/* <button
-                    className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-300 transition"
-                    onClick={() => {}}
+                <td className="p-3 flex justify-center gap-2">
+                  <button
+                    className="
+                flex gap-1 items-center cursor-pointer
+                px-3 py-1 rounded-md text-xs font-medium
+                bg-gray-100 dark:bg-secondary/40
+                text-gray-700 dark:text-gray-300
+                hover:bg-gray-200 dark:hover:bg-secondary/60
+                transition
+              "
+                    onClick={() => handleOpenEditModal(plan.id)}
                   >
+                    <Edit size={14} />
                     Edit
-                  </button> */}
+                  </button>
 
                   <button
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition ${
-                      plan.isActive
-                        ? "bg-red-500 text-white hover:bg-red-600"
-                        : "bg-green-500 text-white hover:bg-green-600"
-                    }`}
-                    onClick={() => {}}
+                    className={`px-3 py-1 rounded-md text-xs font-medium transition cursor-pointer
+                ${
+                  plan.isActive
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-green-500 text-white hover:bg-green-600"
+                }`}
+                    onClick={() => handleStatusUpdate(plan)}
                   >
                     {plan.isActive ? "Disable" : "Enable"}
                   </button>
@@ -200,12 +297,66 @@ export default function PlanManagement() {
         totalPages={totalPages}
       />
 
+      {/* Modals */}
       {openPlanModal && (
         <CreatePlanModal
           open={openPlanModal}
           onClose={handleCloseModal}
           onSubmit={handleCreatePlan}
         />
+      )}
+
+      {openEditModal && (
+        <EditPlanModal
+          open={openEditModal}
+          planId={selectedPlanId}
+          onClose={handleCloseEditModal}
+        />
+      )}
+
+      {/* Confirm Modal */}
+      {confirmModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+          <div
+            className="
+        w-full max-w-md
+        bg-white dark:bg-secondary
+        border border-gray-200 dark:border-border-primary
+        p-6 rounded-2xl shadow-xl
+      "
+          >
+            <p className="font-semibold text-lg text-gray-800 dark:text-white">
+              {selectedPlan?.isActive
+                ? "This plan will be made unavailable to new users. Do you want to continue?"
+                : "This plan will become available to users again. Do you want to continue?"}
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setConfirmModal(false)}
+                className="
+            px-4 py-2 rounded-lg cursor-pointer
+            bg-gray-200 dark:bg-slate-600
+            text-gray-700 dark:text-gray-300
+            hover:bg-gray-300 dark:hover:bg-slate-700
+          "
+              >
+                Cancel
+              </button>
+
+              <button
+                className=" cursor-pointer
+            px-4 py-2 rounded-lg
+            bg-red-500 hover:bg-red-600
+            text-white
+          "
+                onClick={handleConfirmButton}
+              >
+                {selectedPlan?.isActive ? "Disable" : "Enable"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
