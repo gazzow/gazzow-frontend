@@ -191,7 +191,7 @@ export default function UserManagement() {
             placeholder="Search by name or email"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className=" md:min-w-80 px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className=" md:min-w-80 px-3 py-2 rounded-lg border border-gray-600  text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
 
           {/* Role Filter */}
@@ -201,11 +201,11 @@ export default function UserManagement() {
               setSkip(0);
               setFilterRole(e.target.value);
             }}
-            className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="px-3 py-2 rounded-lg border border-gray-600  text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
-            <option value="all">All Roles</option>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
+            <option className="bg-secondary" value="all">All Roles</option>
+            <option className="bg-secondary" value="user">User</option>
+            <option className="bg-secondary" value="admin">Admin</option>
           </select>
 
           {/* Status Filter */}
@@ -215,23 +215,23 @@ export default function UserManagement() {
               setFilterStatus(e.target.value);
               setSkip(0);
             }}
-            className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="px-3 py-2 rounded-lg border border-gray-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="blocked">Blocked</option>
+            <option className="bg-secondary" value="all">All Status</option>
+            <option className="bg-secondary" value="active">Active</option>
+            <option className="bg-secondary" value="blocked">Blocked</option>
           </select>
 
           {/* Sort */}
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="px-3 py-2 rounded-lg border border-gray-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="name-asc">Name A → Z</option>
-            <option value="name-desc">Name Z → A</option>
+            <option className="bg-secondary" value="newest">Newest First</option>
+            <option className="bg-secondary" value="oldest">Oldest First</option>
+            <option className="bg-secondary" value="name-asc">Name A → Z</option>
+            <option className="bg-secondary" value="name-desc">Name Z → A</option>
           </select>
         </div>
       </div>
