@@ -69,7 +69,7 @@ export default function ReassignTaskModal({
       const res = await taskService.reassignTask(
         task.id,
         task.project.id,
-        assigneeId
+        assigneeId,
       );
 
       toast.success(res.message);
@@ -85,38 +85,49 @@ export default function ReassignTaskModal({
   };
 
   return (
-    <div className="bg-secondary p-4 rounded">
-      <h2 className="text-lg font-semibold mb-4">Reassign</h2>
+    <div className="absolute right-5 top-5 bg-white dark:bg-secondary p-4 sm:p-5 rounded-xl border border-gray-200 dark:border-border-primary shadow-md w-full max-w-md">
+      <h2 className="text-base sm:text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
+        Reassign
+      </h2>
 
-      <select
-        onChange={(e) => setAssigneeId(e.target.value)}
-        className="w-full border  border-border-primary rounded p-2"
-      >
-        <option value="" className="bg-gray-600">
-          Select contributor
-        </option>
-        {contributors ? (
-          contributors.map((c) => (
-            <option key={c.userId} value={c.userId} className="bg-gray-700">
-              {c.name} — ${c.expectedRate}/hr
+      {task.assignee && (
+        <select
+          value={assigneeId || task.assignee?.id}
+          onChange={(e) => setAssigneeId(e.target.value)}
+          className="w-full border border-gray-300 dark:border-border-primary rounded-md p-2 text-sm 
+  bg-gray-50 dark:bg-primary 
+  focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+        >
+          {/* Current Assignee */}
+          {task.assignee && (
+            <option value={task.assignee.id} disabled>
+              {task.assignee.name} — ${task.expectedRate}/hr (Current)
             </option>
-          ))
-        ) : (
-          <option>Contributors not found</option>
-        )}
-      </select>
+          )}
 
-      <div className="flex justify-end gap-2 mt-4">
+          {/* Other Contributors */}
+          {contributors
+            ?.filter((c) => c.userId !== task.assignee?.id)
+            .map((c) => (
+              <option key={c.userId} value={c.userId}>
+                {c.name} — ${c.expectedRate}/hr
+              </option>
+            ))}
+        </select>
+      )}
+
+      <div className="flex flex-wrap justify-end gap-2 mt-5">
         <button
           onClick={onClose}
-          className="bg-gray-700 px-2 rounded cursor-pointer"
+          className="px-3 py-1 text-sm rounded-md bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition cursor-pointer"
         >
           Cancel
         </button>
+
         <button
           disabled={loading}
           onClick={handleReassign}
-          className="bg-btn-primary px-3 py-1 rounded cursor-pointer"
+          className="px-3 py-1 text-sm rounded-md bg-btn-primary hover:bg-btn-primary-hover text-white transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {loading ? "Reassigning..." : "Reassign"}
         </button>
