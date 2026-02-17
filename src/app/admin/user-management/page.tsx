@@ -140,7 +140,7 @@ export default function UserManagement() {
   return (
     <div
       className="
-  p-8
+  p-6
   bg-gray-50 dark:bg-transparent
   text-gray-800 dark:text-white
   transition-colors duration-300
