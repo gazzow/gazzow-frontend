@@ -41,10 +41,20 @@ export default function ProjectFileUpload({
 
   return (
     <div className="space-y-3 rounded-2xl">
-      <p className="text-md font-medium text-white mb-1">{label}</p>
+      <p className="text-sm sm:text-md font-medium text-gray-800 dark:text-white">
+        {label}
+      </p>
+
       <label
         htmlFor="files"
-        className="flex flex-col items-center justify-center w-full border-2 border-dashed border-border-primary rounded-xl p-6 text-center transition cursor-pointer"
+        className="
+    flex flex-col items-center justify-center w-full 
+    border-2 border-dashed border-gray-300 dark:border-border-primary
+    rounded-xl p-6 text-center transition
+    bg-gray-50 dark:bg-primary/20
+    hover:bg-gray-100 dark:hover:bg-primary/30
+    cursor-pointer
+    "
       >
         <input
           ref={fileInputRef}
@@ -54,32 +64,47 @@ export default function ProjectFileUpload({
           onChange={handleFileChange}
           id="files"
         />
-        <span className="text-blue-400 hover:underline">
-          Click to upload or drag and drop files
+
+        <span className="text-blue-500 dark:text-blue-400 text-sm">
+          Click to upload or drag & drop files
+        </span>
+
+        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Supports multiple files
         </span>
       </label>
 
       {files.length > 0 && (
-        <ul className="space-y-1">
+        <ul className="space-y-2">
           {files.map((file, i) => (
             <li
               key={i}
-              className="flex items-center justify-between bg-primary/30 px-2 py-2 rounded-lg text-sm text-gray-300"
+              className="
+          flex flex-col sm:flex-row sm:items-center justify-between gap-2
+          bg-white dark:bg-primary/30 
+          border border-gray-200 dark:border-gray-700
+          px-3 py-2 rounded-lg text-sm
+          "
             >
-              <span>{file.name}</span>
-              <div className="flex gap-4">
+              <span className="text-gray-700 dark:text-gray-300 truncate">
+                {file.name}
+              </span>
+
+              <div className="flex gap-3">
                 <button
                   onClick={() => handleViewFile(file)}
-                  className="flex gap-2 hover:text-blue-300 text-xs cursor-pointer"
+                  className="flex items-center gap-1 bg-blue-100  px-2 py-1 rounded text-blue-500 dark:text-blue-800 hover:underline text-xs cursor-pointer"
                 >
-                  <Eye size={18} />
-                  <span>view</span>
+                  <Eye size={16} />
+                  <span>View</span>
                 </button>
+
                 <button
                   onClick={() => handleRemove(i)}
-                  className="text-red-400 hover:text-red-500 text-xs cursor-pointer"
+                  className="flex items-center gap-1 bg-red-100  px-2 py-1 rounded text-red-500 hover:text-red-600 text-xs cursor-pointer"
                 >
-                  <Trash size={18}/>
+                  <Trash size={16} />
+                  <span>Remove</span>
                 </button>
               </div>
             </li>

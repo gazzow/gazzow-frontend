@@ -50,69 +50,86 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className="bg-secondary/30 border border-gray-700  space-y-2 rounded-md p-4 shadow-md text-gray-100 hover:shadow-lg hover:border-gray-500 transition duration-200"
+      className="
+  bg-white dark:bg-secondary/30
+  border border-gray-200 dark:border-gray-700
+  rounded-xl p-4 shadow-sm dark:shadow-md
+  text-gray-800 dark:text-gray-100
+  hover:shadow-lg
+  hover:border-gray-300 dark:hover:border-gray-500
+  transition-all duration-200
+  cursor-pointer
+  flex flex-col gap-2
+"
       onClick={openTaskDetailsModal}
     >
+      {/* Top Section */}
       <div
-        className="flex justify-between items-start relative"
+        className="flex justify-between items-start gap-2"
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
       >
-        {/* Title + priority */}
-        <div className="flex  max-w-[80%]">
-          <h3 className="text-md font-semibold text-white line-clamp-1">
-            {task.title}
-          </h3>
-        </div>
+        {/* Title */}
+        <h3 className="text-sm sm:text-md font-semibold text-gray-900 dark:text-white line-clamp-1">
+          {task.title}
+        </h3>
 
-        {/* 3 dots menu */}
+        {/* Menu */}
         {task.creator.id == user.id && task.status !== TaskStatus.COMPLETED && (
-          <div className="relative">
+          <div className="relative shrink-0">
             <button
               onClick={(e) => {
                 onToggleMenu(task.id);
                 e.stopPropagation();
               }}
-              className="p-2 rounded-lg hover:bg-gray-700/40 transition text-gray-400"
+              className="
+          p-2 rounded-lg
+          hover:bg-gray-100 dark:hover:bg-gray-700/40
+          text-gray-500 dark:text-gray-400
+          transition cursor-pointer
+        "
             >
-              {isMenuOpen ? (
-                <X size={16} className="animate-flip-up" />
-              ) : (
-                <MoreVertical size={16} className="animate-flip-up" />
-              )}
+              {isMenuOpen ? <X size={16} /> : <MoreVertical size={16} />}
             </button>
 
-            {/* Menu Dropdown */}
             {isMenuOpen && (
-              <div className="absolute right-0 mt-1 w-45 bg-secondary border border-gray-700 rounded-lg shadow-lg overflow-hidden animate-fadeIn z-20">
+              <div
+                className="
+            absolute right-0 mt-1 w-40
+            bg-white dark:bg-secondary
+            border border-gray-200 dark:border-gray-700
+            rounded-lg shadow-lg
+            overflow-hidden z-20
+          "
+              >
                 <button
                   onClick={() => {
                     onToggleMenu(task.id);
                     openEditModal();
                   }}
-                  className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm hover:bg-gray-700 transition"
+                  className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
                 >
-                  <Edit size={16} color="orange" />
-                  <span> Edit</span>
+                  <Edit size={16} />
+                  Edit
                 </button>
 
                 <button
                   onClick={() => {
                     onToggleMenu(task.id);
                   }}
-                  className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm hover:bg-gray-700 transition"
+                  className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
                 >
-                  <SquareCheckBig size={16} color="violet" />
-                  <span> Mark as Completed</span>
+                  <SquareCheckBig size={16} />
+                  Complete
                 </button>
 
                 <button
                   onClick={() => {
                     onToggleMenu(task.id);
                   }}
-                  className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm  hover:bg-red-500/50 transition"
+                  className="w-full flex gap-2 items-center text-left px-4 py-2 text-sm hover:bg-red-100 dark:hover:bg-red-500/50 transition cursor-pointer"
                 >
-                  <Trash size={16} color="#b23838" />
-                  <span>Delete</span>
+                  <Trash size={16} />
+                  Delete
                 </button>
               </div>
             )}
@@ -120,56 +137,66 @@ const TaskCard: React.FC<TaskCardProps> = ({
         )}
       </div>
 
-      <p className="text-sm text-gray-400">{task.description}</p>
-      {/* Task Status & Priority */}
+      {/* Description */}
+      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+        {task.description}
+      </p>
+
+      {/* Status + Priority */}
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        <span className="px-3 py-1 bg-gray-700/50 text-gray-300 rounded-full">
+        <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 rounded-full">
           {task.status
             .replace("_", " ")
             .replace(/\b\w/g, (c) => c.toUpperCase())}
         </span>
+
         <span
-          className={`px-3 py-1 rounded-full ${
+          className={`px-2 py-1 rounded-full ${
             task.priority === TaskPriority.HIGH
-              ? "bg-red-500/10 border border-red-500 text-red-400"
+              ? "bg-red-500/10 border border-red-500 text-red-500"
               : task.priority === TaskPriority.MEDIUM
-              ? "bg-yellow-500/10 text-orange-400 border border-orange-500"
-              : "bg-blue-500/10 text-blue-400 border border-blue-500"
+                ? "bg-yellow-500/10 border border-orange-500 text-orange-500"
+                : "bg-blue-500/10 border border-blue-500 text-blue-500"
           }`}
         >
           {task.priority}
         </span>
       </div>
 
-      {/* Profile data */}
-      {task.assignee && (
-        <div className="flex items-center gap-2">
-          <div className="bg-blue-600 text-white text-xs font-semibold w-7 h-7 flex items-center justify-center rounded-full">
-            {/* Replace First letter with Image url */}
-            {task.assignee.name && task.assignee.name[0]}
+      {/* Bottom Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        {/* Assignee */}
+        {task.assignee && (
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="bg-blue-500 text-white text-xs font-semibold w-7 h-7 flex items-center justify-center rounded-full shrink-0">
+              {task.assignee.name && task.assignee.name[0]}
+            </div>
+            <div className="truncate">
+              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 truncate">
+                {task.assignee.name}
+              </p>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">
+                {task.assignee.developerRole}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-gray-300">{task.assignee.name}</p>
-            <p className="text-xs text-gray-400 ">
-              {task.assignee.developerRole}
-            </p>
-          </div>
-        </div>
-      )}
+        )}
 
-      <div className="flex gap-1 items-center text-xs text-gray-400">
-        <Calendar size={14} />
-        <span>
-          Due{" "}
-          {new Date(task.dueDate).toLocaleDateString("en-GB", {
-            month: "short",
-            day: "numeric",
-            year: "2-digit",
-          })}
-        </span>
+        {/* Due Date */}
+        <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+          <Calendar size={14} />
+          <span>
+            Due{" "}
+            {new Date(task.dueDate).toLocaleDateString("en-GB", {
+              month: "short",
+              day: "numeric",
+              year: "2-digit",
+            })}
+          </span>
+        </div>
       </div>
 
-      {/* Task details Modal */}
+      {/* Modals */}
       {isTaskDetailModalOpen && !isMenuOpen && (
         <TaskDetailsModal
           taskId={task.id}
@@ -180,7 +207,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
         />
       )}
 
-      {/* Task Edit Modal */}
       {isEditTaskModalOpen && (
         <EditTaskModal
           onClose={closeEditModal}

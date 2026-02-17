@@ -37,7 +37,6 @@ export default function Tasks() {
 
   const currentRole = useRole(project);
 
-
   const visibleTabs = useMemo(() => {
     if (!projectId) return [];
     return tabRoutes
@@ -112,40 +111,41 @@ export default function Tasks() {
     }
   };
 
-
-
   if (!projectId) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-7xl w-full space-y-6">
+    <div className="max-w-7xl w-full space-y-6 flex flex-col">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex  gap-2">
-            <button onClick={onBackClick} className="cursor-pointer">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-start justify-between w-full">
+          {/* Left */}
+          <div className="flex gap-2 min-w-0">
+            <button onClick={onBackClick} className="cursor-pointer shrink-0">
               <ArrowLeft />
             </button>
-            <div className="flex flex-col gap-2">
-              <h1 className="text-2xl md:text-3xl font-semibold ">
+
+            <div className="flex flex-col min-w-0">
+              <h1 className="text-md md:text-3xl font-semibold truncate">
                 {project?.title}
               </h1>
+
               {project?.createdAt && (
-                <p className="text-sm text-gray-400">
+                <p className="text-xs md:text-sm text-gray-400">
                   Posted {new Date(project?.createdAt).toLocaleDateString()}
                 </p>
               )}
             </div>
           </div>
+
+          {/* Right */}
           {currentRole === Role.CREATOR && (
-            <div>
-              <button
-                className="flex gap-1 items-center justify-center bg-btn-primary px-2 py-1 rounded cursor-pointer"
-                onClick={() => setOpen(!open)}
-              >
-                <Plus size={18} />
-                <span>Create</span>
-              </button>
-            </div>
+            <button
+              className="flex items-center md:gap-1 bg-btn-primary text-text-primary p-1 md:px-2 md:py-1 rounded-full md:rounded cursor-pointer shrink-0"
+              onClick={() => setOpen(!open)}
+            >
+              <Plus size={18} />
+              <span className="hidden sm:inline">Create</span>
+            </button>
           )}
         </div>
       </div>
@@ -161,10 +161,8 @@ export default function Tasks() {
       {/* Tabs */}
       <SectionTabs tabs={visibleTabs} />
 
-      {/*  Search & filter */}
-
-      {/* Tasks List*/}
-      <main className="min-h-screen">
+      {/* Tasks List */}
+      <main className="flex-1">
         <TaskBoard tasks={tasks} fetchTasks={fetchTasks} />
       </main>
     </div>
