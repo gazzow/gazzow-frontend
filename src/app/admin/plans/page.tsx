@@ -127,7 +127,7 @@ export default function PlanManagement() {
   return (
     <div
       className="
-  p-8 min-h-screen
+  p-6 min-h-screen
   bg-gray-50 dark:bg-transparent
   text-gray-800 dark:text-white
   transition-colors duration-300
