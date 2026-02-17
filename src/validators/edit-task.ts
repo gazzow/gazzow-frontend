@@ -6,7 +6,7 @@ export const schema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   assigneeId: z.string().optional().nullable(),
   estimatedHours: z
-    .number()
+    .number({message: "Please enter a valid number of hours"})
     .min(1, "Estimated hours must be at least 1")
     .max(24, "Estimated hours must not exceed 24 hours"),
   dueDate: z.string().min(1, "Due date is required"),
