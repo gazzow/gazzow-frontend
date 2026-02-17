@@ -51,7 +51,7 @@ const sections = [
         icon: CreditCard,
         href: ADMIN_ROUTES.SUBSCRIPTIONS,
       },
-      { label: "transaction", icon: Wallet, href:  ADMIN_ROUTES.TRANSACTIONS},
+      { label: "transaction", icon: Wallet, href: ADMIN_ROUTES.TRANSACTIONS },
     ],
   },
   // {
@@ -85,24 +85,55 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="min-h-screen mt-16 p-4 flex flex-col bg-primary text-text-secondary border-r border-border-primary/70">
+    <aside
+      className="
+  min-h-screen mt-16 p-4 flex flex-col
+  bg-white dark:bg-primary
+  text-gray-700 dark:text-text-secondary
+  border-r border-gray-200 dark:border-border-primary
+  transition-colors duration-300
+"
+    >
       {sections.map((section) => (
-        <div key={section.title} className="mb-4">
-          <h4 className="hidden md:flex text-xs uppercase tracking-wide text-gray-500 mb-2">
+        <div key={section.title} className="mb-6">
+          {/* Section Title */}
+          <h4
+            className="
+        hidden md:flex text-xs uppercase tracking-wide 
+        text-gray-400 dark:text-gray-500 mb-2 px-2
+      "
+          >
             {section.title}
           </h4>
+
           <ul className="space-y-1">
             {section.items.map(({ label, icon: Icon, href }) => {
               const active = pathname === href;
+
               return (
                 <li key={label}>
                   <Link
                     href={href}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                      active
-                        ? "bg-purple-600 text-white"
-                        : "hover:bg-secondary/30 hover:text-white"
-                    }`}
+                    className={`
+                  flex items-center gap-3 px-3 py-2 rounded-lg
+                  transition-all duration-200
+                  
+                  ${
+                    active
+                      ? `
+                      bg-btn-primary
+                      text-text-primary 
+                      dark:bg-btn-primary
+                      shadow-sm
+                    `
+                      : `
+                      hover:bg-gray-100 
+                      dark:hover:bg-secondary/30
+                      hover:text-gray-900 
+                      dark:hover:text-white
+                    `
+                  }
+                `}
                   >
                     <Icon className="w-4 h-4" />
                     <span className="hidden md:flex">{label}</span>
@@ -113,9 +144,20 @@ export default function Sidebar() {
           </ul>
         </div>
       ))}
+
+      {/* Logout */}
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary/30 hover:text-white transition cursor-pointer"
+        className="
+      mt-auto
+      flex items-center gap-3 px-3 py-2 rounded-lg
+      transition-all duration-200
+      hover:bg-gray-100 
+      dark:hover:bg-secondary/30
+      hover:text-red-600
+      dark:hover:text-red-400
+      cursor-pointer
+    "
       >
         <LogOut className="w-4 h-4" />
         <span className="hidden md:flex">Logout</span>
