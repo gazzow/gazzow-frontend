@@ -149,7 +149,6 @@ export default function Sidebar() {
       <button
         onClick={handleLogout}
         className="
-      mt-auto
       flex items-center gap-3 px-3 py-2 rounded-lg
       transition-all duration-200
       hover:bg-gray-100 
