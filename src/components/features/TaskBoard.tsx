@@ -8,27 +8,25 @@ interface TaskBoardProps {
   fetchTasks: () => void;
 }
 
-const statusColumns: Record<
-  string,
-  { label: string; statuses: TaskStatus[] }
-> = {
-  todo: {
-    label: "To Do",
-    statuses: [TaskStatus.TODO],
-  },
-  in_progress: {
-    label: "In Progress",
-    statuses: [TaskStatus.IN_PROGRESS],
-  },
-  submitted: {
-    label: "Submitted",
-    statuses: [TaskStatus.SUBMITTED, TaskStatus.REVISIONS_REQUESTED],
-  },
-  completed: {
-    label: "Completed",
-    statuses: [TaskStatus.COMPLETED, TaskStatus.CLOSED],
-  },
-};
+const statusColumns: Record<string, { label: string; statuses: TaskStatus[] }> =
+  {
+    todo: {
+      label: "To Do",
+      statuses: [TaskStatus.TODO],
+    },
+    in_progress: {
+      label: "In Progress",
+      statuses: [TaskStatus.IN_PROGRESS],
+    },
+    submitted: {
+      label: "Submitted",
+      statuses: [TaskStatus.SUBMITTED, TaskStatus.REVISIONS_REQUESTED],
+    },
+    completed: {
+      label: "Completed",
+      statuses: [TaskStatus.COMPLETED, TaskStatus.CLOSED],
+    },
+  };
 
 export default function TaskBoard({ tasks, fetchTasks }: TaskBoardProps) {
   const [openMenuTaskId, setOpenMenuTaskId] = useState<string | null>(null);
@@ -44,27 +42,48 @@ export default function TaskBoard({ tasks, fetchTasks }: TaskBoardProps) {
   }));
 
   return (
-    <section className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+    <section
+      className="
+  flex md:grid
+  md:grid-cols-2 lg:grid-cols-4
+  gap-4 mt-4
+  overflow-x-auto md:overflow-visible
+  pb-2
+"
+    >
       {groupedTasks.map((column) => (
         <div
           key={column.key}
-          className={`min-h-screen border border-border-primary rounded-xl p-4`}
+          className="
+      min-w-[280px] md:min-w-0
+      flex-shrink-0
+      md:flex-shrink
+      border border-gray-200 dark:border-border-primary
+      bg-white dark:bg-secondary/20
+      rounded-xl p-4
+      shadow-sm dark:shadow-none
+      flex flex-col
+    "
         >
+          {/* Header */}
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">
+            <h2 className="text-sm sm:text-lg font-semibold text-gray-800 dark:text-white">
               {column.label.toUpperCase()}
             </h2>
 
-            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-secondary">
-              <span className="text-sm font-semibold text-white">
+            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 dark:bg-secondary">
+              <span className="text-sm font-semibold text-gray-700 dark:text-white">
                 {column.tasks.length}
               </span>
             </div>
           </div>
 
+          {/* Task List */}
           <div className="flex flex-col gap-3">
             {column.tasks.length === 0 ? (
-              <p className="text-sm text-gray-500 italic">No tasks</p>
+              <p className="text-xs sm:text-sm text-gray-500 italic">
+                No tasks
+              </p>
             ) : (
               column.tasks.map((task) => (
                 <TaskCard
