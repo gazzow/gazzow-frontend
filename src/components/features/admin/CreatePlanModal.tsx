@@ -38,40 +38,66 @@ export default function CreatePlanModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center bg-black/50 ">
-      <div className="w-full max-w-md rounded-lg bg-primary p-6 shadow-lg">
-        <h2 className="mb-4 text-lg font-semibold text-white">
+    <div className="fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center bg-black/40">
+      <div
+        className="
+    w-full max-w-md
+    rounded-xl
+    bg-white dark:bg-secondary
+    border border-gray-200 dark:border-border-primary
+    p-6 shadow-xl
+    transition-colors duration-300
+  "
+      >
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
           Create Subscription Plan
         </h2>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           {/* Plan Name */}
           <div>
-            <label className="block text-sm text-gray-300 mb-1">
+            <label className="block text-sm text-gray-600 dark:text-gray-300 mb-1">
               Plan Name
             </label>
             <input
               type="text"
               {...register("name")}
-              className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-white"
               placeholder="eg: Base Plan"
+              className="
+          w-full rounded-md p-2
+          bg-white dark:bg-secondary/40
+          border border-gray-300 dark:border-border-primary
+          text-gray-800 dark:text-white
+          focus:outline-none focus:ring-1 focus:ring-btn-primary
+        "
             />
             {errors.name && (
-              <p className="text-xs text-red-500 mt-1">{errors.name?.message}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {errors.name?.message}
+              </p>
             )}
           </div>
 
           {/* Plan Type */}
           <div>
-            <label className="block text-sm text-gray-300 mb-1">
+            <label className="block text-sm text-gray-600 dark:text-gray-300 mb-1">
               Plan Type
             </label>
             <select
               {...register("type")}
-                className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-gray-300"
+              className="
+          w-full rounded-md p-2
+          bg-white dark:bg-secondary/40
+          border border-gray-300 dark:border-border-primary
+          text-gray-800 dark:text-white
+        "
             >
               {Object.values(PlanType).map((type) => (
-                <option key={type} value={type} className="bg-secondary">
+                <option
+                  key={type}
+                  value={type}
+                  className="bg-white dark:bg-secondary"
+                >
                   {type.toUpperCase()}
                 </option>
               ))}
@@ -83,48 +109,75 @@ export default function CreatePlanModal({
 
           {/* Duration */}
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Duration</label>
+            <label className="block text-sm text-gray-600 dark:text-gray-300 mb-1">
+              Duration
+            </label>
             <select
               {...register("duration")}
-               className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-gray-300"
+              className="
+          w-full rounded-md p-2
+          bg-white dark:bg-secondary/40
+          border border-gray-300 dark:border-border-primary
+          text-gray-800 dark:text-white
+        "
             >
               {Object.values(PlanDuration).map((duration) => (
-                <option key={duration} value={duration} className="bg-secondary">
+                <option
+                  key={duration}
+                  value={duration}
+                  className="bg-white dark:bg-secondary"
+                >
                   {duration.toUpperCase()}
                 </option>
               ))}
             </select>
             {errors.duration && (
-              <p className="text-xs text-red-500 mt-1">{errors.duration.message}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {errors.duration.message}
+              </p>
             )}
           </div>
 
           {/* Price */}
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Price</label>
+            <label className="block text-sm text-gray-600 dark:text-gray-300 mb-1">
+              Price
+            </label>
             <input
               type="number"
               {...register("price", { valueAsNumber: true })}
-               className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-white"
               placeholder="e.g. 999"
+              className="
+          w-full rounded-md p-2
+          bg-white dark:bg-secondary/40
+          border border-gray-300 dark:border-border-primary
+          text-gray-800 dark:text-white
+          focus:outline-none focus:ring-1 focus:ring-btn-primary
+        "
             />
             {errors.price && (
-              <p className="text-xs text-red-500 mt-1">{errors.price.message}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {errors.price.message}
+              </p>
             )}
           </div>
 
-          {/* Commission Rate */}
+          {/* Commission */}
           <div>
-            <label className="block text-sm text-gray-300 mb-1">
+            <label className="block text-sm text-gray-600 dark:text-gray-300 mb-1">
               Commission Rate (%)
             </label>
             <input
               type="number"
-              {...register("commissionRate", {
-                valueAsNumber: true,
-              })}
-               className="w-full border border-border-primary rounded-md bg-secondary/30 p-2 text-white"
+              {...register("commissionRate", { valueAsNumber: true })}
               placeholder="e.g. 10"
+              className="
+          w-full rounded-md p-2
+          bg-white dark:bg-secondary/40
+          border border-gray-300 dark:border-border-primary
+          text-gray-800 dark:text-white
+          focus:outline-none focus:ring-1 focus:ring-btn-primary
+        "
             />
             {errors.commissionRate && (
               <p className="text-xs text-red-500 mt-1">
@@ -138,7 +191,12 @@ export default function CreatePlanModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md bg-gray-600 px-2 py-1 text-sm text-white hover:bg-gray-700 cursor-pointer"
+              className="
+          rounded-md px-3 py-1 text-sm
+          bg-gray-200 dark:bg-secondary/40
+          text-gray-700 dark:text-gray-300
+          hover:bg-gray-300 dark:hover:bg-secondary/60 cursor-pointer
+        "
             >
               Cancel
             </button>
@@ -146,7 +204,12 @@ export default function CreatePlanModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-md bg-btn-primary px-2 py-1 text-sm text-white hover:bg-btn-primary-hover disabled:opacity-50 cursor-pointer"
+              className="
+          rounded-md px-3 py-1 text-sm
+          bg-btn-primary text-white
+          hover:bg-btn-primary-hover
+          disabled:opacity-50 cursor-pointer
+        "
             >
               {isSubmitting ? "Creating..." : "Create"}
             </button>
