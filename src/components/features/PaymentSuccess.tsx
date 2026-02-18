@@ -7,15 +7,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function SuccessPayment() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const taskId = searchParams.get("taskId");
+  const projectId = searchParams.get("projectId");
 
   const onDashboardClick = () => {
     router.push(USER_ROUTES.HOME);
   };
 
   const onGoToProjectsClick = () => {
-    if (taskId) {
-      router.push(PROJECT_ROUTES.DETAILS(taskId));
+    if (projectId) {
+      router.push(PROJECT_ROUTES.TASKS(projectId));
     } else {
       router.push(PROJECT_ROUTES.BROWSE);
     }
