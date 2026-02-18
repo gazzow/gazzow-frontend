@@ -1,32 +1,48 @@
 "use client";
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import TaskCard from "./TaskCard";
 import { ITask, TaskStatus } from "@/types/task";
+import { CheckCircle, CircleDashed, ListTodo, Send } from "lucide-react";
 
 interface TaskBoardProps {
   tasks: ITask[];
   fetchTasks: () => void;
 }
 
-const statusColumns: Record<string, { label: string; statuses: TaskStatus[] }> =
+const statusColumns: Record<
+  string,
   {
-    todo: {
-      label: "To Do",
-      statuses: [TaskStatus.TODO],
-    },
-    in_progress: {
-      label: "In Progress",
-      statuses: [TaskStatus.IN_PROGRESS],
-    },
-    submitted: {
-      label: "Submitted",
-      statuses: [TaskStatus.SUBMITTED, TaskStatus.REVISIONS_REQUESTED],
-    },
-    completed: {
-      label: "Completed",
-      statuses: [TaskStatus.COMPLETED, TaskStatus.CLOSED],
-    },
-  };
+    label: string;
+    statuses: TaskStatus[];
+    backgroundColor: string;
+    icon: ReactElement;
+  }
+> = {
+  todo: {
+    label: "To Do",
+    statuses: [TaskStatus.TODO],
+    backgroundColor: "bg-gray-500/60",
+    icon: <ListTodo size={22} color="white"></ListTodo>,
+  },
+  in_progress: {
+    label: "In Progress",
+    statuses: [TaskStatus.IN_PROGRESS],
+    backgroundColor: "bg-cyan-500/60",
+    icon: <CircleDashed size={22} color="white"></CircleDashed>,
+  },
+  submitted: {
+    label: "Submitted",
+    statuses: [TaskStatus.SUBMITTED, TaskStatus.REVISIONS_REQUESTED],
+    backgroundColor: "bg-yellow-500/60",
+    icon: <Send size={22} color="white"></Send>,
+  },
+  completed: {
+    label: "Completed",
+    statuses: [TaskStatus.COMPLETED, TaskStatus.CLOSED],
+    backgroundColor: "bg-emerald-500/60",
+    icon: <CheckCircle size={22} color="white"></CheckCircle>,
+  },
+};
 
 export default function TaskBoard({ tasks, fetchTasks }: TaskBoardProps) {
   const [openMenuTaskId, setOpenMenuTaskId] = useState<string | null>(null);
@@ -66,7 +82,10 @@ export default function TaskBoard({ tasks, fetchTasks }: TaskBoardProps) {
     "
         >
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
+          <div
+            className={`flex items-center justify-between mb-4 p-2 rounded ${column.backgroundColor}`}
+          >
+            {column.icon}
             <h2 className="text-sm sm:text-lg font-semibold text-gray-800 dark:text-white">
               {column.label.toUpperCase()}
             </h2>

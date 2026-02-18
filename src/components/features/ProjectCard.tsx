@@ -239,12 +239,12 @@ export default function ProjectCard({
         <div className="flex items-center gap-4">
           {/* Applications count */}
           {isContributor ? (
-            <div className="flex gap-2 items-center  text-gray-200">
+            <div className="flex gap-2 items-center text-gray-500 dark:text-gray-200">
               <Users2 size={18} />
               <p>{contributorsCount || contributors.length}</p>
             </div>
           ) : (
-            <div className="flex gap-2 items-center text-gray-500   dark:text-gray-200">
+            <div className="flex gap-2 items-center text-gray-500 dark:text-gray-200">
               <FileText size={18} />
               <p>{applicationCount}</p>
             </div>
