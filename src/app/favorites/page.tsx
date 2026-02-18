@@ -124,7 +124,6 @@ export default function FavoritesPage() {
             <ProjectCard
               key={favorite.project.id}
               {...favorite.project}
-              isFavorite={true}
               isContributor={true}
               onFavoriteToggle={onFavoriteToggle}
             />

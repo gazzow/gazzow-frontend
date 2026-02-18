@@ -1,7 +1,14 @@
 "use client";
 
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
-import { Calendar, DollarSign, FileText, Star, User, Users2 } from "lucide-react";
+import {
+  Calendar,
+  DollarSign,
+  FileText,
+  Star,
+  User,
+  Users2,
+} from "lucide-react";
 import ApplyModal from "./ApplyModal";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -10,6 +17,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { paymentService } from "@/services/user/payment-service";
 import Image from "next/image";
+import { Contributor } from "@/types/project";
 
 interface ProjectCardProps {
   id: string;
@@ -26,6 +34,7 @@ interface ProjectCardProps {
     imageUrl: string;
   };
   rating?: number;
+  contributors: Contributor[];
   applicationCount: number;
   contributorsCount?: number;
   isContributor?: boolean;
@@ -44,6 +53,7 @@ export default function ProjectCard({
   durationMax,
   durationUnit,
   creator,
+  contributors,
   applicationCount,
   contributorsCount,
   isContributor,
@@ -231,10 +241,10 @@ export default function ProjectCard({
           {isContributor ? (
             <div className="flex gap-2 items-center  text-gray-200">
               <Users2 size={18} />
-              <p>{contributorsCount}</p>
+              <p>{contributorsCount || contributors.length}</p>
             </div>
           ) : (
-            <div className="flex gap-2 items-center  text-gray-200">
+            <div className="flex gap-2 items-center text-gray-500   dark:text-gray-200">
               <FileText size={18} />
               <p>{applicationCount}</p>
             </div>
