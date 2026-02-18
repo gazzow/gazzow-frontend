@@ -136,7 +136,7 @@ export default function Pricing() {
   const getPlanLabel = (
     plan: IPlan,
     subscription: ISubscription | null,
-  ): string | null => {
+  ): string => {
     if (!subscription) return `Subscribe to ${plan.name}`;
 
     const targetDurationLevel = DURATION_ORDER[plan.duration];
@@ -146,6 +146,8 @@ export default function Pricing() {
       DURATION_ORDER[subscription.activePlan.duration];
     const currentTypeLevel = PLAN_ORDER[subscription.activePlan.type];
 
+
+    // ✅ Current Plan
     if (
       currentTypeLevel === targetTypeLevel &&
       currentDurationLevel === targetDurationLevel
@@ -153,14 +155,27 @@ export default function Pricing() {
       return "✓ Current Plan";
     }
 
-    if (
-      targetTypeLevel > currentTypeLevel ||
-      targetDurationLevel > currentDurationLevel
-    ) {
+    // ✅ Feature Upgrade
+    if (targetTypeLevel > currentTypeLevel) {
       return `Upgrade to ${plan.name}`;
     }
 
-    return null;
+    // ✅ Feature Downgrade
+    if (targetTypeLevel < currentTypeLevel) {
+      return `Downgrade to ${plan.name}`;
+    }
+
+    // ✅ Duration Upgrade (Monthly → Yearly)
+    if (targetDurationLevel > currentDurationLevel) {
+      return `Upgrade to ${plan.name}`;
+    }
+
+    // ✅ Duration Downgrade (Yearly → Monthly)
+    if (targetDurationLevel < currentDurationLevel) {
+      return `Downgrade to ${plan.name}`;
+    }
+
+    return "Subscribe";
   };
 
   const handleSubscriptionCheckout = async (planId: string) => {
@@ -268,7 +283,7 @@ export default function Pricing() {
               ${
                 isCurrent
                   ? "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
-                  : "bg-purple-600 hover:bg-purple-700 text-white"
+                  : "bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
               }`}
                 onClick={() => handleSubscriptionCheckout(plan.id)}
               >
