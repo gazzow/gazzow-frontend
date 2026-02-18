@@ -116,7 +116,7 @@ export default function EditProjectModal({
 
       const res = await projectService.updateProject(
         projectId,
-        data as IProject
+        data as IProject,
       );
       if (res.success) {
         toast.success(res.message || "Project updated");
@@ -137,33 +137,55 @@ export default function EditProjectModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-3 sm:px-6">
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/70" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+      />
 
       {/* Modal */}
-      <div className="relative bg-gray-900/95 w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-2xl p-10 border border-gray-800 shadow-xl m-4">
-        <h2 className="text-3xl font-semibold text-white mb-2">Edit Project</h2>
-        <p className="text-gray-400 text-sm mb-8">
+      <div
+        className="relative w-full max-w-6xl max-h-[92vh] overflow-y-auto custom-scroll
+    bg-white dark:bg-[#0b1220]
+    text-gray-900 dark:text-gray-100
+    rounded-xl sm:rounded-2xl
+    p-5 sm:p-8 md:p-10
+    border border-gray-200 dark:border-[#1f2937]
+    shadow-xl transition-colors"
+      >
+        {/* Header */}
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-1">
+          Edit Project
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">
           Update the details of your project.
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-10 sm:space-y-12"
+        >
           {/* Basic Information */}
-          <section className="space-y-6">
-            <h3 className="text-xl font-medium text-white border-b border-gray-700 pb-2">
+          <section className="space-y-5 sm:space-y-6">
+            <h3 className="text-lg sm:text-xl font-medium border-b pb-2 border-gray-200 dark:border-gray-700">
               Basic Information
             </h3>
 
             {/* Title */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
+              <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                 Project Title
               </label>
               <input
                 {...register("title")}
                 placeholder="Enter your project title"
-                className="w-full rounded-lg bg-gray-800 p-3 text-sm text-white placeholder-gray-500 outline-none border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full rounded-lg p-3 text-sm
+            bg-gray-50 dark:bg-[#0f1624]
+            text-gray-900 dark:text-white
+            placeholder:text-gray-400 dark:placeholder:text-gray-500
+            border border-gray-300 dark:border-[#1f2937]
+            focus:ring-2 focus:ring-purple-500 focus:outline-none"
               />
               {errors.title && (
                 <p className="text-red-500 text-xs mt-1">
@@ -174,14 +196,19 @@ export default function EditProjectModal({
 
             {/* Description */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
+              <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                 Project Description
               </label>
               <textarea
                 {...register("description")}
-                rows={8}
+                rows={6}
                 placeholder="Describe your project"
-                className="w-full rounded-lg bg-gray-800 p-3 text-sm text-white placeholder-gray-500 border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                className="w-full rounded-lg p-3 text-sm resize-none
+            bg-gray-50 dark:bg-[#0f1624]
+            text-gray-900 dark:text-white
+            placeholder:text-gray-400 dark:placeholder:text-gray-500
+            border border-gray-300 dark:border-[#1f2937]
+            focus:ring-2 focus:ring-purple-500 focus:outline-none"
               />
               {errors.description && (
                 <p className="text-red-500 text-xs mt-1">
@@ -190,7 +217,6 @@ export default function EditProjectModal({
               )}
             </div>
 
-            {/* Required Skills */}
             <SkillSelector
               requiredSkills={selectedSkills}
               setRequiredSkills={(skills) =>
@@ -199,20 +225,20 @@ export default function EditProjectModal({
               errors={errors}
             />
 
-            {/* Visibility, Developers, Experience */}
-            <div className="grid md:grid-cols-3 gap-6">
+            {/* Visibility + Developers + Experience */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {/* Visibility */}
               <div>
-                <label className="block text-sm text-gray-400 mb-2">
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                   Visibility
                 </label>
-                <div className="flex gap-4 text-gray-300">
+                <div className="flex gap-4 text-gray-700 dark:text-gray-300">
                   <label className="flex items-center gap-2">
                     <input
                       type="radio"
                       value="public"
                       {...register("visibility")}
-                      className="accent-purple-500"
+                      className="accent-purple-500 cursor-pointer"
                     />
                     Public
                   </label>
@@ -221,44 +247,39 @@ export default function EditProjectModal({
                       type="radio"
                       value="invite"
                       {...register("visibility")}
-                      className="accent-purple-500"
+                      className="accent-purple-500 cursor-pointer"
                     />
                     Invite
                   </label>
                 </div>
-                {errors.visibility && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.visibility.message}
-                  </p>
-                )}
               </div>
 
               {/* Developers */}
               <div>
-                <label className="block text-sm text-gray-400 mb-2">
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                   Developers Needed
                 </label>
                 <input
-                  type="text"
                   {...register("developersNeeded")}
                   placeholder="e.g., 6"
-                  className="w-full rounded-lg bg-gray-800 p-3 text-sm text-white placeholder-gray-500 border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="w-full rounded-lg p-3 text-sm
+              bg-gray-50 dark:bg-[#0f1624]
+              border border-gray-300 dark:border-[#1f2937]
+              focus:ring-2 focus:ring-purple-500"
                 />
-                {errors.developersNeeded && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.developersNeeded.message}
-                  </p>
-                )}
               </div>
 
               {/* Experience */}
               <div>
-                <label className="block text-sm text-gray-400 mb-2">
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                   Experience Level
                 </label>
                 <select
                   {...register("experience")}
-                  className="w-full rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full rounded-lg p-3 text-sm
+              bg-gray-50 dark:bg-[#0f1624]
+              border border-gray-300 dark:border-[#1f2937]
+              focus:ring-2 focus:ring-purple-500 cursor-pointer"
                 >
                   <option value="">Select Experience</option>
                   {experiences.map((exp) => (
@@ -267,117 +288,79 @@ export default function EditProjectModal({
                     </option>
                   ))}
                 </select>
-                {errors.experience && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.experience.message}
-                  </p>
-                )}
               </div>
             </div>
           </section>
 
           {/* Budget & Timeline */}
-          <section className="space-y-6">
-            <h3 className="text-xl font-medium text-white border-b border-gray-700 pb-2">
+          <section className="space-y-5 sm:space-y-6">
+            <h3 className="text-lg sm:text-xl font-medium border-b pb-2 border-gray-200 dark:border-gray-700">
               Budget & Timeline
             </h3>
 
-            <div className="flex flex-row flex-wrap gap-6">
-              {/* Budget Range */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Budget */}
               <div>
-                <label className="block text-sm text-gray-400 mb-2">
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                   Budget Range ($)
                 </label>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex gap-3">
                   <input
-                    type="text"
                     {...register("budgetMin")}
-                    placeholder="Min e.g., 8000"
-                    className="flex-1 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    placeholder="Min"
+                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937] focus:ring-2 focus:ring-purple-500"
                   />
                   <input
-                    type="text"
                     {...register("budgetMax")}
-                    placeholder="Max e.g., 12000"
-                    className="flex-1 rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    placeholder="Max"
+                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937] focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
-                {(errors.budgetMin || errors.budgetMax) && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.budgetMin?.message || errors.budgetMax?.message}
-                  </p>
-                )}
               </div>
 
-              {/* Duration Range */}
-              <div className="flex-1">
-                <label className="block text-sm text-gray-400 mb-2">
+              {/* Duration */}
+              <div>
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
                   Project Duration
                 </label>
-                <div className="flex flex-wrap gap-3">
-                  {/* Min Duration */}
-                  <div className="flex-1 flex flex-col">
-                    <input
-                      type="text"
-                      {...register("durationMin")}
-                      placeholder="Min e.g., 1"
-                      className="rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                    {errors.durationMin && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.durationMin?.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Max Duration */}
-                  <div className="flex-1 flex flex-col">
-                    <input
-                      type="text"
-                      {...register("durationMax")}
-                      placeholder="Max e.g., 3"
-                      className="rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                    {errors.durationMax && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.durationMax?.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Duration Unit */}
-                  <div className="flex-1 flex flex-col">
-                    <select
-                      {...register("durationUnit")}
-                      className="rounded-lg bg-gray-800 p-3 text-sm text-white border border-gray-700 focus:ring-2 focus:ring-purple-500"
-                    >
-                      <option value="">Select Unit</option>
-                      <option value="weeks">Weeks</option>
-                      <option value="months">Months</option>
-                    </select>
-                    {errors.durationUnit && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.durationUnit?.message}
-                      </p>
-                    )}
-                  </div>
+                <div className="flex gap-3">
+                  <input
+                    {...register("durationMin")}
+                    placeholder="Min"
+                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937] focus:ring-2 focus:ring-purple-500"
+                  />
+                  <input
+                    {...register("durationMax")}
+                    placeholder="Max"
+                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937] focus:ring-2 focus:ring-purple-500"
+                  />
+                  <select
+                    {...register("durationUnit")}
+                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937]  cursor-pointer focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="">Unit</option>
+                    <option value="weeks">Weeks</option>
+                    <option value="months">Months</option>
+                  </select>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Upload Documents */}
           <ProjectFileUpload
             label="Add more documents"
             onFilesChange={setFiles}
           />
 
-          {/* Footer Buttons */}
-          <div className="flex justify-end gap-4 pt-6 border-t border-gray-800">
+          {/* Footer */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-lg
+          bg-gray-200 dark:bg-gray-700
+          text-gray-900 dark:text-white
+          hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             >
               Cancel
             </button>
@@ -385,7 +368,10 @@ export default function EditProjectModal({
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-lg
+          bg-purple-600 text-white
+          hover:bg-purple-700
+          disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>

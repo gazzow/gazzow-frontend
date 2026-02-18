@@ -163,7 +163,7 @@ export default function CreateTaskModal({
           className="flex flex-col flex-1 overflow-hidden"
         >
           {/* Scrollable Body */}
-          <div className="p-5 space-y-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
+          <div className="p-5 space-y-4 overflow-y-auto custom-scroll">
             {/* Task Title */}
             <div>
               <label className="block text-sm font-medium mb-1">

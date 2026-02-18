@@ -19,14 +19,19 @@ export default function UserLayout({
   if (user.id === null) return;
 
   return (
-    <div className="flex bg-primary">
+    <div className="flex h-screen overflow-hidden">
       <NavigationProvider>
-        {!user.isOnboarding && <Navbar />}
-
-        <div className="flex flex-1 overflow-hidden">
-          {!user.isOnboarding && <Sidebar />}
-
-          <main className="flex-1 text-white">{children}</main>
+        <Navbar />
+        <div className="flex flex-1 overflow-hidden h-full">
+          <Sidebar />
+          <main className="flex-1 w-full overflow-y-auto custom-scroll text-black dark:text-white transition-colors">
+            <div
+              className="min-h-[90vh] w-full flex justify-center
+                transition-colors"
+            >
+              {children}
+            </div>
+          </main>
         </div>
       </NavigationProvider>
     </div>

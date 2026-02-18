@@ -29,7 +29,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState<IUser | null>(null);
 
   return (
-    <div className="min-h-screen mt-16 bg-white dark:bg-primary text-black dark:text-white px-4 sm:px-6 py-6 flex justify-center transition-colors">
+    <div className="pt-20 px-6 w-full bg-white dark:bg-primary text-black dark:text-white sm:px-6 py-6 flex justify-center transition-colors">
       <div className="max-w-4xl w-full bg-gray-100 dark:bg-secondary/30 rounded-2xl shadow-lg p-5 sm:p-8 space-y-6 sm:space-y-8 transition-colors">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
@@ -75,7 +75,7 @@ const ProfilePage = () => {
             </Link>
 
             <Link href={USER_ROUTES.EDIT_PROFILE} className="w-full sm:w-auto">
-              <button className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-btn-primary hover:bg-btn-primary-hover text-white rounded-lg transition">
+              <button className="w-full flex items-center justify-center gap-2 py-1 px-4 bg-btn-primary cursor-pointer hover:bg-btn-primary-hover text-white rounded-lg transition">
                 <Pen size={14} />
                 <span>Edit</span>
               </button>

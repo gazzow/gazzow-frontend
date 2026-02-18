@@ -4,9 +4,8 @@ import ProjectCard from "@/components/features/ProjectCard";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { IAggregatedProject, ProjectFilters } from "../../types/project";
+import { IAggregatedProject } from "../../types/project";
 import { SectionTabs } from "@/components/features/SectionTabs";
-import { useDebounce } from "@/hook/useDebounce";
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { contributorService } from "@/services/user/contributor.service";
@@ -21,11 +20,6 @@ const tabs = [
 
 export default function ProjectList() {
   const [projects, setProjects] = useState<IAggregatedProject[]>([]);
-  const [filters, setFilters] = useState<ProjectFilters>({
-    budgetOrder: "asc",
-  });
-  const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search, 300);
   const {
     skip,
     limit,
@@ -40,15 +34,9 @@ export default function ProjectList() {
     limit: 6,
   });
 
-  const updateFilter = (key: keyof ProjectFilters, value: unknown) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
   const fetchProjects = useCallback(async () => {
     try {
       const res = await contributorService.listContributorProjects({
-        search: debouncedSearch,
-        budgetOrder: filters.budgetOrder,
         skip,
         limit,
       });
@@ -64,7 +52,7 @@ export default function ProjectList() {
         toast.error(error.response?.data.message);
       }
     }
-  }, [setTotal, debouncedSearch, filters, skip, limit]);
+  }, [setTotal, skip, limit]);
 
   useEffect(() => {
     fetchProjects();
@@ -88,37 +76,6 @@ export default function ProjectList() {
 
       {/* Section Tab */}
       <SectionTabs tabs={tabs} />
-
-      {/* Search & Filter */}
-      <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Search by title or description"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="md:min-w-80 px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
-                 text-black dark:text-white
-                 border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        />
-
-        {/* Budget Sorting */}
-        <select
-          value={filters.budgetOrder}
-          onChange={(e) => updateFilter("budgetOrder", e.target.value)}
-          className="px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
-                 text-black dark:text-white
-                 border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option>Budget Sort</option>
-          <option value="asc">Low → High</option>
-          <option value="desc">High → Low</option>
-        </select>
-      </div>
 
       {/* Project Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

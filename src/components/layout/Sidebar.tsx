@@ -52,7 +52,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`md:min-w-40 h-full mt-16 p-4 ${open ? "flex" : "hidden"} flex-col gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out`}
+      className={`min-h-[90vh] pt-20 px-4 ${open ? "flex" : "hidden"} flex-col  gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out`}
     >
       {sections.map(({ label, icon: Icon, href, matchPaths }) => (
         <ul key={label}>
@@ -64,7 +64,7 @@ export default function Sidebar() {
                 matchPaths?.includes(pathname) ||
                 pathname.split("/").includes(label.toLowerCase())
                   ? "bg-btn-primary text-white"
-                  : "hover:bg-secondary/30 hover:text-white"
+                  : "hover:bg-btn-primary/20 dark:hover:text-white"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -73,6 +73,7 @@ export default function Sidebar() {
           </li>
         </ul>
       ))}
+
       <LogoutButton />
     </aside>
   );

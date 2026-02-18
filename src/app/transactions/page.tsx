@@ -70,7 +70,7 @@ export default function TransactionPage() {
 
   return (
     <div
-      className="max-w-7xl w-full flex flex-col shadow-lg space-y-6
+      className="max-w-7xl w-full flex flex-col space-y-6
                 text-black dark:text-white transition-colors"
     >
       {/* Header */}

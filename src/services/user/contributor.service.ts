@@ -4,7 +4,7 @@ import { ApplicationStatus } from "@/types/application";
 
 export const contributorService = {
   async listContributorProjects(params: {
-    search: string;
+    search?: string;
     budgetOrder?: "asc" | "desc";
     skip: number;
     limit: number;

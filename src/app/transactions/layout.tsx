@@ -19,13 +19,16 @@ export default function TransactionLayout({
   if (user.id === null) return;
 
   return (
-    <div className="flex bg-primary">
+    <div className="flex h-screen overflow-hidden">
       <NavigationProvider>
         <Navbar />
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden h-full">
           <Sidebar />
-          <main className="flex-1 w-full text-white">
-            <div className="min-h-screen w-full mt-16 p-6 flex justify-center bg-white dark:bg-primary text-black dark:text-white transition ease-in-out">
+          <main className="flex-1 w-full overflow-y-auto custom-scroll text-black dark:text-white transition-colors">
+            <div
+              className="min-h-[90vh] w-full pt-20 px-6 flex justify-center
+                transition-colors"
+            >
               {children}
             </div>
           </main>

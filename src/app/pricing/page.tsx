@@ -146,7 +146,6 @@ export default function Pricing() {
       DURATION_ORDER[subscription.activePlan.duration];
     const currentTypeLevel = PLAN_ORDER[subscription.activePlan.type];
 
-
     // ✅ Current Plan
     if (
       currentTypeLevel === targetTypeLevel &&
@@ -197,23 +196,23 @@ export default function Pricing() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 text-black dark:text-white transition-colors">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 text-black dark:text-white transition-colors">
       {/* Heading */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-3">
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">
           Choose Your Plan
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-md sm:max-w-xl mx-auto">
           Unlock more opportunities and grow your freelance career with the
           right plan
         </p>
       </div>
 
       {/* Billing Toggle */}
-      <div className="flex justify-center mb-12">
-        <div className="bg-gray-200 dark:bg-secondary rounded-full p-1 flex gap-1 transition-colors">
+      <div className="flex justify-center mb-8 sm:mb-12">
+        <div className="bg-gray-200 dark:bg-secondary rounded-full p-1 flex gap-1 w-full sm:w-auto max-w-xs sm:max-w-none transition-colors">
           <button
-            className={`px-5 py-2 rounded-full text-sm font-medium cursor-pointer ${
+            className={`flex-1 px-4 sm:px-5 py-2 rounded-full text-sm font-medium cursor-pointer transition ${
               planDuration === PlanDuration.MONTHLY
                 ? "bg-purple-600 text-white"
                 : "text-gray-600 dark:text-gray-400"
@@ -223,7 +222,7 @@ export default function Pricing() {
             Monthly
           </button>
           <button
-            className={`px-5 py-2 rounded-full text-sm font-medium cursor-pointer ${
+            className={`flex-1 px-4 sm:px-5 py-2 rounded-full text-sm font-medium cursor-pointer transition ${
               planDuration === PlanDuration.YEARLY
                 ? "bg-purple-600 text-white"
                 : "text-gray-600 dark:text-gray-400"
@@ -236,9 +235,9 @@ export default function Pricing() {
       </div>
 
       {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {plans.length === 0 && (
-          <p className="text-center text-gray-600 dark:text-gray-400">
+          <p className="text-center text-gray-600 dark:text-gray-400 col-span-full">
             No plans available
           </p>
         )}
@@ -253,44 +252,48 @@ export default function Pricing() {
           return (
             <div
               key={plan.id}
-              className={`relative rounded-2xl p-8 border-2 transition-colors
-            bg-white dark:bg-[#0f1624]
-            ${
-              isPopular
-                ? "border-purple-600"
-                : "border-gray-300 dark:border-[#1f2937]"
-            }`}
+              className={`relative rounded-2xl p-5 sm:p-6 md:p-8 border-2 transition-colors
+          bg-white dark:bg-[#0f1624]
+          ${
+            isPopular
+              ? "border-purple-600"
+              : "border-gray-300 dark:border-[#1f2937]"
+          }`}
             >
               {isPopular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-xs px-4 py-1 rounded-full text-white">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-[10px] sm:text-xs px-3 sm:px-4 py-1 rounded-full text-white whitespace-nowrap">
                   Most Popular
                 </span>
               )}
 
-              <h3 className="text-xl font-semibold mb-1">{plan.name}</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold mb-1">
+                {plan.name}
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-5 sm:mb-6">
                 {getPlanTypeDescription(plan.type)}
               </p>
 
-              <div className="text-4xl font-bold mb-1">${plan.price}</div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+              <div className="text-3xl sm:text-4xl font-bold mb-1">
+                ${plan.price}
+              </div>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-5 sm:mb-6">
                 / {planDuration === PlanDuration.MONTHLY ? "monthly" : "yearly"}
               </p>
 
               <button
                 disabled={isCurrent}
-                className={`w-full py-3 rounded-lg transition
-              ${
-                isCurrent
-                  ? "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
-                  : "bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
-              }`}
+                className={`w-full py-2.5 sm:py-3 text-sm sm:text-base rounded-lg transition
+            ${
+              isCurrent
+                ? "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+                : "bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
+            }`}
                 onClick={() => handleSubscriptionCheckout(plan.id)}
               >
                 {getPlanLabel(plan, activeSubscription)}
               </button>
 
-              <ul className="mt-8 space-y-3 text-sm text-gray-700 dark:text-gray-300">
+              <ul className="mt-6 sm:mt-8 space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                 <li>
                   ✔ {plan.features.commissionRate}% commission on earnings
                 </li>

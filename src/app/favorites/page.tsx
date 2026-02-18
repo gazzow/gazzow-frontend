@@ -5,7 +5,6 @@ import ProjectCard from "@/components/features/ProjectCard";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { favoriteService } from "@/services/user/favorite.service";
 import { IPopulatedFavorite } from "@/types/favorite";
-import { ProjectExperience } from "@/types/project";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -70,48 +69,6 @@ export default function FavoritesPage() {
         </div>
       </div>
 
-      {/* Search & Filter */}
-      <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Search by title or description"
-          className="md:min-w-80 px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
-                 text-black dark:text-white
-                 border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        />
-
-        {/* Experience Filter */}
-        <select
-          className="px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
-                 text-black dark:text-white
-                 border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option value="">Experience Level</option>
-          {Object.values(ProjectExperience).map((exp) => (
-            <option key={exp} value={exp}>
-              {exp.replace(/\b\w/, (c) => c.toUpperCase())}
-            </option>
-          ))}
-        </select>
-
-        {/* Budget Sorting */}
-        <select
-          className="px-3 py-2 rounded-lg border
-                 bg-gray-100 dark:bg-secondary
-                 text-black dark:text-white
-                 border-gray-300 dark:border-border-primary
-                 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option>Budget Sort</option>
-          <option value="asc">Low → High</option>
-          <option value="desc">High → Low</option>
-        </select>
-      </div>
 
       {/* Project Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

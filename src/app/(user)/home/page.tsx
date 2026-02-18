@@ -97,7 +97,7 @@ export default function Dashboard() {
   }, [fetchDashboardStats]);
 
   return (
-    <div className="p-8 mt-16 bg-white dark:bg-primary min-h-screen transition-colors">
+    <div className="pt-20 px-6 w-full bg-white dark:bg-primary min-h-screen transition-colors">
       {/* Header */}
       <div className="flex flex-col gap-4 p-4 border border-border-primary rounded-lg mb-6 bg-white dark:bg-secondary/20 transition-colors">
         <h1 className="text-2xl font-bold text-black dark:text-white">
