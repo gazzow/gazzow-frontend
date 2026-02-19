@@ -147,12 +147,12 @@ export default function EditProjectModal({
       {/* Modal */}
       <div
         className="relative w-full max-w-6xl max-h-[92vh] overflow-y-auto custom-scroll
-    bg-white dark:bg-[#0b1220]
+    bg-white dark:bg-primary
     text-gray-900 dark:text-gray-100
     rounded-xl sm:rounded-2xl
     p-5 sm:p-8 md:p-10
     border border-gray-200 dark:border-[#1f2937]
-    shadow-xl transition-colors"
+    shadow-xl transition ease-in-out duration-200"
       >
         {/* Header */}
         <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-1">
@@ -360,7 +360,7 @@ export default function EditProjectModal({
               className="w-full sm:w-auto px-6 py-2.5 rounded-lg
           bg-gray-200 dark:bg-gray-700
           text-gray-900 dark:text-white
-          hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          hover:bg-gray-300 dark:hover:bg-gray-600 transition cursor-pointer"
             >
               Cancel
             </button>
@@ -371,7 +371,7 @@ export default function EditProjectModal({
               className="w-full sm:w-auto px-6 py-2.5 rounded-lg
           bg-purple-600 text-white
           hover:bg-purple-700
-          disabled:opacity-50 disabled:cursor-not-allowed transition"
+          disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>

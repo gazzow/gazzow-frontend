@@ -1,7 +1,8 @@
 "use client";
 
+import { techOptions } from "@/utils/tech-stacks";
 import { CreateProjectInput } from "@/validators/project-create";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FieldErrors } from "react-hook-form";
 
 interface SkillSelectorProps {
@@ -10,18 +11,6 @@ interface SkillSelectorProps {
   errors?: FieldErrors<CreateProjectInput>;
 }
 
-const techOptions: string[] = [
-  "JavaScript",
-  "TypeScript",
-  "React",
-  "Next.js",
-  "Node.js",
-  "Express",
-  "MongoDB",
-  "PostgreSQL",
-  "TailwindCSS",
-];
-
 export default function SkillSelector({
   requiredSkills,
   setRequiredSkills,
@@ -29,6 +18,23 @@ export default function SkillSelector({
 }: SkillSelectorProps) {
   const [query, setQuery] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<null | HTMLUListElement>(null);
+
+  useEffect(() => {
+    const handleMouseDownEvent = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as HTMLElement)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleMouseDownEvent);
+
+    return () =>
+      document.removeEventListener("mousedown", handleMouseDownEvent);
+  }, []);
 
   const filteredOptions = techOptions.filter(
     (skill) =>
@@ -39,7 +45,6 @@ export default function SkillSelector({
   const handleSelect = (skill: string) => {
     setRequiredSkills([...requiredSkills, skill]);
     setQuery("");
-    setOpen(false);
   };
 
   const removeSkill = (skill: string) => {
@@ -92,6 +97,7 @@ export default function SkillSelector({
       {/* Dropdown */}
       {open && filteredOptions.length > 0 && (
         <ul
+          ref={dropdownRef}
           className="absolute z-20 w-full mt-1 rounded-lg max-h-40 overflow-y-auto custom-scroll
     bg-white dark:bg-[#0f1624]
     border border-gray-200 dark:border-[#1f2937]
