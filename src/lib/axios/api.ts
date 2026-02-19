@@ -73,14 +73,12 @@ api.interceptors.response.use(
         isRefreshing = true;
 
         try {
-          const res = await refreshApi.post(AUTH_API.REFRESH_TOKEN);
-          console.log("Auth refresh token response: ", res);
+          await refreshApi.post(AUTH_API.REFRESH_TOKEN);
           processQueue(null);
 
           // Retry the original request
           return api(originalRequest);
         } catch (err) {
-          console.log("error while refreshing token");
           processQueue(err);
 
           // 🔑 Add logout logic here
@@ -102,8 +100,7 @@ api.interceptors.response.use(
       }
 
       if (status >= HttpStatusCode.INTERNAL_SERVER_ERROR) {
-        // window.location.href = "/InternalServerError";
-        toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+        window.location.href = "/InternalServerError";
       }
     } else {
       // No response (network error, CORS issue, etc.)
