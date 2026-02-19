@@ -1,7 +1,7 @@
 "use client";
 
 import { Eye, EyeOff } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   FieldErrors,
   UseFormHandleSubmit,
@@ -26,7 +26,6 @@ type AuthFormProps = {
   divider?: React.ReactNode;
   OAuthButtons?: React.ReactNode;
   footer?: React.ReactNode;
-  resErrors: Record<string, string>;
   errors: FieldErrors;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
@@ -46,11 +45,9 @@ export default function AuthForm({
   divider,
   OAuthButtons,
   footer,
-  resErrors,
   errors,
   handleSubmit,
   register,
-  clearErrors,
   isSubmitting = false,
 }: AuthFormProps) {
   const [showPassword, setShowPassword] = useState<Record<string, boolean>>({});
@@ -62,22 +59,10 @@ export default function AuthForm({
     }));
   };
 
-  // Clear server errors when user starts typing
-  useEffect(() => {
-    if (Object.keys(resErrors).length > 0 && clearErrors) {
-      const timer = setTimeout(() => {
-        Object.keys(resErrors).forEach((field) => {
-          clearErrors(field);
-        });
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [resErrors, clearErrors]);
-
   return (
     <section
       className="min-h-screen flex items-center justify-center 
-  bg-gray-50 dark:bg-gray-950 
+  bg-gray-50 dark:bg-primary
   px-4 sm:px-6 lg:px-8 transition-colors duration-300"
     >
       <div
@@ -86,7 +71,7 @@ export default function AuthForm({
     max-w-md 
     sm:max-w-md 
     md:max-w-lg 
-    bg-white dark:bg-gray-900 
+    bg-white dark:bg-secondary/20
     border border-gray-200 dark:border-gray-800 
     p-6 sm:p-8 
     rounded-2xl 
@@ -148,13 +133,9 @@ export default function AuthForm({
                   focus:border-indigo-500
                   transition-all duration-200
                 "
-                    aria-invalid={
-                      !!(errors[field.name] || resErrors[field.name])
-                    }
+                    aria-invalid={!!errors[field.name]}
                     aria-describedby={
-                      errors[field.name] || resErrors[field.name]
-                        ? `${field.name}-error`
-                        : undefined
+                      errors[field.name] ? `${field.name}-error` : undefined
                     }
                   />
 
@@ -189,24 +170,21 @@ export default function AuthForm({
                 focus:border-indigo-500
                 transition-all duration-200
               "
-                  aria-invalid={!!(errors[field.name] || resErrors[field.name])}
+                  aria-invalid={!!errors[field.name]}
                   aria-describedby={
-                    errors[field.name] || resErrors[field.name]
-                      ? `${field.name}-error`
-                      : undefined
+                    errors[field.name] ? `${field.name}-error` : undefined
                   }
                 />
               )}
 
               {/* Errors */}
-              {(errors[field.name] || resErrors[field.name]) && (
+              {errors[field.name] && (
                 <p
                   id={`${field.name}-error`}
-                  className="text-red-500 text-sm mt-1"
+                  className="text-red-500/70 text-sm mt-1"
                   role="alert"
                 >
-                  {(errors[field.name]?.message as string) ||
-                    resErrors[field.name]}
+                  {errors[field.name]?.message as string}
                 </p>
               )}
             </div>
