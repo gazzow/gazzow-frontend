@@ -11,6 +11,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { applyProjectSchema } from "@/validators/apply-project";
+import { handleApiError } from "@/utils/handleApiError";
 
 type ApplyProjectFormInput = z.input<typeof applyProjectSchema>;
 type ApplyProjectFormOutput = z.output<typeof applyProjectSchema>;
@@ -49,16 +50,12 @@ export default function ApplyModal({ projectId, closeModal }: ApplyModalProp) {
       toast.success(res.message || "Application submitted");
       closeModal();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message || "Apply project error");
-      }
+      handleApiError(error);
     }
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-md flex items-center justify-center cursor-default"
-    >
+    <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-md flex items-center justify-center cursor-default">
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
