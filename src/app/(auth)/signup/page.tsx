@@ -5,16 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/store";
 import { setUserEmail } from "@/store/slices/authSlice";
-import { toast } from "react-toastify";
 import { SignupInput, signupSchema } from "@/validators/auth-signup";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import { authService } from "@/services/auth/auth-service";
 import { GoogleAuthButton } from "@/components/ui/GoogleAuthButton";
 import { GithubAuthButton } from "@/components/ui/GithubAuthButton";
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
-import axios from "axios";
+import { handleApiError } from "@/utils/handleApiError";
 
 const fields = [
   {
@@ -47,8 +45,6 @@ export default function SignupPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const [resErrors, setResErrors] = useState<Record<string, string>>({});
-
   const {
     register,
     handleSubmit,
@@ -60,8 +56,6 @@ export default function SignupPage() {
 
   const handleRegisterSubmit = async (formData: Record<string, string>) => {
     try {
-      console.log("form data: ", formData);
-
       if (formData.password !== formData.confirmPassword) {
         setError("confirmPassword", {
           type: "manual",
@@ -71,17 +65,12 @@ export default function SignupPage() {
       }
 
       const data = await authService.signup(formData);
-      console.log("res data: ", data);
       if (data.success) {
-        toast.success("Re-routing to verify otp");
         dispatch(setUserEmail({ email: formData.email }));
-        router.replace(AUTH_ROUTES.VERIFY_USER);
+        router.push(AUTH_ROUTES.VERIFY_USER);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("error while api call", error);
-        toast.error(error.response?.data.message || "Error while signup");
-      }
+      handleApiError(error);
     }
   };
 
@@ -128,7 +117,6 @@ export default function SignupPage() {
         </p>
       }
       errors={errors}
-      resErrors={resErrors}
       handleSubmit={handleSubmit}
       register={register}
     ></AuthForm>
