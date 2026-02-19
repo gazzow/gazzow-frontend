@@ -52,7 +52,7 @@ export default function CreateProjectPage() {
       if (key === "projectDocuments" || value === undefined || value === null)
         return;
       if (Array.isArray(value)) {
-        value.forEach((v) => formData.append(key, String(v)));
+        value.forEach((v) => formData.append(`${key}[]`, String(v)));
       } else {
         formData.append(key, String(value));
       }

@@ -11,7 +11,7 @@ export const createProjectSchema = z.object({
     .min(10, "Description must be at least 10 characters")
     .max(699, "Description must not exceed 699 characters"),
 
-  requiredSkills: z.array(z.string()).min(1, "Select at least one tech stack"),
+  requiredSkills: z.array(z.string().min(1)).min(1, "Select at least one tech stack"),
 
   visibility: z.enum(["public", "invite"], "Please select project visibility"),
 
