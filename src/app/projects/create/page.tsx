@@ -4,6 +4,7 @@ import ProjectFileUpload from "@/components/features/FileUpload";
 import SkillSelector from "@/components/ui/SkillSelector";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { projectService } from "@/services/user/project-service";
+import { handleApiError } from "@/utils/handleApiError";
 import {
   CreateProjectInput,
   createProjectSchema,
@@ -71,9 +72,7 @@ export default function CreateProjectPage() {
         router.replace(PROJECT_ROUTES.BROWSE);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message || "create project error");
-      }
+      handleApiError(error);
     }
   };
 

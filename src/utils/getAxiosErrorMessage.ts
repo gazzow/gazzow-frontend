@@ -1,20 +1,20 @@
 import axios from "axios";
 
 export const getAxiosErrorMessage = (error: unknown): string => {
-
   if (axios.isAxiosError(error)) {
+    const response = error.response?.data;
 
-    // Backend message
-    if (error.response?.data?.message) {
-      return error.response.data.message;
+    // 1️⃣ Validation error first
+    if (response?.errors?.length) {
+      return response.errors[0].message;
     }
 
-    // Validation error fallback
-    if (error.response?.data?.errors?.[0]?.message) {
-      return error.response.data.errors[0].message;
+    // 2️⃣ Backend general message
+    if (response?.message) {
+      return response.message;
     }
 
-    // Network error
+    // 3️⃣ Network error
     if (error.request) {
       return "Network error. Please check your connection.";
     }

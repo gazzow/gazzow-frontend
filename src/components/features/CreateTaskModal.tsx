@@ -92,7 +92,6 @@ export default function CreateTaskModal({
 
     if (contributor && !isNaN(hours) && hours > 0) {
       const total = contributor.expectedRate * hours;
-      console.log("💰 total payable amount:", total);
       setCalculatedAmount(total);
     } else {
       setCalculatedAmount(0);
