@@ -1,5 +1,6 @@
 export const ADMIN_API = {
   LOGIN: "/admin/auth/login",
+  LOGOUT: "/admin/auth/logout",
   USERS: "/admin/users",
   SINGLE_USER: (id: string) => `/admin/users/${id}/`,
   UPDATE_STATUS: (id: string) => `/admin/users/${id}/status`,
