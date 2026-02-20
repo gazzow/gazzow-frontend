@@ -42,7 +42,6 @@ export const projectService = {
     return res.data;
   },
   async updateProject(projectId: string, data: Partial<IProject>) {
-    console.log("update details: ", data);
     const res = await api.put(PROJECT_API.UPDATE_PROJECT(projectId), data);
     console.log("Update project response: ", res);
     return res.data;

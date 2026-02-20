@@ -4,7 +4,7 @@ import { AUTH_API } from "@/constants/apis/auth-api";
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { authService } from "@/services/auth/auth-service";
-import axios from "axios";
+import { handleApiError } from "@/utils/handleApiError";
 import { Shield } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,7 +21,6 @@ type Mode = keyof IGetEndPoint;
 interface OtpVerificationProps {
   email: string;
   mode: Mode;
-
 }
 
 const getEndPoint: IGetEndPoint = {
@@ -67,16 +66,27 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
       }
       toast.success(res.message);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("resend otp error: ", error);
-        toast.error(error.response?.data.message || "Internal server error");
-      }
+      handleApiError(error);
     }
   };
 
   const handleSubmit = async () => {
     try {
-      console.log(`verify otp endpoint check: ${endpoint}`);
+      if (!email?.trim()) {
+        toast.error("Email is required. Please try again later");
+        return;
+      }
+
+      if (!otp?.trim()) {
+        toast.error("OTP is required");
+        return;
+      }
+
+      if (otp.length !== 6) {
+        toast.error("OTP must be 6 digits");
+        return;
+      }
+
       const res = await authService.verifyOtp(endpoint, email, otp);
 
       if (res.success) {
@@ -91,10 +101,7 @@ export default function OtpVerification({ email, mode }: OtpVerificationProps) {
         router.replace(AUTH_ROUTES.RESET_PASSWORD);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("verification error: ", error);
-        toast.error(error.response?.data.message || "Internal server error");
-      }
+      handleApiError(error);
     }
   };
 

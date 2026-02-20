@@ -6,4 +6,7 @@ export const adminAuthService = {
     const res = await api.post(ADMIN_API.LOGIN, data);
     return res.data;
   },
+  async logout() {
+    return api.post(ADMIN_API.LOGOUT);
+  },
 };

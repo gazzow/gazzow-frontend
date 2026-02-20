@@ -7,9 +7,9 @@ import { projectService } from "@/services/user/project-service";
 import SkillSelector from "@/components/ui/SkillSelector";
 import ProjectFileUpload from "@/components/features/FileUpload";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { EditProjectInput, editProjectSchema } from "@/validators/edit-project";
 import { IProject } from "@/types/project";
+import { handleApiError } from "@/utils/handleApiError";
 
 interface Props {
   projectId: string;
@@ -68,11 +68,7 @@ export default function EditProjectModal({
           durationUnit: p.durationUnit,
         });
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data.message || "Failed to load project");
-        } else {
-          toast.error("Failed to load project");
-        }
+        handleApiError(error);
       }
     };
 
@@ -91,9 +87,6 @@ export default function EditProjectModal({
         durationMin: Number(values.durationMin),
         durationMax: Number(values.durationMax),
       };
-      console.log(data);
-      console.log("======================================");
-      console.log("converting data to form");
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
         if (key === "projectDocuments" || value === undefined || value === null)
@@ -111,9 +104,6 @@ export default function EditProjectModal({
         });
       }
 
-      console.log("======================================");
-      console.log(formData);
-
       const res = await projectService.updateProject(
         projectId,
         data as IProject,
@@ -124,11 +114,7 @@ export default function EditProjectModal({
         onClose();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message || "Failed to update project");
-      } else {
-        toast.error("Failed to update project");
-      }
+      handleApiError(error);
     } finally {
       setLoading(false);
     }
@@ -251,6 +237,11 @@ export default function EditProjectModal({
                     />
                     Invite
                   </label>
+                  {errors.visibility && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.visibility.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -267,6 +258,11 @@ export default function EditProjectModal({
               border border-gray-300 dark:border-[#1f2937]
               focus:ring-2 focus:ring-purple-500"
                 />
+                {errors.developersNeeded && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.developersNeeded.message}
+                  </p>
+                )}
               </div>
 
               {/* Experience */}
@@ -288,60 +284,122 @@ export default function EditProjectModal({
                     </option>
                   ))}
                 </select>
+                {errors.experience && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.experience.message}
+                  </p>
+                )}
               </div>
             </div>
           </section>
 
           {/* Budget & Timeline */}
-          <section className="space-y-5 sm:space-y-6">
+          <section className="space-y-6">
             <h3 className="text-lg sm:text-xl font-medium border-b pb-2 border-gray-200 dark:border-gray-700">
               Budget & Timeline
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Budget */}
-              <div>
-                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
+              <div className="space-y-2">
+                <label className="block text-sm text-gray-600 dark:text-gray-400">
                   Budget Range ($)
                 </label>
-                <div className="flex gap-3">
-                  <input
-                    {...register("budgetMin")}
-                    placeholder="Min"
-                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937] focus:ring-2 focus:ring-purple-500"
-                  />
-                  <input
-                    {...register("budgetMax")}
-                    placeholder="Max"
-                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937] focus:ring-2 focus:ring-purple-500"
-                  />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <input
+                      {...register("budgetMin")}
+                      type="number"
+                      placeholder="Min"
+                      className="w-full rounded-lg p-3 text-sm
+            bg-gray-50 dark:bg-[#0f1624]
+            border border-gray-300 dark:border-[#1f2937]
+            focus:ring-2 focus:ring-purple-500"
+                    />
+                    {errors.budgetMin && (
+                      <p className="text-red-500 text-xs">
+                        {errors.budgetMin.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <input
+                      {...register("budgetMax")}
+                      type="number"
+                      placeholder="Max"
+                      className="w-full rounded-lg p-3 text-sm
+            bg-gray-50 dark:bg-[#0f1624]
+            border border-gray-300 dark:border-[#1f2937]
+            focus:ring-2 focus:ring-purple-500"
+                    />
+                    {errors.budgetMax && (
+                      <p className="text-red-500 text-xs">
+                        {errors.budgetMax.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Duration */}
-              <div>
-                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
+              <div className="space-y-2">
+                <label className="block text-sm text-gray-600 dark:text-gray-400">
                   Project Duration
                 </label>
-                <div className="flex gap-3">
-                  <input
-                    {...register("durationMin")}
-                    placeholder="Min"
-                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937] focus:ring-2 focus:ring-purple-500"
-                  />
-                  <input
-                    {...register("durationMax")}
-                    placeholder="Max"
-                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937] focus:ring-2 focus:ring-purple-500"
-                  />
-                  <select
-                    {...register("durationUnit")}
-                    className="flex-1 rounded-lg p-3 text-sm bg-gray-50 dark:bg-[#0f1624] border border-gray-300 dark:border-[#1f2937]  cursor-pointer focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="">Unit</option>
-                    <option value="weeks">Weeks</option>
-                    <option value="months">Months</option>
-                  </select>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <input
+                      {...register("durationMin")}
+                      placeholder="Min"
+                      className="w-full rounded-lg p-3 text-sm
+            bg-gray-50 dark:bg-[#0f1624]
+            border border-gray-300 dark:border-[#1f2937]
+            focus:ring-2 focus:ring-purple-500"
+                    />
+                    {errors.durationMin && (
+                      <p className="text-red-500 text-xs">
+                        {errors.durationMin.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <input
+                      {...register("durationMax")}
+                      placeholder="Max"
+                      className="w-full rounded-lg p-3 text-sm
+            bg-gray-50 dark:bg-[#0f1624]
+            border border-gray-300 dark:border-[#1f2937]
+            focus:ring-2 focus:ring-purple-500"
+                    />
+                    {errors.durationMax && (
+                      <p className="text-red-500 text-xs">
+                        {errors.durationMax.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <select
+                      {...register("durationUnit")}
+                      className="w-full rounded-lg p-3 text-sm
+            bg-gray-50 dark:bg-[#0f1624]
+            border border-gray-300 dark:border-[#1f2937]
+            focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="">Unit</option>
+                      <option value="weeks">Weeks</option>
+                      <option value="months">Months</option>
+                    </select>
+                    {errors.durationUnit && (
+                      <p className="text-red-500 text-xs">
+                        {errors.durationUnit.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

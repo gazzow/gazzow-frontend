@@ -11,12 +11,12 @@ import {
   Wallet,
   LogOut,
 } from "lucide-react";
-import { authService } from "@/services/auth/auth-service";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useAppDispatch } from "@/store/store";
 import { clearAdmin } from "@/store/slices/adminSlice";
 import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
+import { adminAuthService } from "@/services/admin/admin-auth.service";
+import { handleApiError } from "@/utils/handleApiError";
 
 const sections = [
   {
@@ -71,16 +71,13 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      await authService.logout();
+      await adminAuthService.logout();
 
       toast.success("Logged out successfully");
       dispatch(clearAdmin());
-      router.push("/admin/login"); // redirect
+      router.push(ADMIN_ROUTES.LOGIN);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("error", error.response?.data);
-        toast.error(error.response?.data?.message || "Logout failed");
-      }
+      handleApiError(error);
     }
   };
 

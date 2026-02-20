@@ -7,11 +7,10 @@ import { useDebounce } from "@/hook/useDebounce";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { projectService } from "@/services/user/project-service";
 import { IProject, ProjectStatus } from "@/types/project";
-import axios from "axios";
+import { handleApiError } from "@/utils/handleApiError";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 type ProjectFilters = {
   status?: string;
@@ -75,14 +74,11 @@ export default function MyProject() {
         skip,
       });
       if (res.success) {
-        console.log("res data: ", res.data);
         setProjects(res.data);
         setTotal(res.meta.total);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
   }, [setTotal, filters, debouncedSearch, skip, limit]);
 

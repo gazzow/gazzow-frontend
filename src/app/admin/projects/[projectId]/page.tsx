@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectManagementService } from "@/services/admin/project-management";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { IProject } from "@/types/project";
 import {
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 import { projectService } from "@/services/user/project-service";
 import { ADMIN_ROUTES } from "@/constants/routes/admin-routes";
+import { handleApiError } from "@/utils/handleApiError";
 
 export default function AdminProjectDetail() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -24,22 +24,19 @@ export default function AdminProjectDetail() {
   const router = useRouter();
 
   const [project, setProject] = useState<IProject | null>(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   useEffect(() => {
     if (!projectId) return;
 
     const fetchProject = async () => {
       try {
-        console.log("projectId: ", projectId);
         const res = await projectManagementService.getProjectDetails(projectId);
         if (res.success) {
-          console.log("res data: ", res.data);
           setProject(res.data);
         }
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data.message);
-        }
+        handleApiError(error);
       }
     };
     fetchProject();
@@ -56,14 +53,28 @@ export default function AdminProjectDetail() {
       }
       window.open(res.data, "_black", "noopener,noreferrer");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error("Failed to get signed URL");
-      }
+      handleApiError(error);
     }
   };
 
   const onBackClick = () => {
     router.replace(ADMIN_ROUTES.PROJECTS);
+  };
+
+  const handleConfirmModal = () => {
+    setConfirmModal(true);
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    try {
+      const res = await projectManagementService.deleteProject(id);
+      if (res.success) {
+        toast.success(res.message || "Project deleted successfully");
+        router.push(ADMIN_ROUTES.PROJECTS);
+      }
+    } catch (error) {
+      handleApiError(error);
+    }
   };
 
   if (!project) return <LoadingSpinner></LoadingSpinner>;
@@ -256,6 +267,7 @@ export default function AdminProjectDetail() {
             text-white py-2 rounded-lg font-medium
             transition cursor-pointer
           "
+                onClick={handleConfirmModal}
               >
                 <Trash size={16} />
                 Delete
@@ -264,6 +276,37 @@ export default function AdminProjectDetail() {
           </div>
         </section>
       </div>
+
+      {/* Confirm Modal */}
+      {confirmModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="w-full max-w-md bg-white dark:bg-primary border border-gray-200 dark:border-border-primary p-6 rounded-2xl shadow-xl">
+            <p className="font-semibold text-lg">
+              Are you sure you want to delete this project?
+            </p>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setConfirmModal(false)}
+                type="button"
+                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-secondary dark:hover:bg-secondary/80 cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                onClick={() => {
+                  handleDeleteProject(projectId);
+                  setConfirmModal(false);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
