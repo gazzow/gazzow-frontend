@@ -6,12 +6,16 @@ import { useDebounce } from "@/hook/useDebounce";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { projectManagementService } from "@/services/admin/project-management";
 import { IProject, ProjectStatus } from "@/types/project";
-import axios from "axios";
+import { handleApiError } from "@/utils/handleApiError";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function ProjectManagement() {
   const [projects, setProjects] = useState<IProject[]>([]);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const router = useRouter();
 
   const {
     page,
@@ -63,11 +67,27 @@ export default function ProjectManagement() {
         setTotal(res.meta.total);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("Project management error: ", error);
-      }
+      handleApiError(error);
     }
   }, [debouncedSearch, filterStatus, limit, setTotal, skip, sortOption]);
+
+  const handleConfirmModal = () => {
+    setConfirmModal(true);
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    try {
+      const res = await projectManagementService.deleteProject(id);
+      if (res.success) {
+        toast.success(res.message || "Project deleted successfully");
+        router.push(ADMIN_ROUTES.PROJECTS);
+      }
+    } catch (error) {
+      handleApiError(error);
+    }finally{
+      fetchProjects()
+    }
+  };
 
   useEffect(() => {
     fetchProjects();
@@ -252,7 +272,7 @@ export default function ProjectManagement() {
                   })}
                 </td>
 
-                <td className="p-3">
+                <td className="p-3 flex items-center gap-2">
                   <Link
                     href={ADMIN_ROUTES.PROJECT_DETAILS(project.id)}
                     className="
@@ -265,6 +285,47 @@ export default function ProjectManagement() {
                   >
                     View
                   </Link>
+                  <button
+                    className="flex  px-3 py-1 rounded-md text-xs font-medium
+               bg-red-500 dark:bg-red-500
+                text-white dark:text-gray-300
+                 hover:bg-red-600 dark:hover:bg-red-600
+                transition cursor-pointer"
+                onClick={handleConfirmModal}
+                  >
+                    Delete
+                  </button>
+
+                  {/* Confirm Modal */}
+                  {confirmModal && (
+                    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
+                      <div className="w-full max-w-md bg-white dark:bg-primary border border-gray-200 dark:border-border-primary p-6 rounded-2xl shadow-xl">
+                        <p className="font-semibold text-lg">
+                          Are you sure you want to delete this project?
+                        </p>
+
+                        <div className="flex justify-end gap-3 mt-6">
+                          <button
+                            onClick={() => setConfirmModal(false)}
+                            type="button"
+                            className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-secondary dark:hover:bg-secondary/80 cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+
+                          <button
+                            className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                            onClick={() => {
+                              handleDeleteProject(project.id);
+                              setConfirmModal(false);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}

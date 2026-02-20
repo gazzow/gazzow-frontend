@@ -20,4 +20,9 @@ export const projectManagementService = {
     console.log("get project details response: ", res);
     return res.data;
   },
+  async deleteProject(projectId: string) {
+    const res = await api.delete(ADMIN_API.DELETE_PROJECT(projectId));
+    console.log("admin delete project response: ", res);
+    return res.data;
+  },
 };
