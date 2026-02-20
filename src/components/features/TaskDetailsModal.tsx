@@ -273,7 +273,7 @@ export default function TaskDetailsModal({
                       task.status === TaskStatus.TODO &&
                       role === "creator" && (
                         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                          <button
+                          {/* <button
                             className="flex items-center justify-center gap-2 px-3 py-1.5 text-xs sm:text-sm rounded-md 
             bg-red-100 text-red-600 
             dark:bg-white dark:text-red-500 
@@ -282,7 +282,7 @@ export default function TaskDetailsModal({
                           >
                             <UserRoundX size={16} />
                             <span>Remove</span>
-                          </button>
+                          </button> */}
 
                           <button
                             onClick={openReassignModal}
