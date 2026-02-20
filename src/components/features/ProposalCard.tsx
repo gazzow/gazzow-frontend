@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { DollarSign, Calendar, FileText, PenLine } from "lucide-react";
+import { DollarSign, Calendar, FileText } from "lucide-react";
 import ApplyModal from "./ApplyModal";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { ApplicationStatus } from "@/types/application";

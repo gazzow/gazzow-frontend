@@ -1,10 +1,7 @@
 "use client";
 
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { SectionTabs } from "@/components/features/SectionTabs";
-import { useDebounce } from "@/hook/useDebounce";
 import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { contributorService } from "@/services/user/contributor.service";
@@ -13,8 +10,8 @@ import {
   ApplicationStatus,
   IApplicationWithPopulatedProject,
 } from "@/types/application";
-import { ProjectFilters } from "@/types/project";
 import ProposalCard from "@/components/features/ProposalCard";
+import { handleApiError } from "@/utils/handleApiError";
 
 const tabs = [
   { name: "Active", href: CONTRIBUTOR_ROUTES.ACTIVE },
@@ -27,11 +24,7 @@ export default function ListPendingProposalPage() {
   const [applications, setApplications] = useState<
     IApplicationWithPopulatedProject[]
   >([]);
-  const [filters, setFilters] = useState<ProjectFilters>({
-    budgetOrder: "asc",
-  });
-  const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search, 300);
+
   const {
     skip,
     limit,
@@ -46,31 +39,22 @@ export default function ListPendingProposalPage() {
     limit: 6,
   });
 
-  const updateFilter = (key: keyof ProjectFilters, value: unknown) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
   const fetchProposals = useCallback(async () => {
     try {
       const res = await contributorService.listContributorProposals({
-        search: debouncedSearch,
         status: ApplicationStatus.REJECTED,
         skip,
         limit,
       });
 
       if (res.success) {
-        console.log("res data: ", res.data);
-        console.log("res meta: ", res.meta);
         setApplications(res.data);
         setTotal(res.meta.total);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
-  }, [setTotal, debouncedSearch, skip, limit]);
+  }, [setTotal, skip, limit]);
 
   useEffect(() => {
     fetchProposals();
