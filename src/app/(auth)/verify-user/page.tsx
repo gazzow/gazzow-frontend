@@ -8,10 +8,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { setOnboardingStatus, setUser } from "@/store/slices/userSlice";
 import { clearAuthEmail } from "@/store/slices/authSlice";
-import axios from "axios";
 import { authService } from "@/services/auth/auth-service";
 import { AUTH_ROUTES } from "@/constants/routes/auth-routes";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
+import { handleApiError } from "@/utils/handleApiError";
 
 export default function VerifyOtp() {
   const [otp, setOtp] = useState("");
@@ -52,21 +52,27 @@ export default function VerifyOtp() {
       }
       toast.success(res.message);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("resend otp error: ", error);
-        toast.error(error.response?.data.message || "Internal server error");
-      }
+      handleApiError(error);
     }
   };
 
   const handleSubmit = async () => {
-    console.log("Email:", email, "OTP:", otp);
-
     try {
-      if (!email || !otp) {
-        console.log("Email or Otp required!");
+      if (!email?.trim()) {
+        toast.error("Email is required. Please try again later");
         return;
       }
+
+      if (!otp?.trim()) {
+        toast.error("OTP is required");
+        return;
+      }
+
+      if (otp.length !== 6) {
+        toast.error("OTP must be 6 digits");
+        return;
+      }
+
       const res = await authService.verifyUser(email, otp);
 
       if (res.success) {
@@ -81,10 +87,7 @@ export default function VerifyOtp() {
 
       router.replace(USER_ROUTES.ONBOARDING);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("verification error: ", error);
-        toast.error(error.response?.data.message || "something went wrong");
-      }
+      handleApiError(error);
     }
   };
 

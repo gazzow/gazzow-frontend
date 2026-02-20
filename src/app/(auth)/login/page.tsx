@@ -7,12 +7,11 @@ import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { authService } from "@/services/auth/auth-service";
 import { setUserProfile } from "@/store/slices/userSlice";
 import { useAppDispatch } from "@/store/store";
+import { handleApiError } from "@/utils/handleApiError";
 import { LoginInput, loginSchema } from "@/validators/auth-login";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -34,7 +33,6 @@ const fields = [
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [resErrors, setResErrors] = useState<Record<string, string>>({});
 
   const {
     register,
@@ -46,8 +44,6 @@ export default function LoginPage() {
   });
 
   const handleLoginSubmit = async (formData: Record<string, string>) => {
-    console.log("form data:, ", formData);
-
     try {
       const res = await authService.login({ ...formData });
       dispatch(setUserProfile(res.data));
@@ -57,12 +53,7 @@ export default function LoginPage() {
         router.replace(USER_ROUTES.HOME);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("login error: ", error.response?.data?.message);
-        toast.error(error.response?.data?.message || "Something went wrong!");
-      } else {
-        console.log("unexpected error: ", error);
-      }
+      handleApiError(error);
     }
   };
 
@@ -156,7 +147,6 @@ export default function LoginPage() {
         </p>
       }
       errors={errors}
-      resErrors={resErrors}
       handleSubmit={handleSubmit}
       register={register}
       clearErrors={clearErrors}

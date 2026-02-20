@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import { X } from "lucide-react";
 import { FormValues, schema } from "@/validators/edit-task";
 import { IContributor } from "@/types/contributor";
+import { handleApiError } from "@/utils/handleApiError";
 
 type EditTaskModalProps = {
   taskId: string;
@@ -74,7 +75,9 @@ export default function EditTaskModal({
     try {
       const res = await projectService.listProjectContributors(projectId);
       if (res.success) setContributors(res.data.contributors);
-    } catch {}
+    } catch (error) {
+      handleApiError(error);
+    }
   }, [projectId]);
 
   useEffect(() => {
@@ -142,9 +145,7 @@ export default function EditTaskModal({
       onClose();
       reset();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message || "Failed to update task");
-      }
+      handleApiError(error);
     } finally {
       setSubmitting(false);
       onClose();

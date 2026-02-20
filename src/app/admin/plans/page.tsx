@@ -6,11 +6,10 @@ import Pagination from "@/components/features/Pagination";
 import { usePagination } from "@/hook/usePaginationOptions";
 import { planService } from "@/services/admin/plan-service";
 import { IPlan } from "@/types/plan";
+import { handleApiError } from "@/utils/handleApiError";
 import { CreatePlanFormValues } from "@/validators/create-plan";
-import axios from "axios";
 import { Edit } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 export default function PlanManagement() {
   const [plans, setPlans] = useState<IPlan[]>([]);
@@ -61,14 +60,11 @@ export default function PlanManagement() {
         selectedPlan.id,
         selectedPlan.isActive ? false : true,
       );
-      console.log("plans data: ", res.data);
       if (res.success) {
         fetchPlans();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("Project management error: ", error);
-      }
+      handleApiError(error);
     } finally {
       setConfirmModal(false);
       setSelectedPlan(null);
@@ -78,14 +74,11 @@ export default function PlanManagement() {
   const fetchPlans = useCallback(async () => {
     try {
       const res = await planService.listPlans();
-      console.log("plans data: ", res.data);
       if (res.success) {
         setPlans(res.data);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("Project management error: ", error);
-      }
+      handleApiError(error);
     }
   }, []);
 
@@ -113,14 +106,7 @@ export default function PlanManagement() {
         fetchPlans();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(
-          toast.error(
-            error.response?.data.message ||
-              "Unable to create plan. Please try again later",
-          ),
-        );
-      }
+      handleApiError(error);
     }
   };
 

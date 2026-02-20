@@ -11,6 +11,7 @@ import { projectService } from "@/services/user/project-service";
 import { taskService } from "@/services/user/task-service";
 import { IProject, Role } from "@/types/project";
 import { ITask } from "@/types/task";
+import { handleApiError } from "@/utils/handleApiError";
 
 import axios from "axios";
 import { ArrowLeft, Plus } from "lucide-react";
@@ -56,11 +57,8 @@ export default function Tasks() {
 
     const fetchProject = async () => {
       try {
-        console.log("projectId: ", projectId);
-
         const res = await projectService.getProject(projectId);
         if (res.success) {
-          console.log("res data: ", res.data);
           setProject(res.data);
         }
       } catch (error) {
@@ -76,7 +74,6 @@ export default function Tasks() {
     if (!projectId) return;
     try {
       if (currentRole === Role.VIEWER) {
-        console.log("Invalid role to fetch tasks");
         return;
       }
       const res = await taskService.listTasks(projectId, currentRole);
@@ -85,9 +82,7 @@ export default function Tasks() {
         setTasks(res.data);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
   }, [projectId, currentRole]);
 
@@ -105,9 +100,7 @@ export default function Tasks() {
         fetchTasks();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
   };
 
