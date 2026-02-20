@@ -148,6 +148,9 @@ export default function ProfileSetup() {
     }
   };
 
+  const src =
+    profileImage ?? (imageUrl ? imageUrl : "/images/default-profile.jpg");
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -161,21 +164,12 @@ export default function ProfileSetup() {
         <div className="relative py-6 flex flex-col items-center">
           <div className="relative mb-4">
             <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden flex items-center justify-center">
-              {profileImage ? (
-                <Image
-                  src={profileImage}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                  fill
-                />
-              ) : (
-                <Image
-                  src={imageUrl || "/images/default-profile.jpg"}
-                  alt="profile default"
-                  fill
-                  className="rounded-full object-cover"
-                />
-              )}
+              <Image
+                src={src}
+                alt="Profile"
+                fill
+                className="rounded-full object-cover"
+              />
             </div>
 
             <label
