@@ -96,6 +96,8 @@ api.interceptors.response.use(
       if (status === HttpStatusCode.FORBIDDEN) {
         if (data.code === ErrorCode.USER_BLOCKED) {
           store.dispatch(clearUser());
+        } else if (data.code === ErrorCode.AUTHORIZATION_ERROR) {
+          store.dispatch(clearAdmin());
         }
       }
 
