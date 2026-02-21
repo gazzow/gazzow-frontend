@@ -67,6 +67,7 @@ export default function SignupPage() {
       const data = await authService.signup(formData);
       if (data.success) {
         dispatch(setUserEmail({ email: formData.email }));
+        localStorage.setItem("otp-expiry", data.data.otpExpiresAt.toString());
         router.push(AUTH_ROUTES.VERIFY_USER);
       }
     } catch (error) {
