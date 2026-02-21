@@ -15,12 +15,10 @@ export default function ProjectFileUpload({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handle file change trigger");
     const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
     const allFiles = [...files, ...selectedFiles];
     setFiles(allFiles);
     onFilesChange(allFiles);
-    console.log("all files: ", allFiles);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -31,7 +29,6 @@ export default function ProjectFileUpload({
     const newFiles = files.filter((_, i) => i !== index);
     setFiles(newFiles);
     onFilesChange(newFiles);
-    console.log("new files: ", newFiles);
   };
 
   const handleViewFile = (file: File) => {
@@ -93,6 +90,7 @@ export default function ProjectFileUpload({
               <div className="flex gap-3">
                 <button
                   onClick={() => handleViewFile(file)}
+                  type="button"
                   className="flex items-center gap-1 bg-blue-100  px-2 py-1 rounded text-blue-500 dark:text-blue-800 hover:underline text-xs cursor-pointer"
                 >
                   <Eye size={16} />
@@ -101,6 +99,7 @@ export default function ProjectFileUpload({
 
                 <button
                   onClick={() => handleRemove(i)}
+                  type="button"
                   className="flex items-center gap-1 bg-red-100  px-2 py-1 rounded text-red-500 hover:text-red-600 text-xs cursor-pointer"
                 >
                   <Trash size={16} />
