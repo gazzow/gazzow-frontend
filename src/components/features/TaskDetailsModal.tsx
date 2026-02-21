@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ReassignTaskModal from "./ReassignTaskModal";
-import { Eye, Files, UserPen, UserRoundX } from "lucide-react";
+import { Eye, Files, UserPen } from "lucide-react";
 import { projectService } from "@/services/user/project-service";
 import { TaskDiscussionPanel } from "./TaskDiscussionPanel";
 
@@ -68,7 +68,6 @@ export default function TaskDetailsModal({
     taskId: string,
     paymentStatus?: TaskPaymentStatus,
   ) => {
-
     if (!paymentStatus || paymentStatus === TaskPaymentStatus.PENDING) {
       toast.error("Payment is pending. Unable to start work on this task.");
       return;

@@ -1,7 +1,6 @@
 "use client";
 
 import { projectService } from "@/services/user/project-service";
-import axios from "axios";
 import { Send, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
