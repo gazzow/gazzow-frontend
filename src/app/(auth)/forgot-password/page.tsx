@@ -49,30 +49,44 @@ export default function ForgotPassword() {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-white dark:bg-primary px-4">
-      <div className="w-full max-w-md bg-secondary/30 border-2 border-border-primary p-8 rounded-2xl shadow-lg text-white">
-        <div className="flex flex-col items-center mb-6">
-          <h1 className="text-3xl font-bold text-center">Reset Password</h1>
-          <p className="text-sm mt-2 text-gray-300 text-center">
-            Enter your email address and we&apos;ll send you a verification code
+    <section className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-primary px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+      <div className="w-full max-w-md bg-white dark:bg-secondary border border-gray-200 dark:border-border-primary p-6 sm:p-8 rounded-2xl shadow-md sm:shadow-xl transition-all">
+        {/* Heading */}
+        <div className="flex flex-col items-center mb-6 text-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">
+            Reset Password
+          </h1>
+          <p className="text-sm mt-2 text-gray-500 dark:text-gray-300 max-w-xs">
+            Enter your email address and we’ll send you a verification code
           </p>
         </div>
 
+        {/* Form */}
         <form
           onSubmit={handleSubmit(handleForgotSubmit)}
           className="flex flex-col gap-4"
         >
           <div>
             <input
-              type="text"
+              type="email"
               placeholder="you@example.com"
-              className="w-full px-4 py-2 rounded-lg bg-primary border border-gray-600 focus:outline-none focus:ring-2 focus:ring-btn-primary"
+              className="
+            w-full px-4 py-2.5 rounded-lg
+            bg-gray-50 dark:bg-primary
+            border border-gray-300 dark:border-gray-600
+            text-gray-800 dark:text-white
+            placeholder:text-gray-400 dark:placeholder:text-gray-500
+            focus:outline-none
+            focus:ring-2 focus:ring-btn-primary
+            transition
+          "
               {...register("email")}
             />
+
             {errors.email && (
               <p
-                id={`email-error`}
-                className="text-red-400 text-sm mt-1"
+                id="email-error"
+                className="text-red-500 text-sm mt-1"
                 role="alert"
               >
                 {errors.email.message}
@@ -82,15 +96,28 @@ export default function ForgotPassword() {
 
           <button
             type="submit"
-            className="bg-btn-primary-hover hover:opacity-90 cursor-pointer py-2 rounded-md font-semibold"
+            className="
+          bg-btn-primary 
+          hover:bg-btn-primary-hover
+          text-white
+          py-2.5
+          rounded-lg
+          font-semibold
+          transition cursor-pointer
+          disabled:opacity-50
+        "
           >
-            Send Otp
+            Send OTP
           </button>
         </form>
 
-        <div className="mt-4 text-center text-gray-300 text-sm">
-          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
-            &larr; Back to login
+        {/* Footer */}
+        <div className="mt-6 text-center text-sm">
+          <Link
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+            href={AUTH_ROUTES.LOGIN}
+          >
+            ← Back to login
           </Link>
         </div>
       </div>
