@@ -2,10 +2,9 @@
 
 import { notificationService } from "@/services/user/notification.service";
 import { INotification } from "@/types/notification";
-import axios from "axios";
+import { handleApiError } from "@/utils/handleApiError";
 import { Check, CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "react-toastify";
 
 export default function NotificationPage() {
   const [tab, setTab] = useState<"all" | "unread">("unread");
@@ -19,9 +18,7 @@ export default function NotificationPage() {
         setNotifications(res.data);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("lists notifications error: ", error);
-      }
+      handleApiError(error);
     }
   }, []);
 
@@ -32,22 +29,17 @@ export default function NotificationPage() {
         fetchNotifications();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("Mark as read notification error: ", error);
-      }
+      handleApiError(error);
     }
   };
   const onMarkAllAsRead = async () => {
     try {
       const res = await notificationService.markAllAsRead();
       if (res.success) {
-        toast.success(res.message);
         fetchNotifications();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("Mark all as read notification error: ", error);
-      }
+      handleApiError(error);
     }
   };
 
@@ -160,7 +152,9 @@ export default function NotificationPage() {
           >
             {/* Content */}
             <div className="flex gap-3">
-              <div className="mt-1 h-2 w-2 rounded-full bg-purple-500 shrink-0" />
+              {!n.isRead&& (
+                <div className="mt-1 h-2 w-2 rounded-full bg-purple-500 shrink-0" />
+              )}
 
               <div className="min-w-0">
                 <h3 className="text-sm font-semibold">{n.title}</h3>
