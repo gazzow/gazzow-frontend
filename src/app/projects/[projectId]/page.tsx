@@ -11,11 +11,13 @@ import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { paymentService } from "@/services/user/payment-service";
 import { projectService } from "@/services/user/project-service";
-import { IProject, Role } from "@/types/project";
+import { IProject, ProjectStatus, Role } from "@/types/project";
+import { handleApiError } from "@/utils/handleApiError";
 import axios from "axios";
 import {
   ArrowLeft,
   Calendar,
+  ChevronDown,
   DollarSign,
   Edit,
   Eye,
@@ -24,7 +26,7 @@ import {
   Users,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const tabRoutes = [
@@ -38,18 +40,21 @@ const tabRoutes = [
 
 export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
-  const router = useRouter();
 
   const [project, setProject] = useState<IProject | null>(null);
   const [confirmModal, setConfirmModal] = useState(false);
   const [applyModal, setApplyModal] = useState(false);
-
   const [editProjectModal, setEditProjectModal] = useState<boolean>(false);
+  const [openStatusModal, setOpenStatusModal] = useState<boolean>(false);
+  const statusModalRef = useRef<HTMLDivElement | null>(null);
+
+  const router = useRouter();
 
   const currentRole = useRole(project);
 
   const visibleTabs = useMemo(() => {
     if (!projectId) return [];
+
     return tabRoutes
       .filter((tab) => projectTabPermissions[currentRole].includes(tab.name))
       .map((tab) => ({
@@ -60,22 +65,34 @@ export default function ProjectDetails() {
 
   const fetchProject = useCallback(async () => {
     try {
-      console.log("projectId: ", projectId);
       const res = await projectService.getProject(projectId);
       if (res.success) {
-        console.log("res data: ", res.data);
         setProject(res.data);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
   }, [projectId]);
 
   useEffect(() => {
     fetchProject();
   }, [fetchProject]);
+
+  useEffect(() => {
+    const handleMouseDownEvent = (e: MouseEvent) => {
+      if (
+        statusModalRef.current &&
+        !statusModalRef.current.contains(e.target as HTMLElement)
+      ) {
+        setOpenStatusModal(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleMouseDownEvent);
+
+    return () =>
+      document.removeEventListener("mousedown", handleMouseDownEvent);
+  });
 
   const onBackClick = () => {
     if (currentRole === Role.CREATOR) {
@@ -95,9 +112,7 @@ export default function ProjectDetails() {
 
       window.open(res.data, "_black", "noopener,noreferrer");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error("Failed to get signed URL");
-      }
+      handleApiError(error);
     }
   };
 
@@ -116,6 +131,24 @@ export default function ProjectDetails() {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message || "Failed to delete project");
       }
+    }
+  };
+
+  const handleProjectStatusChange = async (status: ProjectStatus) => {
+    setOpenStatusModal(false);
+    try {
+      setProject((prev) => {
+        if (!prev) return prev;
+        return { ...prev, status };
+      });
+
+      const res = await projectService.updateStatus(projectId, status);
+      if (!res.success) {
+        fetchProject();
+      }
+    } catch (error) {
+      fetchProject();
+      handleApiError(error);
     }
   };
 
@@ -149,10 +182,9 @@ export default function ProjectDetails() {
     fetchProject();
   };
 
-  if (!projectId) return <LoadingSpinner />;
+  if (!projectId || !project) return <LoadingSpinner />;
 
   const formattedStatus =
-    project?.status &&
     project.status.slice(0, 1).toUpperCase() + project.status.slice(1);
 
   return (
@@ -191,11 +223,9 @@ export default function ProjectDetails() {
           <div className="bg-white border border-gray-200 dark:bg-secondary/30 dark:border-border-primary p-6 rounded-2xl shadow-sm">
             <h2 className="text-lg font-semibold mb-3">Project Description</h2>
 
-            {project?.description && (
-              <p className="text-sm leading-relaxed whitespace-pre-line text-gray-600 dark:text-gray-400">
-                {project.description}
-              </p>
-            )}
+            <p className="text-sm leading-relaxed whitespace-pre-line text-gray-600 dark:text-gray-400">
+              {project.description}
+            </p>
           </div>
 
           {/* Skills */}
@@ -203,7 +233,7 @@ export default function ProjectDetails() {
             <h2 className="text-lg font-semibold mb-3">Required Skills</h2>
 
             <div className="flex flex-wrap gap-2">
-              {project?.requiredSkills?.map((skill, idx) => (
+              {project.requiredSkills.map((skill, idx) => (
                 <span
                   key={idx}
                   className="px-3 py-1 text-sm rounded-full border transition
@@ -217,7 +247,7 @@ export default function ProjectDetails() {
           </div>
 
           {/* Attachments */}
-          {project?.documents && project?.documents?.length > 0 && (
+          {project.documents.length > 0 && (
             <div className="bg-white border border-gray-200 dark:bg-secondary/30 dark:border-border-primary p-6 rounded-2xl shadow-sm">
               <div className="flex items-center gap-2">
                 <Files size={18} />
@@ -257,43 +287,76 @@ export default function ProjectDetails() {
             <InfoRow
               icon={<DollarSign className="w-4 h-4 text-green-500" />}
               label="Budget"
-              value={
-                project?.budgetMin && project?.budgetMax
-                  ? `${project.budgetMin} - ${project.budgetMax}`
-                  : "-"
-              }
+              value={`${project.budgetMin} - ${project.budgetMax}`}
             />
 
             {/* Duration */}
             <InfoRow
               icon={<Calendar className="w-4 h-4 text-blue-500" />}
               label="Duration"
-              value={
-                project?.durationMin &&
-                project?.durationMax &&
-                project?.durationUnit
-                  ? `${project.durationMin} - ${project.durationMax} ${project.durationUnit}`
-                  : "-"
-              }
+              value={`${project.durationMin} - ${project.durationMax} ${project.durationUnit}`}
             />
 
             {/* Applicants */}
             <InfoRow
               icon={<Users className="w-4 h-4 text-purple-500" />}
-              label="Applicants"
-              value="12 Applied"
+              label="Contributors"
+              value={project.contributors.length}
             />
 
             {/* Status */}
             <div className="flex items-center justify-between">
               <h2 className="font-medium">Status</h2>
-              <span className="px-2 py-1 text-xs rounded-md font-medium bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400">
-                {formattedStatus}
-              </span>
+
+              <div className="relative">
+                <button
+                  onClick={() => setOpenStatusModal((prev) => !prev)}
+                  className="
+        flex items-center gap-1
+        px-3 py-1 rounded-full
+        bg-green-100 text-green-700
+        dark:bg-cyan-900/40 dark:text-cyan-400
+        text-xs font-medium
+      "
+                >
+                  {formattedStatus}
+                  <ChevronDown className="w-4 h-4 text-gray-600 dark:text-white cursor-pointer" />
+                </button>
+
+                {openStatusModal && (
+                  <div
+                    ref={statusModalRef}
+                    className="
+          absolute right-0 mt-2 w-40
+          bg-white dark:bg-secondary
+          border border-gray-200 dark:border-border-primary
+          rounded-md shadow-lg z-10
+        "
+                  >
+                    {[
+                      ProjectStatus.OPEN,
+                      ProjectStatus.IN_PROGRESS,
+                      ProjectStatus.COMPLETED,
+                    ].map((status) => (
+                      <button
+                        key={status}
+                        className="
+              w-full text-left px-3 py-2 text-sm
+              hover:bg-gray-100 dark:hover:bg-primary/40
+              transition cursor-pointer
+            "
+                        onClick={() => handleProjectStatusChange(status)}
+                      >
+                        {status}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 pt-3">
+            <div className="flex gap-3 ">
               {currentRole === Role.CREATOR ? (
                 <>
                   <button
