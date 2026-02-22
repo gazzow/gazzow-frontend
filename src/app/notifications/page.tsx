@@ -2,6 +2,7 @@
 
 import { notificationService } from "@/services/user/notification.service";
 import { INotification } from "@/types/notification";
+import { formatNotificationTime } from "@/utils/formatNotificationTime";
 import { handleApiError } from "@/utils/handleApiError";
 import { Check, CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -138,34 +139,33 @@ export default function NotificationPage() {
         {filtered.map((n) => (
           <div
             key={n.id}
-            className={`
-        flex flex-col sm:flex-row
-        sm:justify-between sm:items-start
-        gap-3
-        p-4 rounded-xl border transition-colors
-        ${
-          n.isRead
-            ? "bg-gray-100 dark:bg-secondary/20 border-gray-200 dark:border-neutral-800"
-            : "bg-purple-50 dark:bg-secondary/60 border-purple-300/40 dark:border-purple-500/40"
-        }
+            className={`max-w-screen flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 p-4 rounded-xl border transition-colors ${
+              n.isRead
+                ? "bg-gray-100 dark:bg-secondary/20 border-gray-200 dark:border-neutral-800"
+                : "bg-purple-50 dark:bg-secondary/60 border-purple-300/40 dark:border-purple-500/40"
+            }
       `}
           >
             {/* Content */}
-            <div className="flex gap-3">
-              {!n.isRead&& (
+            <div className="flex gap-3 flex-1">
+              {!n.isRead && (
                 <div className="mt-1 h-2 w-2 rounded-full bg-purple-500 shrink-0" />
               )}
 
-              <div className="min-w-0">
-                <h3 className="text-sm font-semibold">{n.title}</h3>
+              <div className="min-w-0 flex-1">
+                <div className="flex justify-between items-start w-full">
+                  <div>
+                    <h3 className="text-sm font-semibold">{n.title}</h3>
 
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  {n.body}
-                </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      {n.body}
+                    </p>
+                  </div>
 
-                <p className="text-xs text-gray-500 mt-2">
-                  {new Date(n.createdAt).toLocaleString()}
-                </p>
+                  <p className="text-xs text-gray-500 ml-4 shrink-0">
+                    {formatNotificationTime(n.createdAt)}
+                  </p>
+                </div>
               </div>
             </div>
 
