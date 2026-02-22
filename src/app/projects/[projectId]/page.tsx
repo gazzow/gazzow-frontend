@@ -187,6 +187,13 @@ export default function ProjectDetails() {
   const formattedStatus =
     project.status.slice(0, 1).toUpperCase() + project.status.slice(1);
 
+  const statusColor =
+    project.status === ProjectStatus.OPEN
+      ? "text-blue-800 bg-blue-100"
+      : project.status === ProjectStatus.COMPLETED
+        ? "text-green-800 bg-green-100"
+        : "text-yellow-800 bg-yellow-100";
+
   return (
     <div className="max-w-7xl w-full space-y-8 text-gray-900 dark:text-gray-100">
       {/* Header */}
@@ -311,13 +318,7 @@ export default function ProjectDetails() {
               <div className="relative">
                 <button
                   onClick={() => setOpenStatusModal((prev) => !prev)}
-                  className="
-        flex items-center gap-1
-        px-3 py-1 rounded-full
-        bg-green-100 text-green-700
-        dark:bg-cyan-900/40 dark:text-cyan-400
-        text-xs font-medium
-      "
+                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${statusColor}`}
                 >
                   {formattedStatus}
                   <ChevronDown className="w-4 h-4 text-gray-600 dark:text-white cursor-pointer" />
