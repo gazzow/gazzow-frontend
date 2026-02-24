@@ -15,5 +15,7 @@ export const TASK_API = {
   COMPLETE_TASK: (taskId: string, projectId: string) =>
     `/projects/${projectId}/tasks/${taskId}/complete`,
   REASSIGN_TASK: (taskId: string, projectId: string) =>
-    `/projects/${projectId}/tasks/${taskId}/reassign`,
+    `/projects/${projectId}/tasks/${taskId}/assignee`,
+  REMOVE_ASSIGNEE: (taskId: string, projectId: string) =>
+    `/projects/${projectId}/tasks/${taskId}/assignee/remove`,
 };

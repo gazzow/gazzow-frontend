@@ -2,7 +2,10 @@
 
 import { NotificationToast } from "@/components/ui/NotificationToast";
 import { useAppSelector } from "@/store/store";
-import { SOCKET_EVENTS } from "@/types/socket-event";
+import {
+  ProjectNotificationPayload,
+  SOCKET_EVENTS,
+} from "@/types/socket-event";
 import {
   ReactNode,
   createContext,
@@ -19,7 +22,7 @@ const SocketContext = createContext<Socket | null>(null);
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
-  const { id, role } = useAppSelector((state) => state.user);
+  const { id } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (id === null) return;
@@ -33,36 +36,43 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     const socket = socketRef.current;
 
-    socket.on(SOCKET_EVENTS.CONNECT, () => {
-      console.log(`Socket connected 🚀 - [id: ${socket.id}]`);
+    const onConnect = () => {
+      console.log(`Socket connected 🚀 [id: ${socket.id}]`);
       setConnected(true);
-    });
-
-    if (connected) {
       socket.emit(SOCKET_EVENTS.USER_ONLINE, { id });
-    }
+    };
 
-    // Notification
-    socket.on(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION, (data) => {
-      console.log("team notification data: ", data);
-      toast(<NotificationToast {...data} />);
-    });
+    const onDisconnect = () => setConnected(false);
 
-    socket.on(SOCKET_EVENTS.PROJECT_MESSAGE, (data) => {
-      console.log("Project Message: ", data);
-      toast(<NotificationToast {...data} />);
-    });
-
-    socket.on(SOCKET_EVENTS.DISCONNECT, () => setConnected(false));
+    socket.on(SOCKET_EVENTS.CONNECT, onConnect);
+    socket.on(SOCKET_EVENTS.DISCONNECT, onDisconnect);
 
     return () => {
-      socket.off(SOCKET_EVENTS.CONNECT);
-      socket.off(SOCKET_EVENTS.DISCONNECT);
-      socket.off(SOCKET_EVENTS.USER_ONLINE);
-      socket.off(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION);
-      socket.off(SOCKET_EVENTS.PROJECT_MESSAGE);
+      socket.off(SOCKET_EVENTS.CONNECT, onConnect);
+      socket.off(SOCKET_EVENTS.DISCONNECT, onDisconnect);
     };
-  }, [id, role, connected]);
+  }, [id]);
+
+  useEffect(() => {
+    const socket = socketRef.current;
+    if (!socket) return;
+
+    const teamHandler = (data: ProjectNotificationPayload) => {
+      toast(<NotificationToast {...data} />);
+    };
+
+    const projectHandler = (data: ProjectNotificationPayload) => {
+      toast(<NotificationToast {...data} />);
+    };
+
+    socket.on(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION, teamHandler);
+    socket.on(SOCKET_EVENTS.PROJECT_MESSAGE, projectHandler);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.TEAM_MESSAGE_NOTIFICATION, teamHandler);
+      socket.off(SOCKET_EVENTS.PROJECT_MESSAGE, projectHandler);
+    };
+  }, []);
 
   return (
     <SocketContext.Provider value={socketRef.current}>

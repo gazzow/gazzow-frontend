@@ -2,10 +2,9 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { ITask, TaskPriority } from "@/types/task";
-import { taskService } from "@/services/user/task-service";
+import { taskService } from "@/services/user/task.service";
 import { projectService } from "@/services/user/project-service";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,8 +64,8 @@ export default function EditTaskModal({
       setValue("dueDate", new Date(t.dueDate).toISOString().slice(0, 16));
 
       setCalculatedAmount((t.expectedRate ?? 0) * t.estimatedHours);
-    } catch (err) {
-      if (axios.isAxiosError(err)) toast.error(err.response?.data.message);
+    } catch (error) {
+      handleApiError(error);
     }
   }, [taskId, setValue, projectId]);
 

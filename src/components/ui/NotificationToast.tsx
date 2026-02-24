@@ -4,23 +4,27 @@ import Link from "next/link";
 
 interface NotificationToastProps {
   projectId: string;
+  taskId?: string;
   title: string;
   message: string;
 }
 
 export const NotificationToast = ({
   projectId,
+  taskId,
   title,
   message,
 }: NotificationToastProps) => {
-  console.log("Notification Payload data: ", projectId);
+  const navigateTo = taskId
+    ? PROJECT_ROUTES.TASKS(projectId)
+    : PROJECT_ROUTES.DETAILS(projectId);
   return (
     <Link
-      href={PROJECT_ROUTES.DETAILS(projectId)}
+      href={navigateTo}
       className="
     group flex gap-3 items-start
-    transition-all duration-200 ease-in-out bg-white hover:shadow-md
-    dark:bg-primary focus:outline-none focus:ring-2 focus:ring-blue-500
+    transition-all duration-200 ease-in-out bg-white
+    dark:bg-primary focus:outline-none
   "
     >
       <div className="flex flex-col">

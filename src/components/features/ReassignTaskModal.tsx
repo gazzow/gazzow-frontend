@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { projectService } from "@/services/user/project-service";
-import { taskService } from "@/services/user/task-service";
+import { taskService } from "@/services/user/task.service";
 import { canReassignTask } from "@/utils/task-permissions";
 import { toast } from "react-toastify";
 import { ITask } from "@/types/task";
 import { IContributor } from "@/types/contributor";
-import axios from "axios";
+import { handleApiError } from "@/utils/handleApiError";
 
 type ReassignTaskModalProps = {
   task: ITask;
@@ -37,9 +37,7 @@ export default function ReassignTaskModal({
         setContributors(res.data.contributors);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
   }, [task]);
 
@@ -74,11 +72,8 @@ export default function ReassignTaskModal({
 
       toast.success(res.message);
       onSuccess();
-      onClose();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message || "Failed to reassign task");
-      }
+      handleApiError(error);
     } finally {
       setLoading(false);
     }

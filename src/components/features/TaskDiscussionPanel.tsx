@@ -80,32 +80,27 @@ export function TaskDiscussionPanel({ task }: TaskDiscussionPanelProp) {
     fetchComments();
   }, [fetchComments]);
 
+  const tabClass = (tab: TabType) =>
+    `flex-1 py-2 text-sm font-medium transition-all duration-200 cursor-pointer ${
+      activeTab === tab
+        ? "border-b-2 border-btn-primary text-primary dark:text-white"
+        : "border-b-2 border-transparent text-gray-500 dark:text-text-muted hover:text-gray-800 dark:hover:text-white"
+    }`;
+
   return (
     <section className="w-full space-y-3">
       {/* Tabs Header */}
       <div className="flex border-b border-gray-200 dark:border-border-primary">
         <button
           onClick={() => setActiveTab("comments")}
-          className={`flex-1 py-2 text-sm font-medium transition cursor-pointer
-        ${
-          activeTab === "comments"
-            ? "border-b-2 border-primary text-primary"
-            : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
-        }
-      `}
+          className={tabClass("comments")}
         >
           Comments
         </button>
 
         <button
           onClick={() => setActiveTab("activity")}
-          className={`flex-1 py-2 text-sm font-medium transition cursor-pointer
-        ${
-          activeTab === "activity"
-            ? "border-b-2 border-primary text-primary"
-            : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
-        }
-      `}
+          className={tabClass("activity")}
         >
           Activity
         </button>

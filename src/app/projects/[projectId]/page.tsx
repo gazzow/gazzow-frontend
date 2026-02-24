@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfirmModal } from "@/components/ConfirmModal";
 import ApplyModal from "@/components/features/ApplyModal";
 import EditProjectModal from "@/components/features/EditProjectModal";
 import { InfoRow } from "@/components/features/InfoRow";
@@ -321,7 +322,7 @@ export default function ProjectDetails() {
                   className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${statusColor}`}
                 >
                   {formattedStatus}
-                  <ChevronDown className="w-4 h-4 text-gray-600 dark:text-white cursor-pointer" />
+                  <ChevronDown className="w-4 h-4 text-gray-600 cursor-pointer" />
                 </button>
 
                 {openStatusModal && (
@@ -370,7 +371,7 @@ export default function ProjectDetails() {
 
                   <button
                     onClick={handleConfirmModal}
-                    className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition cursor-pointerD"
+                    className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition cursor-pointer"
                   >
                     <Trash size={16} />
                     Delete
@@ -391,34 +392,14 @@ export default function ProjectDetails() {
 
       {/* Confirm Modal */}
       {confirmModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
-          <div className="w-full max-w-md bg-white dark:bg-primary border border-gray-200 dark:border-border-primary p-6 rounded-2xl shadow-xl">
-            <p className="font-semibold text-lg">
-              Are you sure you want to delete this project?
-            </p>
-
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={() => setConfirmModal(false)}
-                type="button"
-                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-secondary dark:hover:bg-secondary/80 cursor-pointer"
-              >
-                Cancel
-              </button>
-
-              <button
-                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer"
-                onClick={() => {
-                  console.log("Deleting project with id: ", projectId);
-                  handleDeleteProject(projectId);
-                  setConfirmModal(false);
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmModal
+          label="project"
+          onClose={() => setConfirmModal(false)}
+          onConfirm={() => {
+            handleDeleteProject(projectId);
+            setConfirmModal(false);
+          }}
+        ></ConfirmModal>
       )}
 
       {/* Other Modals */}

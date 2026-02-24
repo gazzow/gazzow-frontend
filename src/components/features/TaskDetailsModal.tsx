@@ -1,7 +1,7 @@
 "use client";
 
 import { paymentService } from "@/services/user/payment-service";
-import { taskService } from "@/services/user/task-service";
+import { taskService } from "@/services/user/task.service";
 import {
   ITask,
   TaskPaymentStatus,
@@ -9,14 +9,15 @@ import {
   TaskStatus,
 } from "@/types/task";
 import { formatTaskStatus } from "@/utils/format-task-status";
-import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ReassignTaskModal from "./ReassignTaskModal";
-import { Eye, Files, UserPen } from "lucide-react";
+import { Eye, Files, UserPen, UserRoundX } from "lucide-react";
 import { projectService } from "@/services/user/project-service";
 import { TaskDiscussionPanel } from "./TaskDiscussionPanel";
+import { handleApiError } from "@/utils/handleApiError";
+import { ConfirmModal } from "../ConfirmModal";
 
 type TaskRole = "creator" | "contributor";
 
@@ -34,12 +35,12 @@ export default function TaskDetailsModal({
   fetchTasks,
 }: TaskDetailsModalProps) {
   const { projectId } = useParams<{ projectId: string }>();
-  console.log("TaskDetailsModal projectId: ", projectId);
 
   const [task, setTask] = useState<ITask | null>(null);
   const [loading, setLoading] = useState(true);
   const [showReassign, setShowReassign] = useState<boolean>(false);
   const [error, setError] = useState("");
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
 
   const fetchTask = useCallback(async () => {
     try {
@@ -51,14 +52,11 @@ export default function TaskDetailsModal({
         setTask(res.data);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-        onClose();
-      }
+      handleApiError(error);
     } finally {
       setLoading(false);
     }
-  }, [taskId, projectId, onClose]);
+  }, [taskId, projectId]);
 
   useEffect(() => {
     fetchTask();
@@ -88,9 +86,7 @@ export default function TaskDetailsModal({
         setTask(updatedTaskRes.data);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
   };
 
@@ -103,9 +99,7 @@ export default function TaskDetailsModal({
         fetchTasks();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
   };
 
@@ -119,9 +113,7 @@ export default function TaskDetailsModal({
         fetchTasks();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
-      }
+      handleApiError(error);
     }
   };
 
@@ -133,9 +125,22 @@ export default function TaskDetailsModal({
         window.location.href = res.data.checkoutUrl;
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
+      handleApiError(error);
+    }
+  };
+
+  const handleRemoveAssignee = async () => {
+    try {
+      const res = await taskService.removeAssignee(taskId, projectId);
+      if (res.success) {
+        toast(res.message);
+        onClose();
+        fetchTasks();
       }
+    } catch (error) {
+      handleApiError(error);
+    } finally {
+      setOpenConfirm(false);
     }
   };
 
@@ -146,6 +151,7 @@ export default function TaskDetailsModal({
   const onReassignSuccess = () => {
     setShowReassign(false);
     fetchTask();
+    fetchTasks();
   };
 
   const handleViewFile = async (fileKey: string) => {
@@ -155,9 +161,7 @@ export default function TaskDetailsModal({
       );
       window.open(res.data, "_black", "noopener,noreferrer");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error("Failed to get signed URL");
-      }
+      handleApiError(error);
     }
   };
 
@@ -272,16 +276,17 @@ export default function TaskDetailsModal({
                       task.status === TaskStatus.TODO &&
                       role === "creator" && (
                         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                          {/* <button
+                          <button
                             className="flex items-center justify-center gap-2 px-3 py-1.5 text-xs sm:text-sm rounded-md 
             bg-red-100 text-red-600 
             dark:bg-white dark:text-red-500 
             hover:bg-red-200
             transition w-full sm:w-auto cursor-pointer"
+                            onClick={() => setOpenConfirm(true)}
                           >
                             <UserRoundX size={16} />
                             <span>Remove</span>
-                          </button> */}
+                          </button>
 
                           <button
                             onClick={openReassignModal}
@@ -305,6 +310,14 @@ export default function TaskDetailsModal({
                     onClose={() => setShowReassign(false)}
                     onSuccess={onReassignSuccess}
                   />
+                )}
+
+                {openConfirm && (
+                  <ConfirmModal
+                    label="Assignee"
+                    onClose={() => setOpenConfirm(false)}
+                    onConfirm={handleRemoveAssignee}
+                  ></ConfirmModal>
                 )}
 
                 {/* Financial Summary */}
