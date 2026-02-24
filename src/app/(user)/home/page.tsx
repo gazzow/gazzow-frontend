@@ -5,7 +5,6 @@ import { useTheme } from "@/hook/useTheme";
 import api from "@/lib/axios/api";
 import axios from "axios";
 import {
-  ChartColumnBig,
   ChartPie,
   ClipboardClock,
   FolderKanban,
@@ -27,6 +26,20 @@ import {
 } from "recharts";
 
 const COLORS = ["#8b5cf6", "#22c55e", "#ec4899"];
+const ALL_MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 interface IMonthlyRevenue {
   month: number;
@@ -96,6 +109,11 @@ export default function Dashboard() {
     fetchDashboardStats();
   }, [fetchDashboardStats]);
 
+  const normalizedMonthlyEarnings = ALL_MONTHS.map((month) => {
+    const found = monthlyEarnings.find((m) => m.name === month);
+    return found || { name: month, value: 0 };
+  });
+
   return (
     <div className="pt-20 px-6 w-full bg-white dark:bg-primary min-h-screen transition-colors">
       {/* Header */}
@@ -143,54 +161,82 @@ export default function Dashboard() {
           <h3 className="mb-4 font-semibold text-black dark:text-white">
             Monthly Earnings
           </h3>
-          <div className="h-52">
-            {monthlyEarnings.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyEarnings}>
-                  <XAxis
-                    dataKey="name"
-                    stroke="currentColor"
-                    className="text-gray-500 dark:text-gray-400"
-                  />
-                  <YAxis
-                    stroke="currentColor"
-                    className="text-gray-500 dark:text-gray-400"
-                  />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <EmptyChart
-                message="No earnings recorded yet"
-                icon={
-                  <ChartColumnBig
-                    size={38}
-                    color={`${theme === "dark" ? "white" : "black"}`}
-                  />
-                }
-              />
-            )}
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={normalizedMonthlyEarnings}
+                margin={{ top: 10, right: 10, left: -10, bottom: 5 }}
+              >
+                <XAxis
+                  dataKey="name"
+                  stroke="currentColor"
+                  tick={{ fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                  className="text-gray-500 dark:text-gray-400"
+                />
+
+                <YAxis
+                  stroke="currentColor"
+                  tick={{ fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                  className="text-gray-500 dark:text-gray-400"
+                />
+
+                <Tooltip
+                  cursor={{ fill: "transparent" }}
+                  contentStyle={{
+                    backgroundColor: theme === "dark" ? "#1f2937" : "#ffffff",
+                    border: "none",
+                    borderRadius: "8px",
+                    color: theme === "dark" ? "#f9fafb" : "#111827",
+                  }}
+                  labelStyle={{
+                    color: theme === "dark" ? "#e5e7eb" : "#374151",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                  }}
+                  itemStyle={{
+                    color: theme === "dark" ? "#c4b5fd" : "#7c3aed",
+                    fontWeight: 600,
+                  }}
+                />
+
+                <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={40}>
+                  {normalizedMonthlyEarnings.map((entry, i) => (
+                    <Cell
+                      key={i}
+                      fill={entry.value === 0 ? "#e5e7eb33" : "#8b5cf6"}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
         {/* Task Overview */}
-        <div className="bg-gray-100 dark:bg-secondary/20 p-5 rounded-xl transition-colors">
-          <h3 className="mb-4 font-semibold text-black dark:text-white">
+        <div className="bg-gray-100 dark:bg-secondary/20 p-4 rounded-xl transition-colors">
+          <h3 className="mb-10 font-semibold text-black dark:text-white">
             Task Overview
           </h3>
-          <div className="h-54">
+          <div className="h-64 w-full">
             {workSplit.length > 0 ? (
-              <ResponsiveContainer>
+              <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={workSplit}
                     dataKey="value"
                     nameKey="name"
-                    innerRadius={50}
-                    outerRadius={80}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={45}
+                    outerRadius={70}
+                    paddingAngle={3}
+                    labelLine={false}
                     label={({ name, value }) =>
-                      `${name?.toUpperCase()}: ${value} `
+                      `${name?.toUpperCase()} ${(value * 100).toFixed(0)}%`
                     }
                   >
                     {workSplit.map((_, i) => (
@@ -205,7 +251,7 @@ export default function Dashboard() {
                 icon={
                   <ChartPie
                     size={38}
-                    color={`${theme === "dark" ? "white" : "black"}`}
+                    color={theme === "dark" ? "white" : "black"}
                   />
                 }
               />
