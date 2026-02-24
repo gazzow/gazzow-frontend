@@ -2,7 +2,7 @@
 import React, { ReactElement, useState } from "react";
 import TaskCard from "./TaskCard";
 import { ITask, TaskStatus } from "@/types/task";
-import { CheckCircle, CircleDashed, ListTodo, Send } from "lucide-react";
+import { CheckCircle, Clock, ListTodo, LoaderCircle } from "lucide-react";
 
 interface TaskBoardProps {
   tasks: ITask[];
@@ -21,26 +21,29 @@ const statusColumns: Record<
   todo: {
     label: "To Do",
     statuses: [TaskStatus.TODO],
-    backgroundColor: "bg-gray-500/60",
-    icon: <ListTodo size={22} color="white"></ListTodo>,
+    backgroundColor: "bg-slate-400/60 dark:bg-slate-500/30",
+    icon: <ListTodo size={20} className="text-white" />,
   },
+
   in_progress: {
     label: "In Progress",
     statuses: [TaskStatus.IN_PROGRESS],
-    backgroundColor: "bg-cyan-500/60",
-    icon: <CircleDashed size={22} color="white"></CircleDashed>,
+    backgroundColor: "bg-blue-500/60 dark:bg-blue-500/30",
+    icon: <LoaderCircle size={20} className="text-white" />,
   },
+
   submitted: {
     label: "Submitted",
     statuses: [TaskStatus.SUBMITTED, TaskStatus.REVISIONS_REQUESTED],
-    backgroundColor: "bg-yellow-500/60",
-    icon: <Send size={22} color="white"></Send>,
+    backgroundColor: "bg-purple-500/60 dark:bg-purple-500/30",
+    icon: <Clock size={20} className="text-white" />,
   },
+
   completed: {
     label: "Completed",
     statuses: [TaskStatus.COMPLETED, TaskStatus.CLOSED],
-    backgroundColor: "bg-emerald-500/60",
-    icon: <CheckCircle size={22} color="white"></CheckCircle>,
+    backgroundColor: "bg-emerald-500/60 dark:bg-emerald-500/30",
+    icon: <CheckCircle size={20} className="text-white" />,
   },
 };
 

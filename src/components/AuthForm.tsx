@@ -61,38 +61,31 @@ export default function AuthForm({
 
   return (
     <section
-      className="min-h-screen flex items-center justify-center 
-  bg-gray-50 dark:bg-primary
-  px-4 sm:px-6 lg:px-8 transition-colors duration-300"
+      className="
+    min-h-screen flex items-center justify-center
+    bg-gray-100 dark:bg-primary
+    px-4 sm:px-6 lg:px-8
+    transition-colors duration-300
+  "
     >
       <div
         className="
-    w-full 
-    max-w-md 
-    sm:max-w-md 
-    md:max-w-lg 
-    bg-white dark:bg-secondary/20
-    border border-gray-200 dark:border-gray-800 
-    p-6 sm:p-8 
-    rounded-2xl 
-    shadow-xl 
-    transition-all duration-300
-  "
+      w-full max-w-md sm:max-w-lg lg:max-w-xl
+      bg-white dark:bg-secondary
+      border border-gray-200 dark:border-border-primary
+      p-6 sm:p-8
+      rounded-2xl
+      shadow-md sm:shadow-xl
+      transition-all duration-300
+    "
       >
         {/* Title */}
-        <h1
-          className="text-2xl sm:text-3xl font-bold text-center 
-      text-gray-900 dark:text-white"
-        >
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center text-gray-800 dark:text-text-primary">
           {title}
         </h1>
 
         {subTitle && (
-          <h3
-            className="text-sm sm:text-base text-center 
-        text-gray-500 dark:text-gray-400 
-        mb-6 mt-2"
-          >
+          <h3 className="text-sm sm:text-base text-center text-gray-500 dark:text-text-secondary mt-2 mb-6 leading-relaxed">
             {subTitle}
           </h3>
         )}
@@ -107,14 +100,13 @@ export default function AuthForm({
               {/* Label */}
               <label
                 htmlFor={field.name}
-                className="block text-sm font-medium 
-              text-gray-700 dark:text-gray-300 mb-1"
+                className="block text-sm font-medium tracking-wide text-gray-600 dark:text-text-secondary mb-1"
               >
                 {field.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
               </label>
 
-              {/* Input Wrapper */}
+              {/* Input */}
               {field.type === "password" ? (
                 <div className="relative">
                   <input
@@ -123,14 +115,15 @@ export default function AuthForm({
                     type={showPassword[field.name] ? "text" : "password"}
                     placeholder={field.placeholder}
                     className="
-                  w-full px-4 py-2.5 pr-12 
-                  rounded-lg 
-                  bg-gray-100 dark:bg-gray-800
-                  text-gray-900 dark:text-white
-                  border border-gray-300 dark:border-gray-700
-                  focus:outline-none 
-                  focus:ring-2 focus:ring-indigo-500
-                  focus:border-indigo-500
+                  w-full px-4 py-2.5 pr-12
+                  rounded-lg
+                  bg-gray-50 dark:bg-primary
+                  text-gray-800 dark:text-text-primary text-[15px]
+                  border border-gray-300 dark:border-border-primary
+                  placeholder:text-gray-400 dark:placeholder:text-text-muted
+                  focus:outline-none
+                  focus:ring-2 focus:ring-btn-primary
+                  focus:border-btn-primary
                   transition-all duration-200
                 "
                     aria-invalid={!!errors[field.name]}
@@ -142,9 +135,12 @@ export default function AuthForm({
                   <button
                     type="button"
                     onClick={() => handleShowPassword(field.name)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 
-                  text-gray-500 dark:text-gray-400 
-                  hover:text-indigo-500 transition"
+                    className="
+                  absolute right-3 top-1/2 -translate-y-1/2
+                  text-gray-400 dark:text-text-muted
+                  hover:text-btn-primary
+                  transition cursor-pointer
+                "
                   >
                     {showPassword[field.name] ? (
                       <EyeOff size={20} />
@@ -161,13 +157,14 @@ export default function AuthForm({
                   {...register(field.name)}
                   className="
                 w-full px-4 py-2.5
-                rounded-lg 
-                bg-gray-100 dark:bg-gray-800
-                text-gray-900 dark:text-white
-                border border-gray-300 dark:border-gray-700
-                focus:outline-none 
-                focus:ring-2 focus:ring-indigo-500
-                focus:border-indigo-500
+                rounded-lg
+                bg-gray-50 dark:bg-primary
+                text-gray-800 dark:text-text-primary text-[15px]
+                border border-gray-300 dark:border-border-primary
+                placeholder:text-gray-400 dark:placeholder:text-text-muted
+                focus:outline-none
+                focus:ring-2 focus:ring-btn-primary
+                focus:border-btn-primary
                 transition-all duration-200
               "
                   aria-invalid={!!errors[field.name]}
@@ -181,7 +178,7 @@ export default function AuthForm({
               {errors[field.name] && (
                 <p
                   id={`${field.name}-error`}
-                  className="text-red-500/70 text-sm mt-1"
+                  className="text-red-500 text-sm mt-1"
                   role="alert"
                 >
                   {errors[field.name]?.message as string}
@@ -190,7 +187,7 @@ export default function AuthForm({
             </div>
           ))}
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -199,10 +196,10 @@ export default function AuthForm({
           rounded-lg
           bg-btn-primary
           hover:bg-btn-primary-hover
-          text-white font-medium
-          transition-all duration-200
-          cursor-pointer
-          disabled:opacity-50 disabled:cursor-not-allowed
+          text-white
+          font-medium tracking-wide text-sm
+          transition-all duration-200 cursor-pointer
+          disabled:opacity-50  disabled:cursor-not-allowed
         "
           >
             {isSubmitting ? "Loading..." : submitButtonLabel}
@@ -211,7 +208,11 @@ export default function AuthForm({
 
         {divider && <div className="mt-6">{divider}</div>}
         {OAuthButtons && <div className="mt-4">{OAuthButtons}</div>}
-        {footer && <div className="mt-6 text-center">{footer}</div>}
+        {footer && (
+          <div className="mt-6 text-center text-sm text-gray-500 dark:text-text-muted">
+            {footer}
+          </div>
+        )}
       </div>
     </section>
   );

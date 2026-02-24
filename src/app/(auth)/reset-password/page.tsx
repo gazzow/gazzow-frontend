@@ -48,68 +48,112 @@ export default function ResetPassword() {
     setPassword(e.target.value);
   };
   const handleConfirmPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setConfirmPassword(e.target.value);
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-white dark:bg-primary px-4">
-      <div className="w-full max-w-md bg-secondary/30 border-2 border-border-primary p-8 rounded-2xl shadow-lg text-white">
-        <div className="flex flex-col items-center mb-6">
-          <h1 className="text-3xl font-bold text-center">Reset Password</h1>
+    <section className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-primary px-4 sm:px-6 transition-colors duration-300">
+      <div className="w-full max-w-md bg-white dark:bg-secondary border border-gray-200 dark:border-border-primary p-6 sm:p-8 rounded-2xl shadow-md sm:shadow-xl transition-all duration-300">
+        {/* Header */}
+        <div className="flex flex-col items-center mb-6 text-center">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-text-primary">
+            Reset Password
+          </h1>
         </div>
 
         <div className="flex flex-col gap-4">
+          {/* New Password */}
           <div>
-            <label htmlFor={"New Password"} className="block text-sm mb-1">
+            <label className="block text-sm mb-1 text-gray-600 dark:text-text-secondary">
               New Password
             </label>
-            <div className="flex items-center justify-center px-4 py-2 rounded-lg bg-primary border border-gray-600 focus-within:ring-2 focus-within:ring-btn-primary">
+
+            <div
+              className="
+          flex items-center px-4 py-2.5 rounded-lg
+          bg-gray-50 dark:bg-primary
+          border border-gray-300 dark:border-border-primary
+          focus-within:ring-2 focus-within:ring-btn-primary
+          transition-all
+        "
+            >
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full outline-none"
+                className="w-full bg-transparent outline-none text-gray-800 dark:text-text-primary placeholder:text-gray-400 dark:placeholder:text-text-muted"
                 value={password}
                 onChange={handlePasswordChange}
               />
-              <div onClick={handleShowPassword} className="cursor-pointer">
-                {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-              </div>
+
+              <button
+                type="button"
+                onClick={handleShowPassword}
+                className="text-gray-400 dark:text-text-muted hover:text-btn-primary transition"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
           </div>
+
+          {/* Confirm Password */}
           <div>
-            <label htmlFor={"New Password"} className="block text-sm mb-1">
+            <label className="block text-sm mb-1 text-gray-600 dark:text-text-secondary">
               Confirm Password
             </label>
-            <div className="flex items-center justify-center px-4 py-2 rounded-lg bg-primary border border-gray-600 focus-within:ring-2 focus-within:ring-btn-primary">
+
+            <div
+              className="
+          flex items-center px-4 py-2.5 rounded-lg
+          bg-gray-50 dark:bg-primary
+          border border-gray-300 dark:border-border-primary
+          focus-within:ring-2 focus-within:ring-btn-primary
+          transition-all
+        "
+            >
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full outline-none"
+                className="w-full bg-transparent outline-none text-gray-800 dark:text-text-primary placeholder:text-gray-400 dark:placeholder:text-text-muted"
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
               />
-              <div
+
+              <button
+                type="button"
                 onClick={handleShowConfirmPassword}
-                className="cursor-pointer"
+                className="text-gray-400 dark:text-text-muted hover:text-btn-primary transition"
               >
-                {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-              </div>
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
           </div>
 
+          {/* Submit */}
           <button
             onClick={handleClick}
-            className="bg-btn-primary-hover hover:opacity-90 cursor-pointer py-2 rounded-md font-semibold"
+            className="
+          bg-btn-primary
+          hover:bg-btn-primary-hover
+          text-white
+          py-2.5
+          rounded-lg
+          font-medium cursor-pointer
+          transition-all
+        "
           >
-            Send Otp
+            Reset Password
           </button>
         </div>
 
-        <div className="mt-4 text-center text-gray-300 text-sm">
-          <Link className="text-blue-300" href={AUTH_ROUTES.LOGIN}>
-            &larr; Back to login
+        {/* Footer */}
+        <div className="mt-6 text-center text-sm">
+          <Link
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+            href={AUTH_ROUTES.LOGIN}
+          >
+            ← Back to login
           </Link>
         </div>
       </div>

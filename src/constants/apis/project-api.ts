@@ -2,6 +2,7 @@ export const PROJECT_API = {
   CREATE_PROJECT: "/projects",
   GET_PROJECT: (projectId: string) => `/projects/${projectId}`,
   UPDATE_PROJECT: (projectId: string) => `/projects/${projectId}`,
+  UPDATE_STATUS: (projectId: string) => `/projects/${projectId}`,
   LIST_PROJECTS: "/projects",
   DELETE_PROJECT: (projectId: string) => `/projects/${projectId}`,
   APPLY_PROJECT: (projectId: string) => `/projects/${projectId}/applications`,

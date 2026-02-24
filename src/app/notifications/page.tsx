@@ -2,10 +2,10 @@
 
 import { notificationService } from "@/services/user/notification.service";
 import { INotification } from "@/types/notification";
-import axios from "axios";
-import { Check, CheckCheck } from "lucide-react";
+import { formatNotificationTime } from "@/utils/formatNotificationTime";
+import { handleApiError } from "@/utils/handleApiError";
+import { CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "react-toastify";
 
 export default function NotificationPage() {
   const [tab, setTab] = useState<"all" | "unread">("unread");
@@ -19,9 +19,7 @@ export default function NotificationPage() {
         setNotifications(res.data);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("lists notifications error: ", error);
-      }
+      handleApiError(error);
     }
   }, []);
 
@@ -32,22 +30,17 @@ export default function NotificationPage() {
         fetchNotifications();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("Mark as read notification error: ", error);
-      }
+      handleApiError(error);
     }
   };
   const onMarkAllAsRead = async () => {
     try {
       const res = await notificationService.markAllAsRead();
       if (res.success) {
-        toast.success(res.message);
         fetchNotifications();
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("Mark all as read notification error: ", error);
-      }
+      handleApiError(error);
     }
   };
 
@@ -72,16 +65,16 @@ export default function NotificationPage() {
   return (
     <div
       className="max-w-7xl w-full flex flex-col space-y-6
-                text-black dark:text-white transition-colors"
+              text-black dark:text-white transition-colors"
     >
       {/* Header */}
       <div
         className="
-  flex flex-col sm:flex-row
-  sm:items-center
-  sm:justify-between
-  gap-3 mb-4
-"
+      flex flex-col sm:flex-row
+      sm:items-center
+      sm:justify-between
+      gap-3 mb-4
+    "
       >
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">Notifications</h1>
@@ -94,13 +87,13 @@ export default function NotificationPage() {
           <button
             onClick={onMarkAllAsRead}
             className="
-        flex items-center justify-center gap-2
-        px-3 py-2 sm:py-1.5
-        text-xs sm:text-sm
-        rounded-lg
-        bg-btn-primary text-white
-        w-full sm:w-auto cursor-pointer
-      "
+          flex items-center justify-center gap-2
+          px-3 py-2 sm:py-1.5
+          text-xs sm:text-sm
+          rounded-lg
+          bg-btn-primary text-white
+          w-full sm:w-auto cursor-pointer
+        "
           >
             <CheckCheck className="w-4 h-4" />
             Mark all as read ({unreadCount})
@@ -111,24 +104,24 @@ export default function NotificationPage() {
       {/* Tabs */}
       <div
         className="
-  flex gap-4 sm:gap-6
-  border-b border-gray-200 dark:border-neutral-800
-  mb-6
-  overflow-x-auto
-  no-scrollbar
-"
+      flex gap-4 sm:gap-6
+      border-b border-gray-200 dark:border-neutral-800
+      mb-6
+      overflow-x-auto
+      no-scrollbar
+    "
       >
         {["unread", "all"].map((key) => (
           <button
             key={key}
             onClick={() => setTab(key as "unread" | "all")}
             className={`pb-3 text-sm capitalize transition-colors whitespace-nowrap cursor-pointer
-        ${
-          tab === key
-            ? "text-gray-800 dark:text-gray-200 border-b-2 border-purple-500"
-            : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
-        }
-      `}
+          ${
+            tab === key
+              ? "text-gray-800 dark:text-gray-200 border-b-2 border-purple-500"
+              : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+          }
+        `}
           >
             {key}
           </button>
@@ -146,49 +139,49 @@ export default function NotificationPage() {
         {filtered.map((n) => (
           <div
             key={n.id}
-            className={`
-        flex flex-col sm:flex-row
-        sm:justify-between sm:items-start
-        gap-3
-        p-4 rounded-xl border transition-colors
-        ${
-          n.isRead
-            ? "bg-gray-100 dark:bg-secondary/20 border-gray-200 dark:border-neutral-800"
-            : "bg-purple-50 dark:bg-secondary/60 border-purple-300/40 dark:border-purple-500/40"
-        }
-      `}
+            className={`relative max-w-screen flex flex-col gap-3 p-4 pb-6 rounded-xl border transition-colors ${
+              n.isRead
+                ? "bg-gray-100 dark:bg-secondary/20 border-gray-200 dark:border-neutral-800"
+                : "bg-purple-50 dark:bg-secondary/60 border-purple-300/40 dark:border-purple-500/40"
+            }`}
           >
             {/* Content */}
-            <div className="flex gap-3">
-              <div className="mt-1 h-2 w-2 rounded-full bg-purple-500 shrink-0" />
+            <div className="flex gap-3 flex-1">
+              {!n.isRead && (
+                <div className="mt-1 h-2 w-2 rounded-full bg-purple-500 shrink-0" />
+              )}
 
-              <div className="min-w-0">
-                <h3 className="text-sm font-semibold">{n.title}</h3>
+              <div className="min-w-0 flex-1">
+                <div className="flex justify-between items-start w-full">
+                  <div>
+                    <h3 className="text-sm font-semibold">{n.title}</h3>
 
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  {n.body}
-                </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      {n.body}
+                    </p>
+                  </div>
 
-                <p className="text-xs text-gray-500 mt-2">
-                  {new Date(n.createdAt).toLocaleString()}
-                </p>
+                  <p className="text-xs text-gray-500 ml-4 shrink-0">
+                    {formatNotificationTime(n.createdAt)}
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Action */}
+            {/* Bottom Right Action */}
             {!n.isRead && (
-              <div className="flex sm:block justify-end">
-                <button
-                  onClick={() => onMarkAsRead(n.id)}
-                  className="
-              p-2 rounded-lg
-              bg-gray-200 dark:bg-secondary
-              hover:bg-gray-300 dark:hover:bg-secondary/80
+              <button
+                onClick={() => onMarkAsRead(n.id)}
+                className="
+              absolute bottom-3 right-3
+              text-xs py-1 px-2 rounded-full
+              bg-btn-primary text-white
+              hover:opacity-90
+              transition cursor-pointer
             "
-                >
-                  <Check className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                </button>
-              </div>
+              >
+                Mark as read
+              </button>
             )}
           </div>
         ))}

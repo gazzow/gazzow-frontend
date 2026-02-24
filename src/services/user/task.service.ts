@@ -49,8 +49,12 @@ export const taskService = {
     const res = await api.patch(TASK_API.REASSIGN_TASK(taskId, projectId), {
       assigneeId,
     });
-
     console.log("Reassign task response: ", res);
+    return res.data;
+  },
+  async removeAssignee(taskId: string, projectId: string) {
+    const res = await api.delete(TASK_API.REMOVE_ASSIGNEE(taskId, projectId));
+    console.log("Remove Assignee response: ", res);
     return res.data;
   },
 };

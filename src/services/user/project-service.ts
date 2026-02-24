@@ -2,7 +2,7 @@ import { PROJECT_API } from "@/constants/apis/project-api";
 import api from "@/lib/axios/api";
 import { ApplicationStatus } from "@/types/application";
 import { ContributorStatus } from "@/types/contributor";
-import { IProject } from "@/types/project";
+import { IProject, ProjectStatus } from "@/types/project";
 
 type ApplyProjectPayload = {
   proposal?: string;
@@ -44,6 +44,13 @@ export const projectService = {
   async updateProject(projectId: string, data: Partial<IProject>) {
     const res = await api.put(PROJECT_API.UPDATE_PROJECT(projectId), data);
     console.log("Update project response: ", res);
+    return res.data;
+  },
+  async updateStatus(projectId: string, status: ProjectStatus) {
+    const res = await api.patch(PROJECT_API.UPDATE_STATUS(projectId), {
+      status,
+    });
+    console.log("Update project status response: ", res);
     return res.data;
   },
   async listProjects(params: ListProjectsParams) {
