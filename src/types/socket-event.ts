@@ -14,9 +14,26 @@ export const SOCKET_EVENTS = {
 
   TEAM_MESSAGE_NOTIFICATION: "TEAM_MESSAGE_NOTIFICATION",
 
+  //Task Events
+  TASK_UNASSIGNED: "TASK_UNASSIGNED",
+  TASK_ASSIGNED: "TASK_ASSIGNED",
+  TASK_UPDATED: "TASK_UPDATED",
+
   // Remove this event and its listener for manual updates along with use-case
   UPDATE_NOTIFICATION_COUNT: "UPDATE_NOTIFICATION_COUNT",
   NOTIFICATION_COUNT: "NOTIFICATION_COUNT",
 } as const;
 
 export type SocketEvent = (typeof SOCKET_EVENTS)[keyof typeof SOCKET_EVENTS];
+
+// socket.types.ts
+export interface TaskUnassignedPayload {
+  taskId: string;
+}
+
+export interface ProjectNotificationPayload {
+  projectId: string;
+  taskId?: string;
+  title: string;
+  message: string;
+}

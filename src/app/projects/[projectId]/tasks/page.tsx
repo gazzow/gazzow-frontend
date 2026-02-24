@@ -7,14 +7,14 @@ import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { projectTabPermissions } from "@/constants/common/tab-permission";
 import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
+import { useSocket } from "@/providers/SocketProvider";
 import { projectService } from "@/services/user/project-service";
-import { taskService } from "@/services/user/task-service";
+import { taskService } from "@/services/user/task.service";
 import { IProject, Role } from "@/types/project";
+import { SOCKET_EVENTS, TaskUnassignedPayload } from "@/types/socket-event";
 import { ITask } from "@/types/task";
 import { handleApiError } from "@/utils/handleApiError";
-
-import axios from "axios";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, RefreshCw } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
@@ -37,6 +37,7 @@ export default function Tasks() {
   const [open, setOpen] = useState(false);
 
   const currentRole = useRole(project);
+  const socket = useSocket();
 
   const visibleTabs = useMemo(() => {
     if (!projectId) return [];
@@ -62,9 +63,7 @@ export default function Tasks() {
           setProject(res.data);
         }
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data.message);
-        }
+        handleApiError(error);
       }
     };
     fetchProject();
@@ -86,6 +85,14 @@ export default function Tasks() {
     }
   }, [projectId, currentRole]);
 
+  const filterTaskList = useCallback(
+    async (taskId: string) => {
+      const updated = tasks.filter((task) => task.id !== taskId);
+      setTasks(updated);
+    },
+    [tasks],
+  );
+
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
@@ -102,6 +109,39 @@ export default function Tasks() {
     } catch (error) {
       handleApiError(error);
     }
+  };
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleTaskUnassign = (data: TaskUnassignedPayload) => {
+      filterTaskList(data.taskId);
+    };
+
+    /**
+     * @Params data {task id}
+     */
+    const handleTaskAssign = () => {
+      fetchTasks();
+    };
+
+    const handleTaskUpdate = () => {
+      fetchTasks();
+    };
+
+    socket.on(SOCKET_EVENTS.TASK_UNASSIGNED, handleTaskUnassign);
+    socket.on(SOCKET_EVENTS.TASK_ASSIGNED, handleTaskAssign);
+    socket.on(SOCKET_EVENTS.TASK_UPDATED, handleTaskUpdate);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.TASK_UNASSIGNED, handleTaskUnassign);
+      socket.off(SOCKET_EVENTS.TASK_ASSIGNED, handleTaskAssign);
+      socket.off(SOCKET_EVENTS.TASK_UPDATED, handleTaskUpdate);
+    };
+  }, [socket, filterTaskList, fetchTasks]);
+
+  const handleTaskRefresh = () => {
+    fetchTasks();
   };
 
   if (!projectId) return <LoadingSpinner />;
@@ -131,15 +171,23 @@ export default function Tasks() {
           </div>
 
           {/* Right */}
-          {currentRole === Role.CREATOR && (
+          <div className="flex gap-2">
             <button
-              className="flex items-center md:gap-1 bg-btn-primary text-text-primary p-1 md:px-2 md:py-1 rounded-full md:rounded cursor-pointer shrink-0"
-              onClick={() => setOpen(!open)}
+              className="flex items-center md:gap-1 border border-border-primary hover:border-btn-primary text-text-muted hover:text-btn-primary p-2 rounded-full cursor-pointer shrink-0 transition"
+              onClick={handleTaskRefresh}
             >
-              <Plus size={18} />
-              <span className="hidden sm:inline">Create</span>
+              <RefreshCw size={18} />
             </button>
-          )}
+            {currentRole === Role.CREATOR && (
+              <button
+                className="flex items-center md:gap-1 bg-btn-primary text-text-primary p-1 md:px-2 md:py-1 rounded-full md:rounded cursor-pointer shrink-0"
+                onClick={() => setOpen(!open)}
+              >
+                <Plus size={18} />
+                <span className="hidden sm:inline">Create</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

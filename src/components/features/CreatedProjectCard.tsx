@@ -39,36 +39,55 @@ export default function CreatedProjectCard({
 
   return (
     <div
-      className="p-4 rounded-2xl shadow-lg border transition-all
-                bg-white dark:bg-secondary/30
-                border-gray-200 dark:border-gray-800
-                hover:border-gray-400 dark:hover:border-gray-700
-                text-black dark:text-gray-100"
+      className="
+    w-full
+    p-4
+    rounded
+    shadow-md hover:shadow-lg
+    border
+    transition-all
+    bg-white dark:bg-secondary/30
+    border-gray-200 dark:border-gray-800
+    hover:border-gray-400 dark:hover:border-gray-700
+    text-black dark:text-gray-100
+  "
     >
       {/* Header */}
-      <div className="flex items-center justify-between md:flex-row gap-3">
-        <h3 className="text-lg font-semibold">{title}</h3>
+      <div className="flex items-start justify-between gap-2">
+        <h3
+          className="
+        text-base sm:text-lg font-semibold
+        truncate
+        max-w-[75%]
+      "
+          title={title}
+        >
+          {title}
+        </h3>
 
         <span
-          className={`text-xs font-medium flex items-center gap-1 px-2 py-0.5 rounded-full ${statusColor}`}
+          className={`shrink-0 text-xs font-medium flex items-center gap-1 px-2 py-0.5 rounded-full ${statusColor}`}
         >
           {status.replace(/\b\w/, (c) => c.toUpperCase())}
         </span>
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mt-1">
+      {/* Budget + Duration */}
+      <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2">
         <span className="flex items-center gap-1">
           <DollarSign size={14} />
           {budgetMin.toLocaleString()} - {budgetMax.toLocaleString()}
         </span>
+
         <span className="flex items-center gap-1">
-          <Calendar size={14} /> {durationMin}-{durationMax} {durationUnit}
+          <Calendar size={14} />
+          {durationMin}-{durationMax} {durationUnit}
         </span>
       </div>
 
-      {/* Progress Bar */}
-      <div className="mt-5">
-        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
+      {/* Progress */}
+      <div className="mt-4">
+        <div className="flex justify-between text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">
           <span>Progress</span>
           <span>{progress}%</span>
         </div>
@@ -82,22 +101,34 @@ export default function CreatedProjectCard({
       </div>
 
       {/* Footer */}
-      <div className="mt-4 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+      <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
           <span>
             Contributors:{" "}
             <span className="text-gray-900 dark:text-gray-200">
               {contributors}
             </span>
           </span>
+
           <span className="flex items-center gap-1">
-            <Users size={14} /> {applicants} applicants
+            <Users size={14} />
+            {applicants} applicants
           </span>
         </div>
 
         <Link
           href={PROJECT_ROUTES.DETAILS(id)}
-          className="px-2 py-1 text-sm text-white rounded-md bg-purple-600 hover:bg-purple-700 transition"
+          className="
+        w-full sm:w-auto
+        text-center
+        px-3 py-1.5
+        text-xs sm:text-sm
+        text-white
+        rounded-md
+        bg-purple-600
+        hover:bg-purple-700
+        transition
+      "
         >
           Manage
         </Link>
