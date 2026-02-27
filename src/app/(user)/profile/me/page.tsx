@@ -29,7 +29,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState<IUser | null>(null);
 
   return (
-    <div className="pt-20 px-6 w-full bg-white dark:bg-primary text-black dark:text-white sm:px-6 py-6 flex justify-center transition-colors">
+    <div className="w-full bg-white dark:bg-primary text-black dark:text-white sm:px-6 py-6 flex justify-center transition-colors">
       <div className="max-w-4xl w-full bg-gray-100 dark:bg-secondary/30 rounded-2xl shadow-lg p-5 sm:p-8 space-y-6 sm:space-y-8 transition-colors">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
