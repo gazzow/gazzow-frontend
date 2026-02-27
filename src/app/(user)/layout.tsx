@@ -26,7 +26,7 @@ export default function UserLayout({
           <Sidebar />
           <main className="flex-1 w-full overflow-y-auto custom-scroll text-black dark:text-white transition-colors">
             <div
-              className="min-h-screen w-full pt-22 pb-4 px-6 flex justify-center
+              className="min-h-screen w-full pt-20 px-6 flex justify-center
                        transition-colors"
             >
               {children}
