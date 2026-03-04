@@ -1,6 +1,7 @@
 "use client";
 
 import StripeConnectCard from "@/components/features/StripeConnectCard";
+import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { userService } from "@/services/user/user-service";
 import { IUser } from "@/types/user";
@@ -11,6 +12,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 const ProfilePage = () => {
+  const [user, setUser] = useState<IUser | null>(null);
+
   const fetchUser = useCallback(async () => {
     try {
       const res = await userService.getUser();
@@ -26,7 +29,7 @@ const ProfilePage = () => {
     fetchUser();
   }, [fetchUser]);
 
-  const [user, setUser] = useState<IUser | null>(null);
+  if (!user) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <div className="w-full bg-white dark:bg-primary text-black dark:text-white sm:px-6 py-6 flex justify-center transition-colors">
@@ -128,6 +131,46 @@ const ProfilePage = () => {
             </ul>
           </div>
         )}
+
+        {/* Reputation */}
+        <div>
+          <h2 className="font-semibold text-lg">Reputation</h2>
+
+          <div className="mt-2 space-y-1 text-sm sm:text-base text-gray-700 dark:text-gray-300">
+            <p className="flex items-center gap-2 flex-wrap">
+              <span className="font-medium text-gray-900 dark:text-white">
+                Average Rating:
+              </span>
+
+              <span className="flex items-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    className={`text-lg ${
+                      user.reputation.avgRating >= star
+                        ? "text-yellow-500"
+                        : "text-gray-300 dark:text-gray-600"
+                    }`}
+                  >
+                    ★
+                  </span>
+                ))}
+              </span>
+
+              <span className="text-yellow-500">
+                {user.reputation.avgRating.toFixed(1)}
+              </span>
+
+              <span className="text-gray-600 dark:text-gray-400">
+                (
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {user.reputation.totalReviews}
+                </span>{" "}
+                Reviews)
+              </span>
+            </p>
+          </div>
+        </div>
 
         <StripeConnectCard user={user} />
       </div>
