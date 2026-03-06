@@ -3,27 +3,38 @@
 import StripeConnectCard from "@/components/features/StripeConnectCard";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
+import { reviewService } from "@/services/user/review.service";
 import { userService } from "@/services/user/user-service";
+import { IAggregatedReview } from "@/types/review";
 import { IUser } from "@/types/user";
-import axios from "axios";
-import { Home, Pen, User } from "lucide-react";
+import { handleApiError } from "@/utils/handleApiError";
+import { Home, Pen, Star, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 const ProfilePage = () => {
   const [user, setUser] = useState<IUser | null>(null);
+  const [reviews, setReviews] = useState<IAggregatedReview[]>([]);
 
   const fetchUser = useCallback(async () => {
     try {
       const res = await userService.getUser();
       setUser(res.data);
+      fetchReviews();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("profile page error: ", error);
-      }
+      handleApiError(error);
     }
   }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const res = await reviewService.listReviews();
+      setReviews(res.data);
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
 
   useEffect(() => {
     fetchUser();
@@ -141,26 +152,22 @@ const ProfilePage = () => {
               <span className="font-medium text-gray-900 dark:text-white">
                 Average Rating:
               </span>
-
               <span className="flex items-center">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <span
+                  <Star
                     key={star}
-                    className={`text-lg ${
+                    size={18}
+                    className={`${
                       user.reputation.avgRating >= star
-                        ? "text-yellow-500"
+                        ? "text-yellow-500 fill-yellow-500"
                         : "text-gray-300 dark:text-gray-600"
                     }`}
-                  >
-                    ★
-                  </span>
+                  />
                 ))}
               </span>
-
               <span className="text-yellow-500">
                 {user.reputation.avgRating.toFixed(1)}
               </span>
-
               <span className="text-gray-600 dark:text-gray-400">
                 (
                 <span className="font-medium text-gray-900 dark:text-white">
@@ -170,6 +177,49 @@ const ProfilePage = () => {
               </span>
             </p>
           </div>
+
+          {/* Latest Reviews */}
+          {reviews?.length > 0 && (
+            <div className="mt-5 space-y-4">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                Latest Reviews
+              </h3>
+
+              {reviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="border border-border-primary rounded-lg p-3 text-sm bg-white dark:bg-secondary"
+                >
+                  {/* Stars */}
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={16}
+                        className={`${
+                          review.rating >= star
+                            ? "text-yellow-500 fill-yellow-500"
+                            : "text-gray-300 dark:text-gray-600"
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Review Text */}
+                  <p className="text-gray-700 dark:text-gray-300">
+                    {review.review}
+                  </p>
+
+                  {/* Reviewer */}
+                  <div className="flex justify-end">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      — {review.reviewer.name}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <StripeConnectCard user={user} />

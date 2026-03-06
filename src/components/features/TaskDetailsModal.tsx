@@ -18,6 +18,8 @@ import { projectService } from "@/services/user/project-service";
 import { TaskDiscussionPanel } from "./TaskDiscussionPanel";
 import { handleApiError } from "@/utils/handleApiError";
 import { ConfirmModal } from "../ConfirmModal";
+import ReviewModal from "./ReviewModal";
+import { reviewService } from "@/services/user/review.service";
 
 type TaskRole = "creator" | "contributor";
 
@@ -41,6 +43,7 @@ export default function TaskDetailsModal({
   const [showReassign, setShowReassign] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+  const [openReview, setOpenReview] = useState<boolean>(false);
 
   const fetchTask = useCallback(async () => {
     try {
@@ -160,6 +163,23 @@ export default function TaskDetailsModal({
         encodeURIComponent(fileKey),
       );
       window.open(res.data, "_black", "noopener,noreferrer");
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
+
+  const handleAddReview = () => {
+    setOpenReview((prev) => !prev);
+  };
+
+  const handleReviewSubmit = async (rating: number, review: string) => {
+    console.log("Rating:", rating);
+    console.log("Review:", review);
+    try {
+      const res = await reviewService.addReview(taskId, rating, review);
+      if (res.success) {
+        toast(res.message);
+      }
     } catch (error) {
       handleApiError(error);
     }
@@ -320,6 +340,14 @@ export default function TaskDetailsModal({
                   ></ConfirmModal>
                 )}
 
+                {openReview && (
+                  <ReviewModal
+                    isOpen={openReview}
+                    onClose={() => setOpenReview(false)}
+                    onSubmit={handleReviewSubmit}
+                  />
+                )}
+
                 {/* Financial Summary */}
                 <div className="rounded-lg border border-gray-200 dark:border-white/10 p-3 sm:p-4 space-y-4 bg-white dark:bg-black/30">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
@@ -463,6 +491,15 @@ export default function TaskDetailsModal({
                     {btn.label}
                   </button>
                 ))}
+
+              {task && task.status === TaskStatus.COMPLETED && (
+                <button
+                  onClick={handleAddReview}
+                  className="px-3 py-1 bg-yellow-500 hover:bg-yellow-500/70 text-white font-medium rounded-md text-sm cursor-pointer"
+                >
+                  Add Review
+                </button>
+              )}
             </div>
           </>
         )}
