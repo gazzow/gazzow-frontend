@@ -34,7 +34,7 @@ export default function AuthNavbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex gap-6 lg:gap-8">
-          {["features", "projects", "about"].map((item) => (
+          {["features", "How It Works", "Community"].map((item) => (
             <Link
               key={item}
               href={`#${item}`}

@@ -1,63 +1,80 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
+
 export default function Community() {
+  const INSTAGRAM_LINK =
+    "https://www.instagram.com/teamgazzow?igsh=cGYyb2RobzB2a2tn";
+
+  const avatars = [
+    "https://i.pravatar.cc/40?img=1",
+    "https://i.pravatar.cc/40?img=2",
+    "https://i.pravatar.cc/40?img=3",
+    "https://i.pravatar.cc/40?img=4",
+    "https://i.pravatar.cc/40?img=5",
+  ];
+
   return (
     <section
-      className="
-    relative
-    py-16 sm:py-20 lg:py-24
-    bg-gray-50 dark:bg-primary
-    transition-colors duration-300
-  "
+      id="Community"
+      className="py-24 px-6 bg-white dark:bg-primary transition-colors"
     >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      <div className="max-w-4xl mx-auto text-center">
+
+        {/* Avatar Stack */}
+        <div className="flex justify-center items-center mb-6">
+          <div className="flex -space-x-3">
+            {avatars.map((avatar, i) => (
+              <img
+                key={i}
+                src={avatar}
+                alt="developer"
+                className="w-10 h-10 rounded-full border-2 border-primary object-cover"
+              />
+            ))}
+
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 text-white text-xs font-semibold border-2 border-primary">
+              +5K
+            </div>
+          </div>
+        </div>
+
         {/* Heading */}
-        <h2
-          className="
-        text-xl sm:text-2xl md:text-3xl lg:text-4xl
-        font-semibold
-        text-gray-900 dark:text-text-primary
-        leading-tight
-      "
-        >
-          Ready to be part of the{" "}
-          <span className="text-purple-600 dark:text-purple-400">future?</span>
+        <h2 className="text-4xl font-bold text-gray-900 dark:text-text-primary">
+          Join a growing community
         </h2>
 
-        {/* Subtext */}
-        <p
-          className="
-        mt-3 sm:mt-4
-        text-sm sm:text-base
-        text-gray-600 dark:text-text-muted
-        max-w-md sm:max-w-xl md:max-w-2xl
-        mx-auto leading-relaxed
-      "
-        >
-          Join thousands of developers who are already building amazing projects
-          and earning from their skills on Gazzow.
+        {/* Subtitle */}
+        <p className="mt-4 text-gray-600 dark:text-text-secondary max-w-2xl mx-auto">
+          Thousands of developers are already collaborating on real projects,
+          shipping code, and building their careers on Gazzow.
         </p>
 
         {/* CTA */}
-        <div className="mt-6 sm:mt-8 flex justify-center">
-          <button
+        <div className="mt-8">
+          <a
+            href={INSTAGRAM_LINK}
+            target="_blank"
             className="
-          w-full sm:w-auto
-          px-6 sm:px-8
-          py-2.5 sm:py-3
-          rounded-lg sm:rounded-xl
-          text-white
-          text-sm sm:text-base
-          font-medium
-          bg-gradient-to-r from-purple-600 to-indigo-600
-          hover:from-purple-700 hover:to-indigo-700
-          shadow-md hover:shadow-lg
-          transition-all duration-300
-        "
+              inline-flex
+              items-center
+              gap-2
+              px-8
+              py-3
+              rounded-xl
+              font-medium
+              text-white
+              bg-gradient-to-r from-blue-500 to-blue-600
+              hover:from-blue-600 hover:to-blue-700
+              transition
+              shadow-lg hover:shadow-xl
+            "
           >
-            Join Our Community
-          </button>
+            Join the Community
+            <ArrowRight size={18} />
+          </a>
         </div>
+
       </div>
     </section>
   );
