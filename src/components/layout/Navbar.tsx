@@ -5,49 +5,55 @@ import Link from "next/link";
 import UserProfileMenu from "../ui/UserProfileMenu";
 import { NotificationBellIcon } from "../ui/NotificationBellIcon";
 import { ThemeToggle } from "../ui/ThemeToggle";
-import { PanelLeftOpen, PanelRightOpen } from "lucide-react";
-import { useEffect } from "react";
+import { Menu, X } from "lucide-react";
 import { useNavigation } from "@/providers/NavigationProvider";
 
 export default function Navbar() {
   const { open, setOpen } = useNavigation();
-  useEffect(() => {
-    console.log(open);
-  }, [open]);
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-primary backdrop-blur-md border-b border-border-primary/70 transition ease-in-out">
-      <div className="max-w-10xl mx-auto px-2 sm:px-4 md:px-6 flex items-center justify-between h-16">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-2 md:gap-5">
+      <div className="w-full mx-auto px-3 sm:px-4 md:px-6 lg:px-8 flex items-center justify-between h-14 sm:h-16">
+        {/* LEFT */}
+        <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+          {/* Sidebar Toggle */}
+          {open ? (
+            <Menu
+              onClick={() => setOpen(false)}
+              className="text-black dark:text-text-secondary w-5 h-5 sm:w-6 sm:h-6 cursor-pointer md:hidden"
+            />
+          ) : (
+            <Menu
+              onClick={() => setOpen(true)}
+              className="text-black dark:text-text-secondary w-5 h-5 sm:w-6 sm:h-6 cursor-pointer"
+            />
+          )}
+
+          {/* Logo */}
           <Link
             href={USER_ROUTES.HOME}
-            className="text-xl sm:text-2xl font-bold text-btn-primary hover:text-btn-primary-hover"
+            className="text-lg sm:text-xl md:text-2xl font-bold text-btn-primary hover:text-btn-primary-hover whitespace-nowrap"
           >
             Gazzow
           </Link>
-          {open ? (
-            <PanelRightOpen
-              onClick={() => setOpen(false)}
-              className="text-black dark:text-text-secondary md:mt-1 w-5 h-5 md:w-[18px] md:h-[18px] cursor-pointer"
-            ></PanelRightOpen>
-          ) : (
-            <PanelLeftOpen
-              onClick={() => setOpen(true)}
-              className="text-black dark:text-text-secondary md:mt-1 w-5 h-5 md:w-[18px] md:h-[18px] cursor-pointer"
-            ></PanelLeftOpen>
-          )}
         </div>
 
-        {/* Right Side */}
-        <div className="flex justify-center items-center text-center gap-2 md:gap-3">
-          {/* Notification Bell */}
-          <NotificationBellIcon />
+        {/* RIGHT */}
+        <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
+          {/* Notification */}
+          <div className="scale-90 sm:scale-100">
+            <NotificationBellIcon />
+          </div>
 
-          {/* Toggle Theme */}
-          <ThemeToggle />
+          {/* Theme */}
+          <div className="hidden md:flex scale-90 sm:scale-100">
+            <ThemeToggle />
+          </div>
 
-          <UserProfileMenu />
+          {/* Profile */}
+          <div className="scale-90 sm:scale-100">
+            <UserProfileMenu />
+          </div>
         </div>
       </div>
     </nav>

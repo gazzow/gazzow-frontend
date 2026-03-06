@@ -13,6 +13,10 @@ export interface IUser {
   techStacks?: string[];
   learningGoals?: string[];
   stripeAccountId: string;
+  reputation: {
+    avgRating: number;
+    totalReviews: number;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,5 +42,3 @@ export type UserDashboardStats = {
   completedJobs: number;
   totalEarnings: number;
 };
-
-

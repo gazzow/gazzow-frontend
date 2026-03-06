@@ -11,6 +11,8 @@ import {
   Bell,
   Wallet,
   User,
+  PanelRightOpen,
+  PanelLeftOpen,
 } from "lucide-react";
 import { LogoutButton } from "../ui/LogoutButton";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
@@ -48,33 +50,57 @@ const sections = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { open } = useNavigation();
+  const { open, setOpen } = useNavigation();
 
   return (
     <aside
-      className={`min-h-[90vh] pt-20 px-4 ${open ? "flex" : "hidden"} flex-col  gap-2 bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out`}
+      className={`min-h-[90vh] pt-20 px-2 md:px-4 ${
+        open ? "flex" : "hidden"
+      } flex-col justify-between bg-white dark:bg-primary text-primary dark:text-text-secondary border-r border-border-primary/70 transition ease-in-out`}
     >
-      {sections.map(({ label, icon: Icon, href, matchPaths }) => (
-        <ul key={label}>
-          <li key={label}>
-            <Link
-              href={href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                pathname === href ||
-                matchPaths?.includes(pathname) ||
-                pathname.split("/").includes(label.toLowerCase())
-                  ? "bg-btn-primary text-white"
-                  : "hover:bg-btn-primary/20 dark:hover:text-white"
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span className="hidden md:flex">{label}</span>
-            </Link>
-          </li>
-        </ul>
-      ))}
+      {/* TOP MENU */}
+      <div className="flex flex-col gap-2 flex-1">
+        {sections.map(({ label, icon: Icon, href, matchPaths }) => (
+          <ul key={label}>
+            <li>
+              <Link
+                href={href}
+                className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
+                  pathname === href ||
+                  matchPaths?.includes(pathname) ||
+                  pathname.split("/").includes(label.toLowerCase())
+                    ? "bg-btn-primary text-white"
+                    : "hover:bg-btn-primary/20 dark:hover:text-white"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span className="hidden md:flex">{label}</span>
+              </Link>
+            </li>
+          </ul>
+        ))}
+      </div>
 
-      <LogoutButton />
+      {/* BOTTOM FIXED AREA */}
+      <div className="flex justify-center items-center gap-4 pb-4">
+        {/* Logout */}
+          <LogoutButton />
+
+        {/* Sidebar Toggle */}
+        <div className="hidden md:flex px-2">
+          {open ? (
+            <PanelRightOpen
+              onClick={() => setOpen(false)}
+              className="text-black dark:text-text-secondary w-5 h-5 md:w-[18px] md:h-[16px] cursor-pointer"
+            />
+          ) : (
+            <PanelLeftOpen
+              onClick={() => setOpen(true)}
+              className="text-black dark:text-text-secondary w-5 h-5 md:w-[18px] md:h-[16px] cursor-pointer"
+            />
+          )}
+        </div>
+      </div>
     </aside>
   );
 }
