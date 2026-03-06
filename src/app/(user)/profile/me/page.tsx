@@ -78,7 +78,7 @@ const ProfilePage = () => {
 
           {/* Action Buttons */}
           <div className="flex sm:flex-row gap-3 w-full sm:w-auto sm:ml-auto">
-            <Link
+            {/* <Link
               href={USER_ROUTES.HOME}
               className="w-full  sm:hidden  sm:w-auto"
             >
@@ -86,7 +86,7 @@ const ProfilePage = () => {
                 <Home size={14} />
                 <span>Home</span>
               </button>
-            </Link>
+            </Link> */}
 
             <Link href={USER_ROUTES.EDIT_PROFILE} className="w-full sm:w-auto">
               <button className="w-full flex items-center justify-center gap-2 py-1 px-4 bg-btn-primary cursor-pointer hover:bg-btn-primary-hover text-white rounded-lg transition">
