@@ -12,7 +12,8 @@ import { PROJECT_ROUTES } from "@/constants/routes/project-routes";
 import { useRole } from "@/hook/useRole";
 import { paymentService } from "@/services/user/payment-service";
 import { projectService } from "@/services/user/project-service";
-import { IProject, ProjectStatus, Role } from "@/types/project";
+import { IAggregatedProjectDetail, ProjectStatus, Role } from "@/types/project";
+import { getApplicationState } from "@/utils/get-application-state";
 import { handleApiError } from "@/utils/handleApiError";
 import axios from "axios";
 import {
@@ -42,7 +43,7 @@ const tabRoutes = [
 export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
 
-  const [project, setProject] = useState<IProject | null>(null);
+  const [project, setProject] = useState<IAggregatedProjectDetail | null>(null);
   const [confirmModal, setConfirmModal] = useState(false);
   const [applyModal, setApplyModal] = useState(false);
   const [editProjectModal, setEditProjectModal] = useState<boolean>(false);
@@ -195,6 +196,10 @@ export default function ProjectDetails() {
         ? "text-green-800 bg-green-100"
         : "text-yellow-800 bg-yellow-100";
 
+  const { label, disabled, backgroundColor } = getApplicationState(
+    project.applicationStatus,
+  );
+
   return (
     <div className="max-w-7xl w-full space-y-8 text-gray-900 dark:text-gray-100">
       {/* Header */}
@@ -322,10 +327,12 @@ export default function ProjectDetails() {
                   className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${statusColor}`}
                 >
                   {formattedStatus}
-                  <ChevronDown className="w-4 h-4 text-gray-600 cursor-pointer" />
+                  {currentRole === Role.CREATOR && (
+                    <ChevronDown className="w-4 h-4 text-gray-600 cursor-pointer" />
+                  )}
                 </button>
 
-                {openStatusModal && (
+                {openStatusModal && currentRole == Role.CREATOR && (
                   <div
                     ref={statusModalRef}
                     className="
@@ -380,9 +387,10 @@ export default function ProjectDetails() {
               ) : currentRole === Role.CONTRIBUTOR ? null : (
                 <button
                   onClick={handleApplyClick}
-                  className="flex-1 bg-btn-primary hover:bg-btn-primary-hover text-white py-2 rounded-lg font-medium cursor-pointer transition"
+                  disabled={disabled}
+                  className={`flex-1 ${backgroundColor} text-white py-2 rounded-lg font-medium cursor-pointer transition`}
                 >
-                  Apply to contribute
+                  {label}
                 </button>
               )}
             </div>

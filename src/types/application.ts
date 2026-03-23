@@ -13,8 +13,10 @@ export interface IApplication {
   updatedAt: string;
 }
 
-export interface IApplicationWithPopulatedProject
-  extends Omit<IApplication, "projectId"> {
+export interface IApplicationWithPopulatedProject extends Omit<
+  IApplication,
+  "projectId"
+> {
   projectId: Partial<ProjectPreviewDTO>;
 }
 
@@ -30,7 +32,14 @@ export type ProjectPreviewDTO = {
 };
 
 export enum ApplicationStatus {
+  NONE = "none",
   PENDING = "pending",
   ACCEPTED = "accepted",
   REJECTED = "rejected",
 }
+
+export type ApplicationState = {
+  label: string;
+  disabled: boolean;
+  backgroundColor: string;
+};

@@ -1,3 +1,4 @@
+import { ApplicationStatus } from "./application";
 import { ContributorStatus } from "./contributor";
 
 export interface IProject {
@@ -69,6 +70,11 @@ export interface IAggregatedProject extends IProject {
     name: string;
     imageUrl: string;
   }
+}
+
+export interface IAggregatedProjectDetail extends IProject{
+  isContributor: boolean;
+  applicationStatus: ApplicationStatus;
 }
 
 export interface IPopulatedContributor {
