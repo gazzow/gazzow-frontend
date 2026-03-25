@@ -11,7 +11,7 @@ import { setOnboardingStatus, setUserProfile } from "@/store/slices/userSlice";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userService } from "@/services/user/user-service";
+import { userService } from "@/services/user/user.service";
 import {
   ProfileUpdateInput,
   profileUpdateSchema,

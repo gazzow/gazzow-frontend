@@ -12,7 +12,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OnboardingInput, onboardingSchema } from "@/validators/onboarding";
-import { userService } from "@/services/user/user-service";
+import { userService } from "@/services/user/user.service";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 
 const roles = [

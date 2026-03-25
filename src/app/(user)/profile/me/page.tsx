@@ -1,14 +1,15 @@
 "use client";
 
+import ChangePassword from "@/components/features/profile/ChangePassword";
 import StripeConnectCard from "@/components/features/StripeConnectCard";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import { reviewService } from "@/services/user/review.service";
-import { userService } from "@/services/user/user-service";
+import { userService } from "@/services/user/user.service";
 import { IAggregatedReview } from "@/types/review";
 import { IUser } from "@/types/user";
 import { handleApiError } from "@/utils/handleApiError";
-import { Home, Pen, Star, User } from "lucide-react";
+import { Pen, Star, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -223,6 +224,8 @@ const ProfilePage = () => {
         </div>
 
         <StripeConnectCard user={user} />
+
+        <ChangePassword />
       </div>
     </div>
   );

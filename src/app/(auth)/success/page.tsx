@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "@/store/store";
 import { setOnboardingStatus, setUserProfile } from "@/store/slices/userSlice";
 import { useRouter, useSearchParams } from "next/navigation";
-import { userService } from "@/services/user/user-service";
+import { userService } from "@/services/user/user.service";
 import { LoadingSpinner } from "@/components/layout/LoadingSpinner";
 import { USER_ROUTES } from "@/constants/routes/user-routes";
 import axios from "axios";
