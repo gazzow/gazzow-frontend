@@ -42,6 +42,7 @@ export default function ProposalCard({
       "bg-red-500/20 text-red-400 border border-red-500/30",
     [ApplicationStatus.ACCEPTED]:
       "bg-green-500/20 text-green-400 border border-green-500/30",
+    [ApplicationStatus.NONE]: "",
   };
 
   return (
@@ -139,7 +140,7 @@ export default function ProposalCard({
               View
             </Link>
           )}
-{/* 
+          {/* 
           {status === ApplicationStatus.PENDING && (
             <button className="flex items-center gap-1 text-sm px-2 py-1 rounded-md bg-purple-600 hover:bg-purple-700 text-white transition">
               <PenLine size={14} />
