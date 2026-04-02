@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🎨 Gazzow Frontend
 
-## Getting Started
+Frontend application for Gazzow — a collaborative freelance platform that connects developers, clients, and teams through project management, communication, and integrated tools.
 
-First, run the development server:
+📌 Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The Gazzow Frontend provides an intuitive and responsive user interface for:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Managing projects and teams
+Tracking tasks and progress
+Real-time communication
+Handling payments and subscriptions
+Admin monitoring and control
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Built with scalability, performance, and clean design systems in mind.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🧱 Tech Stack
+Next.js (App Router)
+React.js
+TypeScript
+Tailwind CSS
+ShadCN UI
+Axios 
+Zod 
+React Query
+🏗️ Architecture
 
-## Learn More
+This project follows:
 
-To learn more about Next.js, take a look at the following resources:
+✅ Component-Based Architecture
+✅ Feature-Based Folder Structure
+✅ Clean Code Principles
+✅ Scalable Design System
+Folder Structure (Example)
+src/
+│
+├── app/                # Next.js App Router
+├── components/         # Reusable UI components
+├── features/           # Feature-based modules
+│   ├── auth/
+│   ├── projects/
+│   ├── tasks/
+│   └── payments/
+├── hooks/              # Custom React hooks
+├── services/           # API calls
+├── lib/                # Utilities & configs
+├── types/              # TypeScript types
+└── styles/             # Global styles
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+🎯 Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+👤 Authentication
+Login / Registration
+JWT-based session handling
+Protected routes
 
-## Deploy on Vercel
+📁 Project Management
+Create & manage projects
+Invite contributors
+View project dashboard
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+✅ Task Management
+Create, assign, and track tasks
+Status updates (Todo / In Progress / Done)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+💬 Communication
+Chat UI (direct & project-based)
+Real-time Notifications using Socket
+
+💳 Payments & Subscriptions
+View transactions
+Subscription plans UI
+Invoice display
+
+🛠️ Admin Dashboard
+Manage users
+Monitor projects
+Handle reports
+
+🎨 Design System
+Reusable UI components 
+Consistent spacing, typography, and color tokens
+Responsive design (mobile-first)
+
+📈 Future Enhancements
+🔔 Real-time updates (WebSockets / Socket.io)
+🌙 Dark mode support
+📱 PWA support
+🤖 AI-assisted UI (smart suggestions)
+📊 Advanced dashboards & analytics
+
+🤝 Contribution
+git checkout -b feature/your-feature
+git commit -m "Add your feature"
+git push origin feature/your-feature
+
+
+👨‍💻 Author
+
+Muhammed Abbas 
+Full-stack MERN Developer
+
+⭐ Support
+
+If you like this project, consider giving it a ⭐ on GitHub!
